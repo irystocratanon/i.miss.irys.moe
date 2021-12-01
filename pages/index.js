@@ -92,7 +92,7 @@ function StreamInfo(props) {
         link = <b><a href={props.info.link}>{props.info.title}</a></b>
     } else {
         text = "Current Stream: "
-        link = <><b>NOTHING UUUUUUUuuuuuu</b> <small>(but maybe there&apos;s a member stream...)</small></>
+        link = <><b>NOTHING</b> <small>(but maybe there&apos;s a member stream...)</small></>
     }
 
     return <div className="stream-info">
@@ -108,7 +108,7 @@ export default function Home(props) {
         className = "error"
         imageSet = ERROR_IMAGE_SET
         bottomInfo = <div className="stream-info">
-            <p>There was a problem checking stream status. <a href={props.channelLink}>You can check Fauna&apos;s channel yourself</a>!</p>
+            <p>There was a problem checking stream status. <a href={props.channelLink}>You can check IRyS&apos;s channel yourself</a>!</p>
         </div>
     } else if (props.status != STREAM_STATUS.LIVE && props.status != STREAM_STATUS.STARTING_SOON) {
         className = "miss-her"
@@ -116,17 +116,17 @@ export default function Home(props) {
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
     } else {
         className = "comfy" 
-        caption = "I Don't Miss Fauna"
+        caption = "I Don't Miss IRyS"
         imageSet = HAVE_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
     }
 
     return <div className={styles.site}>
         <Head>
-            <title>I MISS FAUNA</title>
+            <title>I MISS IRyS</title>
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-            <meta name="theme-color" content="#c3f0ce" />
-            <meta content="I MISS FAUNA" property="og:title" />
+            <meta name="theme-color" content="#ffbafb" />
+            <meta content="I MISS IRyS" property="og:title" />
             <meta content={createEmbedDescription(props.status, props.streamInfo)} property="og:description" />
             <meta content={`${props.absolutePrefix}/${image}`} property="og:image" />
             <meta name="twitter:card" content="summary_large_image" />
@@ -139,9 +139,9 @@ export default function Home(props) {
             {bottomInfo}
 
             <footer>
-                <a href={props.channelLink}>Ceres Fauna Ch. hololive-EN</a> <br />
+                <a href={props.channelLink}>IRyS Ch. hololive-EN</a> <br />
                 <small>
-                    Not affiliated with Fauna or hololive - <a href="https://github.com/saplinganon/imissfauna.com">Source</a>
+                    Not affiliated with IRyS or hololive - <a href="https://github.com/irystocratanon/i.miss.irys.moe">Source</a>
                 </small>
             </footer>
         </div>

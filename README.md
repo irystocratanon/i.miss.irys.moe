@@ -6,7 +6,7 @@ In .env or the actual environment:
   only the part after /channel/ in the URL (i.e. the `UC...` part)
 - `USE_DUMMY_DATA=true` returns fake stream status instead of scraping YT. See 
   getServerSideProps in pages/index.js.
-- `PUBLIC_HOST=XXXX` sets the external hostname of the site (e.g. "https://imissfauna.com").
+- `PUBLIC_HOST=XXXX` sets the external hostname of the site (e.g. "https://i.miss.irys.moe").
   This is used to make absolute URLs for the embed. Do not leave a trailing slash.
 
 ## How to add images
