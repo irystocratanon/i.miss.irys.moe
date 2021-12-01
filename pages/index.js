@@ -3,6 +3,7 @@ import Head from "next/head"
 import { STREAM_STATUS, pollLivestreamStatus, pollLivestreamStatusDummy } from "../server/livestream_poller"
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
 import { useState } from "react"
+import { getPastStream, CountdownTimer } from "../components/countdown-timer.js"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -17,6 +18,7 @@ function selectRandomImage(fromSet, excludingImage) {
 
 export async function getServerSideProps({ req, res, query }) {
     let apiVal
+    let pastStream
     if (process.env.USE_DUMMY_DATA === "true") {
         apiVal = await pollLivestreamStatusDummy(process.env.WATCH_CHANNEL_ID, query.mock)
     } else {
@@ -40,12 +42,15 @@ export async function getServerSideProps({ req, res, query }) {
         initialImage = selectRandomImage(HAVE_STREAM_IMAGE_SET)
     }
 
+    pastStream = await getPastStream()
+
     return { props: {
         absolutePrefix,
         initialImage,
         channelLink,
         status: result.live,
         isError: false,
+        pastStream,
         streamInfo: {
             link: result.videoLink,
             title: result.title,
@@ -137,6 +142,7 @@ export default function Home(props) {
             <img src={`${props.absolutePrefix}/${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
 
             {bottomInfo}
+            <CountdownTimer status={props.status} pastStream={props.pastStream} />
 
             <footer>
                 <a href={props.channelLink}>Ceres Fauna Ch. hololive-EN</a> <br />
