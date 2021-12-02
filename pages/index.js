@@ -101,7 +101,7 @@ function StreamInfo(props) {
 }
 
 export default function Home(props) {
-    let className, caption = "", imageSet, bottomInfo
+    let className, caption = "", favicon, imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
 
     if (props.isError) {
@@ -114,16 +114,19 @@ export default function Home(props) {
         className = "miss-her"
         imageSet = NO_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
+        favicon = (Math.floor((Math.random()*10)%2)) ? 'Byerys.png' : 'Byerys2.png'
     } else {
         className = "comfy" 
         caption = "I Don't Miss IRyS"
         imageSet = HAVE_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
+        favicon = 'Hirys.png'
     }
 
     return <div className={styles.site}>
         <Head>
             <title>I MISS IRyS</title>
+            <link rel="shortcut icon" href={`/${favicon}`} />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <meta name="theme-color" content="#ffbafb" />
             <meta content="I MISS IRyS" property="og:title" />
