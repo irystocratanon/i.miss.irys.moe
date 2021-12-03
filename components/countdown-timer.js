@@ -36,7 +36,7 @@ export class CountdownTimer extends Component {
                 end: Date.now()
             });
             return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
-                return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ${k}`
+                return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ` + ((d[k] < 2) ? k.substr(0, k.length-1) : k)
             }).join('') + ' without IRyS'
         } catch (e) { return ''; }
     }
