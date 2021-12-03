@@ -42,7 +42,6 @@ export class CountdownTimer extends Component {
     }
 
     tick() {
-        console.log(this.state.pastStream)
         this.setState({
             label: this.formatLabel()
         })
