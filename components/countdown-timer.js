@@ -1,6 +1,8 @@
 import Script from "next/script"
+import { Component } from "react"
 import { pollPaststreamStatus, pollPaststreamStatusDummy } from "../server/paststream_poller"
 import { STREAM_STATUS } from "../server/livestream_poller"
+import { intervalToDuration, parseISO } from "date-fns"
 
 export async function getPastStream() {
     let pastStream 
@@ -13,37 +15,45 @@ export async function getPastStream() {
     return pastStream
 }
 
-export function CountdownTimer(props) {
-    const {status,pastStream} = props;
-    if (status !== STREAM_STATUS.OFFLINE) { return <></>; }
-    return  <>
-			    <div id="timer" data-past-stream={JSON.stringify(pastStream)}></div>
-                <Script defer src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></Script>
-		        <Script defer src="https://cdnjs.cloudflare.com/ajax/libs/countdown/2.6.0/countdown.min.js" integrity="sha512-FkM4ZGExuYz4rILLbNzw8f3HxTN9EKdXrQYcYfdluxJBjRLthYPxxZixV/787qjN3JLs2607yN5XknR/cQMU8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></Script>
-		        <Script defer id="past-stream-countdown">
-		        	{
-		        	setInterval(() => {
-		        			try {
-		        				const timer = document.getElementById('timer');
-		        			}
-		        			catch (e) {
-		        				clearInterval(this);
-		        				return;
-		        			}
-		        			if (!timer) { clearInterval(this); return; }
-		        			if (document.getElementsByClassName('miss-her').length < 1) {
-		        				clearInterval(this);
-		        				return;
-		        			}
-		        			try {
-                                const ts = JSON.parse(document.getElementById('timer').attributes['data-past-stream'].textContent).end_actual;
-                                timer.innerHTML = countdown(moment(ts).toDate()).toString() + " without IRyS"
-		        			} catch (e) {
-		        				timer.innerHTML='';
-		        				return;
-		        			}
-		        		}, 500)
-		        	}
-                </Script>
-        </>
+export class CountdownTimer extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {label: '', status: props.status, pastStream: props.pastStream}
+    }
+
+    componentDidMount() {
+        this.timerID = setInterval(() => this.tick(), 500)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID)
+    }
+
+    formatLabel() {
+        try {
+            const d = intervalToDuration({
+                start: parseISO(this.state.pastStream.end_actual),
+                end: Date.now()
+            });
+            return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
+                return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ${k}`
+            }).join('') + ' without IRyS'
+        } catch (e) { return ''; }
+    }
+
+    tick() {
+        console.log(this.state.pastStream)
+        this.setState({
+            label: this.formatLabel()
+        })
+    }
+
+    render() {
+        if (this.state.status !== STREAM_STATUS.OFFLINE) { this.componentWillUnmount(); return <></> }
+        return (
+            <>
+            {this.state.label}
+            </>
+        )
+    }
 }
