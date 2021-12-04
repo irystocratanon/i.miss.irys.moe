@@ -52,7 +52,7 @@ export class CountdownTimer extends Component {
     }
 
     render() {
-        if (this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream) { this.componentWillUnmount(); return <></> }
+        if ((this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream) || this.state.status === STREAM_STATUS.LIVE) { this.componentWillUnmount(); return <></> }
         return (
             <>
             {this.state.label}
