@@ -34,6 +34,7 @@ export class CountdownTimer extends Component {
         try {
             const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream.end_actual)
             const endDate = (descriptor === 'until') ? this.state.nextStream.startTime : Date.now()
+            if (descriptor === 'until' && startDate >= (endDate-900)) { return "Waiting for IRyS…"; }
             const d = intervalToDuration({
                 start: startDate,
                 end: endDate
