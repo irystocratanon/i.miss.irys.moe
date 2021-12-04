@@ -1,4 +1,3 @@
-import Script from "next/script"
 import { Component } from "react"
 import { pollPaststreamStatus, pollPaststreamStatusDummy } from "../server/paststream_poller"
 import { STREAM_STATUS } from "../server/livestream_poller"
