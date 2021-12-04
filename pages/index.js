@@ -145,7 +145,7 @@ export default function Home(props) {
             <img src={`${props.absolutePrefix}/${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
 
             {bottomInfo}
-            <CountdownTimer status={props.status} pastStream={props.pastStream} />
+            <CountdownTimer status={props.status} nextStream={props.streamInfo} pastStream={props.pastStream} />
 
             <footer>
                 <a href={props.channelLink}>IRyS Ch. hololive-EN</a> <br />
