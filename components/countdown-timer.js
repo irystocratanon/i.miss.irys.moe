@@ -18,7 +18,7 @@ export async function getPastStream() {
 export class CountdownTimer extends Component {
     constructor(props) {
         super(props)
-        this.state = {label: '', status: props.status, pastStream: props.pastStream}
+        this.state = {label: '', status: props.status, nextStream: props.nextStream, pastStream: props.pastStream}
     }
 
     componentDidMount() {
@@ -30,26 +30,28 @@ export class CountdownTimer extends Component {
     }
 
     formatLabel() {
+        const descriptor = (this.state.nextStream) ? 'until' : 'without'
         try {
+            const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream.end_actual)
+            const endDate = (descriptor === 'until') ? this.state.nextStream.startTime : Date.now()
             const d = intervalToDuration({
-                start: parseISO(this.state.pastStream.end_actual),
-                end: Date.now()
+                start: startDate,
+                end: endDate
             });
             return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
                 return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ` + ((d[k] < 2) ? k.substr(0, k.length-1) : k)
-            }).join('') + ' without IRyS'
+            }).join('') + ` ${descriptor} IRyS`
         } catch (e) { return ''; }
     }
 
     tick() {
-        console.log(this.state.pastStream)
         this.setState({
             label: this.formatLabel()
         })
     }
 
     render() {
-        if (this.state.status !== STREAM_STATUS.OFFLINE) { this.componentWillUnmount(); return <></> }
+        if (this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream) { this.componentWillUnmount(); return <></> }
         return (
             <>
             {this.state.label}
