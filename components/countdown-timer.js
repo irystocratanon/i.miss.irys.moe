@@ -18,6 +18,7 @@ export class CountdownTimer extends Component {
     constructor(props) {
         super(props)
         this.state = {label: '', status: props.status, nextStream: props.nextStream, pastStream: props.pastStream}
+        this.state.label = this.formatLabel()
     }
 
     componentDidMount() {
