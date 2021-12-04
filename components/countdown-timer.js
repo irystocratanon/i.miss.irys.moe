@@ -30,7 +30,7 @@ export class CountdownTimer extends Component {
     }
 
     formatLabel() {
-        const descriptor = (this.state.nextStream) ? 'until' : 'without'
+        const descriptor = (this.state.nextStream?.startTime) ? 'until' : 'without'
         try {
             const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream.end_actual)
             const endDate = (descriptor === 'until') ? this.state.nextStream.startTime : Date.now()
