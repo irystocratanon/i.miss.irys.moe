@@ -4,6 +4,8 @@ import { STREAM_STATUS, pollLivestreamStatus, pollLivestreamStatusDummy } from "
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
 import { useState } from "react"
 import { getPastStream, CountdownTimer } from "../components/countdown-timer.js"
+import {pollCollabstreamStatus} from "../server/collabs_poller.js"
+import {intervalToDuration,parseISO} from "date-fns"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -18,14 +20,36 @@ function selectRandomImage(fromSet, excludingImage) {
 
 export async function getServerSideProps({ req, res, query }) {
     let apiVal
-    let pastStream
+	let pastStream
+	let collabs
     if (process.env.USE_DUMMY_DATA === "true") {
         apiVal = await pollLivestreamStatusDummy(process.env.WATCH_CHANNEL_ID, query.mock)
     } else {
         apiVal = await pollLivestreamStatus(process.env.WATCH_CHANNEL_ID)
         res.setHeader("Cache-Control", "max-age=0, s-maxage=90, stale-while-revalidate=180")
-    }
-    const { result, error } = apiVal
+	}
+
+	let { result, error } = apiVal
+	
+    pastStream = await getPastStream()
+	collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
+	switch (collabs.status) {
+		case 'upcoming':
+		case 'live':
+			const collabStart = parseISO(collabs.start_scheduled)
+			let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
+			let timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
+			collabStatus = (timeLeft.hours < 1) ? STREAM_STATUS.STARTING_SOON : collabStatus
+			result = {
+				live: collabStatus,
+				title: collabs.title,
+				videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
+				streamStartTime: collabStart
+			}
+			break;
+		default:
+			break;
+	}
 
     const absolutePrefix = process.env.PUBLIC_HOST
     const channelLink = `https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}`
@@ -41,8 +65,6 @@ export async function getServerSideProps({ req, res, query }) {
     } else {
         initialImage = selectRandomImage(HAVE_STREAM_IMAGE_SET)
     }
-
-    pastStream = await getPastStream()
 
     return { props: {
         absolutePrefix,
