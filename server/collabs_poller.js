@@ -4,8 +4,8 @@ import {promisify} from 'util'
 const jsonCache = `${__dirname}/collabs.json`
 
 function createPollRoute(channelID) {
-	return `http://localhost:8000/data.json`
-	//return `https://holodex.net/api/v2/channels/${channelID}/collabs?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`
+	//return `http://localhost:8000/data.json`
+	return `https://holodex.net/api/v2/channels/${channelID}/collabs?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`
 }
 
 async function checkCache() {
