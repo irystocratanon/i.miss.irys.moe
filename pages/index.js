@@ -37,14 +37,17 @@ export async function getServerSideProps({ req, res, query }) {
 		case 'upcoming':
 		case 'live':
 			const collabStart = parseISO(collabs.start_scheduled)
-			let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
-			let timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
-			collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
-			result = {
-				live: collabStatus,
-				title: collabs.title,
-				videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
-				streamStartTime: collabStart
+			const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart)) : false
+			if (!streamEarlierThanCollab) {
+				let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
+				const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
+				collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
+				result = {
+					live: collabStatus,
+					title: collabs.title,
+					videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
+					streamStartTime: collabStart
+				}
 			}
 			break;
 		default:
