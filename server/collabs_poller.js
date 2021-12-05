@@ -21,7 +21,7 @@ async function checkCache() {
 		return {shouldInvalidateCache: true, cache: null}
 	}
 	const d = new Date(json["cache-control"])
-	if (Date.now() >= (d+((1000*60)*15))) { return true; }
+	if (Date.now() >= (d+((1000*60)*15))) { return {shouldInvalidateCache: true, cache: null}; }
 	return {shouldInvalidateCache: false, cache: JSON.parse(json.toString())}
 }
 
