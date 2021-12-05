@@ -39,7 +39,7 @@ export async function getServerSideProps({ req, res, query }) {
 			const collabStart = parseISO(collabs.start_scheduled)
 			let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
 			let timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
-			collabStatus = (timeLeft.hours < 1) ? STREAM_STATUS.STARTING_SOON : collabStatus
+			collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
 			result = {
 				live: collabStatus,
 				title: collabs.title,
