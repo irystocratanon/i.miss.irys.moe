@@ -51,7 +51,7 @@ export function extractCollabstreamInfo(fromPageContent) {
     const collabs = fromPageContent.items.filter(e => {
         return e.type === 'stream' &&
             e.topic_id !== 'shorts' &&
-            (e.status === 'upcoming' || e.duration >= 1800)
+            ((e.status === 'upcoming' || e.status === 'live') || e.duration >= 1800)
     })[0]
     return collabs
 }
