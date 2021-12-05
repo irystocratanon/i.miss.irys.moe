@@ -33,26 +33,33 @@ export async function getServerSideProps({ req, res, query }) {
 
 	if (result.live !== STREAM_STATUS.LIVE) {
         pastStream = await getPastStream()
-		collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
-		switch (collabs.status) {
-			case 'upcoming':
-			case 'live':
-				const collabStart = parseISO(collabs.start_scheduled)
+        collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
+        switch (collabs.status) {
+            case 'upcoming':
+            case 'live':
+                const collabStart = parseISO(collabs.start_scheduled)
 				const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart)) : false
-				if (!streamEarlierThanCollab) {
-					let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
-					const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
-					collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
-					result = {
-						live: collabStatus,
-						title: collabs.title,
-						videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
-						streamStartTime: collabStart
-					}
-				}
-				break;
-			default:
-				break;
+                if (!streamEarlierThanCollab) {
+                    let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
+                    const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
+                    collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
+                    result = {
+                        live: collabStatus,
+                        title: collabs.title,
+                        videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
+                        streamStartTime: collabStart
+                    }
+                }
+                break;
+            case 'past':
+                const collabEnd = parseISO(collabs.end_actual)
+                const pastStreamEnd = parseISO(pastStream.end_actual)
+                if (collabEnd > pastStreamEnd) {
+                    pastStream = collabs
+                }
+                break;
+            default:
+                break;
 		}
 	}
 
