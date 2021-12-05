@@ -1,7 +1,7 @@
 import fs from 'fs'
 import {promisify} from 'util'
 
-const jsonCache = `${__dirname}/collabs.json`
+const jsonCache = `/tmp/collabs.json`
 
 function createPollRoute(channelID) {
 	//return `http://localhost:8000/data.json`
