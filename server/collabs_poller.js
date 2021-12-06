@@ -1,53 +1,14 @@
-import fs from 'fs'
-import {promisify} from 'util'
-
-const jsonCache = `/tmp/collabs.json`
+import {checkCache,writeToCache} from "../lib/http-cache-helper.js"
 
 function createPollRoute(channelID) {
 	//return `http://localhost:8000/data.json`
 	return `https://holodex.net/api/v2/channels/${channelID}/collabs?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`
 }
 
-async function checkCache() {
-	const exists = promisify(fs.exists)
-	const readFile = promisify(fs.readFile)
-
-	let haveCache = await exists(jsonCache)
-	if (!haveCache) { return {shouldInvalidateCache: true, cache: null}; }
-	let json
-	try {
-		json = await readFile(jsonCache)
-	} catch (e) {
-		return {shouldInvalidateCache: true, cache: null}
-	}
-    const d = new Date(json["cache-control"])
-    let cache
-    let minutes_to_invalidate_cache = 15
-    try {
-        cache = JSON.parse(json.toString())
-        let collab_status
-        try {
-            collab_status = cache.result.items[0].status
-        } catch (e) {
-            collab_status = "past"
-        }
-        if (collab_status === "live") {
-            minutes_to_invalidate_cache = 5
-        }
-    } catch (e) {
-        cache = null
-    }
-	if (cache === null || Date.now() >= (d+((1000*60)*minutes_to_invalidate_cache))) { return {shouldInvalidateCache: true, cache: null}; }
-	return {shouldInvalidateCache: false, cache: cache}
-}
-
-async function writeCollabstreamPageToCache(json) {
-	const writeFile = promisify(fs.writeFile)
-	await writeFile(jsonCache, JSON.stringify({"cache-control": Date.now(), "result": json}));
-}
-
 export async function fetchCollabstreamPage(channelID) {
-	let {shouldInvalidateCache, cache} = await checkCache()
+    const COLLABS_CACHE = "/tmp/collabs.json"
+
+    const {shouldInvalidateCache, cache} = await checkCache(COLLABS_CACHE)
 	if (!shouldInvalidateCache) { console.log('cache hit!'); return {error: null, result: cache["result"]}; }
 	console.log('cache miss!')
     try {
@@ -56,7 +17,7 @@ export async function fetchCollabstreamPage(channelID) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }
 		const youtubeJSON = await res.json()
-		writeCollabstreamPageToCache(youtubeJSON)
+        writeToCache(COLLABS_CACHE, youtubeJSON)
         return { error: null, result: youtubeJSON }
     } catch (e) {
         return { error: e.toString(), result: { items: [] } }
