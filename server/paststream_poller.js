@@ -18,7 +18,9 @@ function createPollRoute(channelID) {
 export async function fetchPaststreamPage(channelID) {
     const PASTSTREAM_CACHE = "/tmp/past-streams.json"
 
-    const {shouldInvalidateCache, cache} = await checkCache(PASTSTREAM_CACHE, 1)
+    // TODO: Write livestream data to a temp file and check if it exists
+    // if it does use a low TTL otherwise use a higher TTL (default of 15 minutes)
+    const {shouldInvalidateCache, cache} = await checkCache(PASTSTREAM_CACHE, 5)
     if (!shouldInvalidateCache) {
         console.info('paststream-poller: cache hit!');
         return {error: null, result: cache["result"]};
