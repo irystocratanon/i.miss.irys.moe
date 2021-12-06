@@ -3,9 +3,9 @@ import Head from "next/head"
 import { STREAM_STATUS, pollLivestreamStatus, pollLivestreamStatusDummy } from "../server/livestream_poller"
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
 import { useState } from "react"
-import {CountdownTimer } from "../components/countdown-timer.js"
-import {getPastStream} from "../server/paststream_poller"
-import {pollCollabstreamStatus} from "../server/collabs_poller.js"
+import { CountdownTimer } from "../components/countdown-timer"
+import { getPastStream } from "../server/paststream_poller"
+import { pollCollabstreamStatus } from "../server/collabs_poller"
 import {intervalToDuration,parseISO} from "date-fns"
 
 function selectRandomImage(fromSet, excludingImage) {
@@ -33,8 +33,8 @@ export async function getServerSideProps({ req, res, query }) {
 	let { result, error } = apiVal
 
 	if (result.live !== STREAM_STATUS.LIVE) {
-        pastStream = await getPastStream()
         collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
+        pastStream = (collabs.status === 'live') ? null : await getPastStream()
         switch (collabs.status) {
             case 'upcoming':
             case 'live':
