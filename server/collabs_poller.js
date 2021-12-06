@@ -20,9 +20,25 @@ async function checkCache() {
 	} catch (e) {
 		return {shouldInvalidateCache: true, cache: null}
 	}
-	const d = new Date(json["cache-control"])
-	if (Date.now() >= (d+((1000*60)*15))) { return {shouldInvalidateCache: true, cache: null}; }
-	return {shouldInvalidateCache: false, cache: JSON.parse(json.toString())}
+    const d = new Date(json["cache-control"])
+    let cache
+    let minutes_to_invalidate_cache = 15
+    try {
+        cache = JSON.parse(json.toString())
+        let collab_status
+        try {
+            collab_status = cache.result.items[0].status
+        } catch (e) {
+            collab_status = "past"
+        }
+        if (collab_status === "live") {
+            minutes_to_invalidate_cache = 5
+        }
+    } catch (e) {
+        cache = null
+    }
+	if (cache === null || Date.now() >= (d+((1000*60)*minutes_to_invalidate_cache))) { return {shouldInvalidateCache: true, cache: null}; }
+	return {shouldInvalidateCache: false, cache: cache}
 }
 
 async function writeCollabstreamPageToCache(json) {
