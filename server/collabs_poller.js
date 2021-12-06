@@ -1,4 +1,4 @@
-import {checkCache, writeToCache} from "../lib/http-cache-helper.js"
+import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
 
 function createPollRoute(channelID) {
 	//return `http://localhost:8000/data.json`

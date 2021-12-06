@@ -1,4 +1,15 @@
-import {checkCache, writeToCache} from "../lib/http-cache-helper.js"
+import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
+
+export async function getPastStream() {
+    let pastStream 
+    if (process.env.USE_DUMMY_DATA === "true") {
+        pastStream = await pollPaststreamStatusDummy(process.env.WATCH_CHANNEL_ID)
+    } else {
+        pastStream = await pollPaststreamStatus(process.env.WATCH_CHANNEL_ID)
+    }
+    
+    return pastStream
+}
 
 function createPollRoute(channelID) {
     return `https://holodex.net/api/v2/channels/${channelID}/videos?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`

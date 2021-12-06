@@ -1,5 +1,6 @@
 import {exists as _exists, readFile as _readFile, writeFile as _writeFile} from 'fs'
 import {promisify} from 'util'
+import {addMinutes} from 'date-fns'
 
 const INVALIDATE_CACHE = {shouldInvalidateCache: true, cache: null}
 
@@ -17,7 +18,7 @@ export async function checkCache(jsonCache, minutes_to_invalidate_cache = 15) {
     try {
         json = await readFile(jsonCache)
         cache = JSON.parse(json.toString())
-        d = new Date(json["cache-control"])
+        d = new Date(cache["cache-control"])
         if (minutes_to_invalidate_cache > 5) {
             let stream_status
             try {
@@ -32,8 +33,8 @@ export async function checkCache(jsonCache, minutes_to_invalidate_cache = 15) {
     } catch (e) {
         return INVALIDATE_CACHE
     }
-    
-    if (Date.now() >= (d+((1000*60)*minutes_to_invalidate_cache))) { return INVALIDATE_CACHE; }
+    let expiryDate = addMinutes(d, minutes_to_invalidate_cache)
+    if (Date.now() >= expiryDate.getTime()) { return INVALIDATE_CACHE; }
     
     return {shouldInvalidateCache: false, cache: cache}
 }

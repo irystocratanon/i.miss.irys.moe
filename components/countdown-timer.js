@@ -1,18 +1,6 @@
 import { Component } from "react"
-import { pollPaststreamStatus, pollPaststreamStatusDummy } from "../server/paststream_poller"
 import { STREAM_STATUS } from "../server/livestream_poller"
 import { intervalToDuration, parseISO } from "date-fns"
-
-export async function getPastStream() {
-    let pastStream 
-    if (process.env.USE_DUMMY_DATA === "true") {
-        pastStream = await pollPaststreamStatusDummy(process.env.WATCH_CHANNEL_ID)
-	} else {
-		pastStream = await pollPaststreamStatus(process.env.WATCH_CHANNEL_ID)
-    }
-
-    return pastStream
-}
 
 export class CountdownTimer extends Component {
     constructor(props) {
