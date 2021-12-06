@@ -1,4 +1,4 @@
-import {checkCache,writeToCache} from "../lib/http-cache-helper.js"
+import {checkCache, writeToCache} from "../lib/http-cache-helper.js"
 
 function createPollRoute(channelID) {
 	//return `http://localhost:8000/data.json`
@@ -9,8 +9,11 @@ export async function fetchCollabstreamPage(channelID) {
     const COLLABS_CACHE = "/tmp/collabs.json"
 
     const {shouldInvalidateCache, cache} = await checkCache(COLLABS_CACHE)
-	if (!shouldInvalidateCache) { console.log('cache hit!'); return {error: null, result: cache["result"]}; }
-	console.log('cache miss!')
+    if (!shouldInvalidateCache) {
+        console.info('collabs-poller: cache hit!');
+        return {error: null, result: cache["result"]};
+    }
+	console.info('collabs-poller: cache miss!')
     try {
         const res = await fetch(createPollRoute(channelID))
         if (res.status !== 200) {

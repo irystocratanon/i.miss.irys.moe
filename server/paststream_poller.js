@@ -1,14 +1,26 @@
+import {checkCache, writeToCache} from "../lib/http-cache-helper.js"
+
 function createPollRoute(channelID) {
     return `https://holodex.net/api/v2/channels/${channelID}/videos?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`
 }
 
 export async function fetchPaststreamPage(channelID) {
+    const PASTSTREAM_CACHE = "/tmp/past-streams.json"
+
+    const {shouldInvalidateCache, cache} = await checkCache(PASTSTREAM_CACHE, 1)
+    if (!shouldInvalidateCache) {
+        console.info('paststream-poller: cache hit!');
+        return {error: null, result: cache["result"]};
+    }
+    console.info('paststream-poller: cache miss!')
+
     try {
         const res = await fetch(createPollRoute(channelID))
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }
         const youtubeJSON = await res.json()
+        writeToCache(PASTSTREAM_CACHE, youtubeJSON)
         return { error: null, result: youtubeJSON }
     } catch (e) {
         return { error: e.toString(), result: { items: [] } }
