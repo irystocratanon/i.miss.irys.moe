@@ -38,7 +38,7 @@ export async function getServerSideProps({ req, res, query }) {
 	if (result.live !== STREAM_STATUS.LIVE) {
         collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
         pastStream = (collabs.status === 'live') ? null : await getPastStream()
-        if (pastStream?.status !== 'live') {
+        if (pastStream?.status !== 'live' && pastStream?.status !== 'just-ended') {
             switch (collabs.status) {
                 case 'upcoming':
                 case 'live':
@@ -87,15 +87,6 @@ export async function getServerSideProps({ req, res, query }) {
     } else {
         writeLivestreamToCache(result)
     }
-
-    try {
-        if (pastStream !== null && pastStream.status === 'just-ended') {
-            result.live = STREAM_STATUS.JUST_ENDED
-            result.title = String(pastStream.title)
-            result.videoLink = String(pastStream.videoLink)
-            pastStream = null
-        }
-    } catch(e) {}
 
     const absolutePrefix = process.env.PUBLIC_HOST
     const channelLink = `https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}`
