@@ -1,6 +1,8 @@
 import {checkCache, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
 import {parseISO} from 'date-fns'
 
+import {PASTSTREAM_CACHE} from "./constants"
+
 export async function getPastStream() {
     let pastStream 
     if (process.env.USE_DUMMY_DATA === "true") {
@@ -24,7 +26,6 @@ const isPastStream = e => {
 }
 
 export async function fetchPaststreamPage(channelID) {
-    const PASTSTREAM_CACHE = "/tmp/past-streams.json"
 
     let {shouldInvalidateCache, cache} = await checkCache(PASTSTREAM_CACHE)
     let liveStreamCache, lastSeenLiveStream, pastStreamDate

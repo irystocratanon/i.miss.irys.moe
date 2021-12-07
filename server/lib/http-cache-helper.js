@@ -3,7 +3,8 @@ import {promisify} from 'util'
 import {addMinutes} from 'date-fns'
 
 const INVALIDATE_CACHE = {shouldInvalidateCache: true, cache: null}
-const LIVESTREAM_CACHE = "/tmp/livestream.json"
+
+import {LIVESTREAM_CACHE} from "../constants"
 
 export async function checkCache(jsonCache, minutes_to_invalidate_cache = 15) {
     if (minutes_to_invalidate_cache < 1) {

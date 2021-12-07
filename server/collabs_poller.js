@@ -1,12 +1,13 @@
 import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
 
+import {COLLABS_CACHE} from "./constants"
+
 function createPollRoute(channelID) {
 	//return `http://localhost:8000/data.json`
 	return `https://holodex.net/api/v2/channels/${channelID}/collabs?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`
 }
 
 export async function fetchCollabstreamPage(channelID) {
-    const COLLABS_CACHE = "/tmp/collabs.json"
 
     const {shouldInvalidateCache, cache} = await checkCache(COLLABS_CACHE)
     if (!shouldInvalidateCache) {

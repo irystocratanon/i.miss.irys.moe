@@ -5,9 +5,11 @@ import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../
 import { useState } from "react"
 import { CountdownTimer } from "../components/countdown-timer"
 import { getPastStream } from "../server/paststream_poller"
+
+import {PASTSTREAM_CACHE} from "../server/constants"
 import { pollCollabstreamStatus } from "../server/collabs_poller"
-import {intervalToDuration,parseISO} from "date-fns"
-import {writeLivestreamToCache} from "../server/lib/http-cache-helper"
+import { intervalToDuration, parseISO } from "date-fns"
+import { writeLivestreamToCache } from "../server/lib/http-cache-helper"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -36,37 +38,52 @@ export async function getServerSideProps({ req, res, query }) {
 	if (result.live !== STREAM_STATUS.LIVE) {
         collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
         pastStream = (collabs.status === 'live') ? null : await getPastStream()
-        switch (collabs.status) {
-            case 'upcoming':
-            case 'live':
-                const collabStart = parseISO(collabs.start_scheduled)
-				const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart)) : false
-                if (streamEarlierThanCollab) {
-                    break
-                }
-                let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
-                const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
-                collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
-                result = {
-                    live: collabStatus,
-                    title: collabs.title,
-                    videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
-                    streamStartTime: collabStart
-                }
-                if (collabs.status === 'live') {
-                    writeLivestreamToCache(result)
-                }
-                break;
-            case 'past':
-                const collabEnd = parseISO(collabs.end_actual)
-                const pastStreamEnd = parseISO(pastStream.end_actual)
-                if (collabEnd > pastStreamEnd) {
-                    pastStream = collabs
-                }
-                break;
-            default:
-                break;
-		}
+        if (pastStream?.status !== 'live') {
+            switch (collabs.status) {
+                case 'upcoming':
+                case 'live':
+                    const collabStart = parseISO(collabs.start_scheduled)
+		    		const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart)) : false
+                    if (streamEarlierThanCollab) {
+                        break
+                    }
+                    let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
+                    const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
+                    collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
+                    result = {
+                        live: collabStatus,
+                        title: collabs.title,
+                        videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
+                        streamStartTime: collabStart
+                    }
+                    if (collabs.status === 'live') {
+                        writeLivestreamToCache(result)
+                    }
+                    break;
+                case 'past':
+                    const collabEnd = parseISO(collabs.end_actual)
+                    const pastStreamEnd = parseISO(pastStream.end_actual)
+                    if (collabEnd > pastStreamEnd) {
+                        pastStream = collabs
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            result.live = STREAM_STATUS.JUST_ENDED
+            result.title = String(pastStream.title)
+            result.videoLink = `https://www.youtube.com/watch?v=${pastStream.id}`
+            result.streamStartTime = null
+            pastStream = null
+            try {
+                // this code doesn't belong here but the compiler complained that it couldn't find the "fs" module when I tried to move it
+                const fs = require('fs')
+                const {promisify} = require('util')
+                const unlink = promisify(fs.unlink)
+                await unlink(PASTSTREAM_CACHE)
+            } catch (e) { }
+        }
     } else {
         writeLivestreamToCache(result)
     }
