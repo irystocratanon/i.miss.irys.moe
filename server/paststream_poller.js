@@ -60,7 +60,8 @@ export async function fetchPaststreamPage(channelID) {
                             {
                                 title: liveStreamCache.title,
                                 videoLink: liveStreamCache.videoLink,
-                                status: "just-ended"
+                                status: "just-ended",
+                                end_actual: lastSeenLiveStream.toISOString()
                             }
                         ]
                     }
