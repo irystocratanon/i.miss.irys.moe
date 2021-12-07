@@ -53,7 +53,9 @@ export async function getServerSideProps({ req, res, query }) {
                     videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
                     streamStartTime: collabStart
                 }
-                writeLivestreamToCache(result)
+                if (collabs.status === 'live') {
+                    writeLivestreamToCache(result)
+                }
                 break;
             case 'past':
                 const collabEnd = parseISO(collabs.end_actual)
