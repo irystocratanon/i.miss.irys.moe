@@ -54,6 +54,7 @@ export async function getServerSideProps({ req, res, query }) {
                         live: collabStatus,
                         title: collabs.title,
                         videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
+                        id: collabs.id,
                         streamStartTime: collabStart
                     }
                     if (collabs.status === 'live') {
@@ -73,7 +74,7 @@ export async function getServerSideProps({ req, res, query }) {
         } else {
             result.live = STREAM_STATUS.JUST_ENDED
             result.title = String(pastStream.title)
-            result.videoLink = `https://www.youtube.com/watch?v=${pastStream.id}`
+            result.videoLink = (pastStream.videoLink) ? String(pastStream.videoLink) : `https://www.youtube.com/watch?v=${pastStream.id}`
             result.streamStartTime = null
             pastStream = null
             try {
