@@ -5,6 +5,7 @@ export const STREAM_STATUS = {
     INDETERMINATE: 2,
     STARTING_SOON: 3,
     LIVE: 4,
+    JUST_ENDED: 5
 }
 
 function createPollRoute(channelID) {
@@ -116,7 +117,6 @@ export async function pollLivestreamStatusDummy(unused, selectMock) {
         videoLink: "https://www.youtube.com/watch?v=aaaaaaaaaaa", 
         streamStartTime: new Date(Date.now() + 3600000)
     }
-
     switch (selectMock) {
         case "error": return { error: "Fake Error", result: null }
         case "nostream": return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null } }

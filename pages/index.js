@@ -7,6 +7,7 @@ import { CountdownTimer } from "../components/countdown-timer"
 import { getPastStream } from "../server/paststream_poller"
 import { pollCollabstreamStatus } from "../server/collabs_poller"
 import {intervalToDuration,parseISO} from "date-fns"
+import {writeLivestreamToCache} from "../server/lib/http-cache-helper"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -30,7 +31,7 @@ export async function getServerSideProps({ req, res, query }) {
         res.setHeader("Cache-Control", "max-age=0, s-maxage=90, stale-while-revalidate=180")
 	}
 
-	let { result, error } = apiVal
+    let { result, error } = apiVal
 
 	if (result.live !== STREAM_STATUS.LIVE) {
         collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
@@ -52,6 +53,7 @@ export async function getServerSideProps({ req, res, query }) {
                     videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
                     streamStartTime: collabStart
                 }
+                writeLivestreamToCache(result)
                 break;
             case 'past':
                 const collabEnd = parseISO(collabs.end_actual)
@@ -63,7 +65,18 @@ export async function getServerSideProps({ req, res, query }) {
             default:
                 break;
 		}
-	}
+    } else {
+        writeLivestreamToCache(result)
+    }
+
+    try {
+        if (pastStream !== null && pastStream.status === 'just-ended') {
+            result.live = STREAM_STATUS.JUST_ENDED
+            result.title = String(pastStream.title)
+            result.videoLink = String(pastStream.videoLink)
+            pastStream = null
+        }
+    } catch(e) {}
 
     const absolutePrefix = process.env.PUBLIC_HOST
     const channelLink = `https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}`
@@ -110,6 +123,8 @@ function createEmbedDescription(status, streamInfo) {
             return `Streaming: ${streamInfo.title}`
         case STREAM_STATUS.STARTING_SOON:
             return `Starting Soon: ${streamInfo.title}`
+        case STREAM_STATUS.JUST_ENDED:
+            return `Just Ended: ${streamInfo.title}`
         default:
             return `Next Stream: ${streamInfo.title}`
     }
@@ -124,6 +139,9 @@ function StreamInfo(props) {
                 break
             case STREAM_STATUS.STARTING_SOON:
                 text = "Starting Soon: "
+                break
+            case STREAM_STATUS.JUST_ENDED:
+                text = "Just Ended: "
                 break
             default:
                 text = "Next Stream: "

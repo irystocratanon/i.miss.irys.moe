@@ -3,8 +3,12 @@ import {promisify} from 'util'
 import {addMinutes} from 'date-fns'
 
 const INVALIDATE_CACHE = {shouldInvalidateCache: true, cache: null}
+const LIVESTREAM_CACHE = "/tmp/livestream.json"
 
 export async function checkCache(jsonCache, minutes_to_invalidate_cache = 15) {
+    if (minutes_to_invalidate_cache < 1) {
+        return INVALIDATE_CACHE
+    }
     const exists = promisify(_exists)
     const readFile = promisify(_readFile)
 
@@ -45,6 +49,38 @@ export async function writeToCache(jsonCache, json) {
     try {
         json = JSON.stringify({"cache-control": Date.now(), "result": json})
         await writeFile(jsonCache, json)
+    } catch (e) {
+        return
+    }
+}
+
+export async function readLivestreamFromCache() {
+    const exists = promisify(_exists)
+    const readFile = promisify(_readFile)
+
+    const liveStreamCacheExists = await exists(LIVESTREAM_CACHE)
+    if (!liveStreamCacheExists) {
+        return
+    }
+
+    try {
+        let cache = await readFile(LIVESTREAM_CACHE)
+        cache = JSON.parse(cache.toString())
+        return cache
+    } catch (e) {
+        return null
+    }
+}
+
+export async function writeLivestreamToCache(json) {
+    const writeFile = promisify(_writeFile)
+    try {
+        const cache = {
+            title: json.title,
+            videoLink: json.videoLink,
+            lastSeen: Date.now()
+        }
+        writeFile(LIVESTREAM_CACHE, JSON.stringify(cache))
     } catch (e) {
         return
     }
