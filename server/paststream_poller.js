@@ -20,7 +20,7 @@ const isPastStream = e => {
     return e.status === 'past' &&
            e.type === 'stream' &&
            e.topic_id !== 'shorts' &&
-           e.duration >= 1800
+           e.duration >= 1800 || e.duration === 0
 }
 
 export async function fetchPaststreamPage(channelID) {
