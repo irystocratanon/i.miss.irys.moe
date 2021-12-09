@@ -6,7 +6,7 @@ import { useState } from "react"
 import { CountdownTimer } from "../components/countdown-timer"
 import { getPastStream } from "../server/paststream_poller"
 
-import {PASTSTREAM_CACHE} from "../server/constants"
+import { LIVESTREAM_CACHE, PASTSTREAM_CACHE } from "../server/constants"
 import { pollCollabstreamStatus } from "../server/collabs_poller"
 import { intervalToDuration, parseISO } from "date-fns"
 import { writeLivestreamToCache } from "../server/lib/http-cache-helper"
@@ -23,6 +23,16 @@ function selectRandomImage(fromSet, excludingImage) {
 }
 
 export async function getServerSideProps({ req, res, query }) {
+    const rmCache = async function(f) {
+        try {
+            // this code doesn't belong here but the compiler complained that it couldn't find the "fs" module when I tried to move it
+            const fs = require('fs')
+            const {promisify} = require('util')
+            const unlink = promisify(fs.unlink)
+            await unlink(f)
+        } catch (e) { }
+    }
+
     let apiVal
 	let pastStream
 	let collabs
@@ -77,16 +87,14 @@ export async function getServerSideProps({ req, res, query }) {
             result.videoLink = (pastStream.videoLink) ? String(pastStream.videoLink) : `https://www.youtube.com/watch?v=${pastStream.id}`
             result.streamStartTime = null
             pastStream = null
-            try {
-                // this code doesn't belong here but the compiler complained that it couldn't find the "fs" module when I tried to move it
-                const fs = require('fs')
-                const {promisify} = require('util')
-                const unlink = promisify(fs.unlink)
-                await unlink(PASTSTREAM_CACHE)
-            } catch (e) { }
+            rmCache(PASTSTREAM_CACHE)
         }
     } else {
         writeLivestreamToCache(result)
+    }
+
+    if (result.live !== STREAM_STATUS.LIVE && result.live !== STREAM_STATUS.JUST_ENDED) {
+        rmCache(LIVESTREAM_CACHE)
     }
 
     const absolutePrefix = process.env.PUBLIC_HOST
