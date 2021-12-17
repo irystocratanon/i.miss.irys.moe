@@ -1,15 +1,10 @@
 import styles from '../styles/Home.module.css'
 import Head from "next/head"
-import { STREAM_STATUS, pollLivestreamStatus, pollLivestreamStatusDummy } from "../server/livestream_poller"
+import { STREAM_STATUS } from "../server/livestream_poller"
+import getResult from "../server/poller.js"
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CountdownTimer } from "../components/countdown-timer"
-import { getPastStream } from "../server/paststream_poller"
-
-import { LIVESTREAM_CACHE, PASTSTREAM_CACHE } from "../server/constants"
-import { pollCollabstreamStatus } from "../server/collabs_poller"
-import { intervalToDuration, parseISO } from "date-fns"
-import { writeLivestreamToCache } from "../server/lib/http-cache-helper"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -23,82 +18,14 @@ function selectRandomImage(fromSet, excludingImage) {
 }
 
 export async function getServerSideProps({ req, res, query }) {
-    const rmCache = async function(f) {
-        try {
-            // this code doesn't belong here but the compiler complained that it couldn't find the "fs" module when I tried to move it
-            const fs = require('fs')
-            const {promisify} = require('util')
-            const unlink = promisify(fs.unlink)
-            await unlink(f)
-        } catch (e) { }
-    }
-
-    let apiVal
-	let pastStream
-	let collabs
-    if (process.env.USE_DUMMY_DATA === "true") {
-        apiVal = await pollLivestreamStatusDummy(process.env.WATCH_CHANNEL_ID, query.mock)
-    } else {
-        apiVal = await pollLivestreamStatus(process.env.WATCH_CHANNEL_ID)
-        res.setHeader("Cache-Control", "max-age=0, s-maxage=90, stale-while-revalidate=180")
-	}
-
-    let { result, error } = apiVal
-
-	if (result.live !== STREAM_STATUS.LIVE) {
-        collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
-        pastStream = (collabs.status === 'live') ? null : await getPastStream()
-        if (pastStream?.status !== 'live' && pastStream?.status !== 'just-ended') {
-            switch (collabs.status) {
-                case 'upcoming':
-                case 'live':
-                    const collabStart = parseISO(collabs.start_scheduled)
-		    		const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart)) : false
-                    if (streamEarlierThanCollab) {
-                        break
-                    }
-                    let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
-                    const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
-                    collabStatus = (timeLeft.hours < 1 && (Date.now() < collabStart)) ? STREAM_STATUS.STARTING_SOON : collabStatus
-                    result = {
-                        live: collabStatus,
-                        title: collabs.title,
-                        videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
-                        id: collabs.id,
-                        streamStartTime: collabStart
-                    }
-                    if (collabs.status === 'live') {
-                        writeLivestreamToCache(result)
-                    }
-                    break;
-                case 'past':
-                    const collabEnd = parseISO(collabs.end_actual)
-                    const pastStreamEnd = parseISO(pastStream.end_actual)
-                    if (collabEnd > pastStreamEnd) {
-                        pastStream = collabs
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            result.live = STREAM_STATUS.JUST_ENDED
-            result.title = String(pastStream.title)
-            result.videoLink = (pastStream.videoLink) ? String(pastStream.videoLink) : `https://www.youtube.com/watch?v=${pastStream.id}`
-            result.streamStartTime = null
-            pastStream = null
-            rmCache(PASTSTREAM_CACHE)
-        }
-    } else {
-        writeLivestreamToCache(result)
-    }
-
-    if (result.live !== STREAM_STATUS.LIVE && result.live !== STREAM_STATUS.JUST_ENDED) {
-        rmCache(LIVESTREAM_CACHE)
-    }
-
     const absolutePrefix = process.env.PUBLIC_HOST
     const channelLink = `https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}`
+
+    const {error,result,pastStream} = await getResult()
+
+    if (process.env.NODE_ENV === 'production') {
+        res.setHeader("Cache-Control", "max-age=0, s-maxage=90, stale-while-revalidate=180")
+    }
 
     if (error) {
         console.warn("livestream poll returned error:", error)
@@ -124,7 +51,8 @@ export async function getServerSideProps({ req, res, query }) {
             title: result.title,
             startTime: result.streamStartTime?.getTime() || null,
             currentTime: (new Date()).getTime()
-        }
+        },
+        liveReload: true
     } }
 }
 
@@ -181,6 +109,7 @@ function StreamInfo(props) {
 export default function Home(props) {
     let className, caption = "", favicon, imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
+    let [liveReload,setLiveReload] = useState(props.liveReload)
 
     if (props.isError) {
         className = "error"
@@ -200,6 +129,40 @@ export default function Home(props) {
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
         favicon = 'Hirys.png'
     }
+
+    const liveReloadHook = () => {
+        liveReload = Boolean(!liveReload)
+        return setLiveReload(liveReload)
+    }
+
+    useEffect(() => {
+        const initialUpdateInterval = 60
+        let updateInterval = initialUpdateInterval
+        const interval = setInterval(() => {
+            const liveReload = Boolean(document.getElementById('livereload').checked)
+            const liveReloadLabel = document.getElementById('livereload').nextElementSibling
+            if (!liveReload) {
+                return () => clearInterval(interval);
+            }
+            liveReloadLabel.innerText = `live reload (${updateInterval})`
+            updateInterval -= 1
+            if (updateInterval === 1) {
+                setTimeout(async function() {
+                    console.log('update state!')
+                    fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
+                        const json = await res.json()
+                        const title = (props.pastStream !== null) ? props.pastStream.title : props.streamInfo.title
+                        if (json.live !== props.status || json.title !== title) {
+                            clearInterval(interval)
+                            return window.location.reload()
+                        }
+                    })
+                }, 1000)
+                updateInterval = initialUpdateInterval
+            }
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
 
     return <div className={styles.site}>
         <Head>
@@ -226,6 +189,9 @@ export default function Home(props) {
                     Not affiliated with IRyS or hololive - <a href="https://github.com/irystocratanon/i.miss.irys.moe">Source</a>
                 </small>
             </footer>
+        </div>
+        <div style={{border: "black 1px solid", width: 100, position: "absolute", bottom: 10, right: 10}}>
+            <input id="livereload" type="checkbox" defaultChecked checked={liveReload} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
     </div>
 }

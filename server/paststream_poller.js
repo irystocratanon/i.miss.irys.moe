@@ -33,7 +33,7 @@ export async function fetchPaststreamPage(channelID) {
         liveStreamCache = await readLivestreamFromCache()
         lastSeenLiveStream = (liveStreamCache !== null) ? new Date(liveStreamCache['lastSeen']) : new Date(0)
         if (cache !== null) {
-            pastStreamDate = parseISO(cache.result.items.filter(isPastStream)[0].end_actual);
+            pastStreamDate = parseISO(cache.result.items.find(isPastStream).end_actual);
             if (pastStreamDate.getTime() < lastSeenLiveStream) {
                 shouldInvalidateCache = true
             }
@@ -54,7 +54,7 @@ export async function fetchPaststreamPage(channelID) {
         writeToCache(PASTSTREAM_CACHE, youtubeJSON)
         if (liveStreamCache !== null) {
             try {
-                pastStreamDate = parseISO(youtubeJSON.items.filter(isPastStream)[0].end_actual);
+                pastStreamDate = parseISO(youtubeJSON.items.find(isPastStream).end_actual);
                 if (pastStreamDate.getTime() < lastSeenLiveStream) {
                     youtubeJSON = {
                         items: [
@@ -77,9 +77,9 @@ export async function fetchPaststreamPage(channelID) {
 }
 
 export function extractPaststreamInfo(fromPageContent) {
-    const lastStream = fromPageContent.items.filter(e => {
+    const lastStream = fromPageContent.items.find(e => {
         return isPastStream(e) || e.status === 'just-ended'
-    })[0]
+    })
     return lastStream
 }
 
