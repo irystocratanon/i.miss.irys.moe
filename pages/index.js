@@ -51,8 +51,7 @@ export async function getServerSideProps({ req, res, query }) {
             title: result.title,
             startTime: result.streamStartTime?.getTime() || null,
             currentTime: (new Date()).getTime()
-        },
-        liveReload: null
+        }
     } }
 }
 
@@ -109,10 +108,13 @@ function StreamInfo(props) {
 export default function Home(props) {
     let className, caption = "", favicon, imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
-    let [liveReload,setLiveReload] = useState(props.liveReload)
-    if (liveReload === null) {
-        setLiveReload(true)
-    }
+    let [liveReload,setLiveReload] = useState()
+    try {
+        const __liveReload = localStorage.getItem('livereload')
+        if (liveReload === undefined) {
+            setLiveReload((__liveReload === null) ? true : Boolean(Number(__liveReload)))
+        }
+    } catch(e) {}
 
     if (props.isError) {
         className = "error"
@@ -135,6 +137,9 @@ export default function Home(props) {
 
     const liveReloadHook = () => {
         const _liveReload = Boolean(!liveReload)
+        try {
+            localStorage.setItem('livereload', Number(_liveReload))
+        } catch (e) {}
         return setLiveReload(_liveReload)
     }
 
@@ -142,7 +147,7 @@ export default function Home(props) {
         const initialUpdateInterval = 60
         let updateInterval = initialUpdateInterval
         const interval = setInterval(() => {
-            const liveReload = Boolean(document.getElementById('livereload').checked)
+            const liveReload = document.getElementById('livereload').checked
             const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
             if (!liveReload) {
                 return () => clearInterval(interval);
@@ -196,10 +201,10 @@ export default function Home(props) {
             </footer>
         </div>
         <div style={{width: 100, position: "absolute", top: 10, left: 10}}>
-            <input id="livereload" type="checkbox" defaultChecked={(props.liveReload !== null) ? props.liveReload : true} checked={liveReload} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
+            <input id="livereload" type="checkbox" checked={liveReload} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: "100%"}}>
-            <div style={{background: "#a91354", width: (props.liveReload !== null && props.liveReload) ? "100%" : "0%", height: "0.25em", visibility: (liveReload !== null && liveReload) ? "visible" : "hidden"}}>&nbsp;</div>
+            <div style={{background: "#a91354", width: "100%", height: "0.25em"}}>&nbsp;</div>
         </div>
     </div>
 }
