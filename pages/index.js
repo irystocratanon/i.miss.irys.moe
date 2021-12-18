@@ -153,27 +153,37 @@ export default function Home(props) {
     useEffect(() => {
         const initialUpdateInterval = 60
         let updateInterval
-        if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
-            try {
-                const startDate = (props.streamInfo?.startTime !== null) ? Date.now() : parseISO(props.pastStream.end_actual)
-                const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : Date.now()
-                const d = intervalToDuration({
-                    start: startDate,
-                    end: endDate
-                });
-                updateInterval = ((initialUpdateInterval - d.seconds)+1)
-            } catch (e) {
-                console.warn(e)
+        const synchroniseUpdateInterval = function() {
+            let updateInterval
+            if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
+                try {
+                    const startDate = (props.streamInfo?.startTime !== null) ? Date.now() : parseISO(props.pastStream.end_actual)
+                    const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : Date.now()
+                    const d = intervalToDuration({
+                        start: startDate,
+                        end: endDate
+                    });
+                    updateInterval = ((initialUpdateInterval - d.seconds)+1)
+                } catch (e) {
+                    console.warn(e)
+                    updateInterval = initialUpdateInterval
+                }
+            } else {
                 updateInterval = initialUpdateInterval
             }
-        } else {
-            updateInterval = initialUpdateInterval
+            return updateInterval
         }
+        updateInterval = synchroniseUpdateInterval()
         const interval = setInterval(() => {
             const liveReload = document.getElementById('livereload').checked
             const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
             if (!liveReload) {
-                return () => clearInterval(interval);
+                liveReloadProgress.style.width = "100%"
+                updateInterval = null
+                return () => clearInterval(interval)
+            }
+            if (updateInterval === null) {
+                updateInterval = synchroniseUpdateInterval()
             }
             liveReloadProgress.style.transition = 'width 1s'
             liveReloadProgress.style.width = `${(((updateInterval-1)/initialUpdateInterval)*100)}%`
@@ -194,7 +204,12 @@ export default function Home(props) {
             updateInterval = initialUpdateInterval
             liveReloadProgress.style.width = "100%"
         }, 1000);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval)
+            updateInterval = null
+            const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
+            liveReloadProgress.style.width = "100%"
+        }
     }, []);
 
     return <div className={styles.site}>
