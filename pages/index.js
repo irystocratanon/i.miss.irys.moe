@@ -140,11 +140,12 @@ export default function Home(props) {
         let updateInterval = initialUpdateInterval
         const interval = setInterval(() => {
             const liveReload = Boolean(document.getElementById('livereload').checked)
-            const liveReloadLabel = document.getElementById('livereload').nextElementSibling
+            const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
             if (!liveReload) {
                 return () => clearInterval(interval);
             }
-            liveReloadLabel.innerText = `live reload (${updateInterval})`
+            liveReloadProgress.style.transition = 'width 1s'
+            liveReloadProgress.style.width = `${(((updateInterval-1)/initialUpdateInterval)*100)}%`
             updateInterval -= 1
             if (updateInterval === 1) {
                 setTimeout(async function() {
@@ -190,8 +191,11 @@ export default function Home(props) {
                 </small>
             </footer>
         </div>
-        <div style={{border: "black 1px solid", width: 100, position: "absolute", bottom: 10, right: 10}}>
-            <input id="livereload" type="checkbox" defaultChecked checked={liveReload} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
+        <div style={{width: 100, position: "fixed", top: 10, left: 10}}>
+            <input id="livereload" type="checkbox" defaultChecked={liveReload} checked={liveReload} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
+        </div>
+        <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: "100%"}}>
+            <div style={{background: "#a91354", width: "0%", height: "0.25em", visibility: (liveReload) ? "visible" : "hidden"}}>&nbsp;</div>
         </div>
     </div>
 }
