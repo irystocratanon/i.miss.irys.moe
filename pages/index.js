@@ -209,7 +209,7 @@ export default function Home(props) {
                         return window.location.reload()
                     }
                 })
-            }, 1000)
+            }, (((Math.random()*100)%5)*1000))
             updateInterval = initialUpdateInterval
             liveReloadProgress.style.width = "100%"
         }, 1000);
