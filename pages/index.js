@@ -160,6 +160,7 @@ export default function Home(props) {
                     })
                 }, 1000)
                 updateInterval = initialUpdateInterval
+                liveReloadProgress.style.width = "100%"
             }
         }, 1000);
         return () => clearInterval(interval);
@@ -191,11 +192,11 @@ export default function Home(props) {
                 </small>
             </footer>
         </div>
-        <div style={{width: 100, position: "fixed", top: 10, left: 10}}>
+        <div style={{width: 100, position: "absolute", top: 10, left: 10}}>
             <input id="livereload" type="checkbox" defaultChecked={liveReload} checked={liveReload} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: "100%"}}>
-            <div style={{background: "#a91354", width: "0%", height: "0.25em", visibility: (liveReload) ? "visible" : "hidden"}}>&nbsp;</div>
+            <div style={{background: "#a91354", width: (liveReload) ? "100%" : "0%", height: "0.25em", visibility: (liveReload) ? "visible" : "hidden"}}>&nbsp;</div>
         </div>
     </div>
 }
