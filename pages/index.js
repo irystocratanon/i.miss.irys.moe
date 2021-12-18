@@ -164,7 +164,7 @@ export default function Home(props) {
                         start: startDate,
                         end: endDate
                     });
-                    updateInterval = initialUpdateInterval - d.seconds
+                    updateInterval = (d.seconds > 0 && d.seconds <= initialUpdateInterval) ? initialUpdateInterval - d.seconds : ((newState !== null) ? newState - 1 : initialUpdateInterval)
                     newState = updateInterval
                 } catch (e) {
                     console.warn(e)
