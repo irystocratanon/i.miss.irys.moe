@@ -153,8 +153,9 @@ export default function Home(props) {
     useEffect(() => {
         const initialUpdateInterval = 60
         let updateInterval
-        const synchroniseUpdateInterval = function() {
+        const synchroniseUpdateInterval = function(oldState = null) {
             let updateInterval
+            let newState = (oldState !== null) ? Number(oldState) : null
             if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
                 try {
                     const startDate = (props.streamInfo?.startTime !== null) ? Date.now() : parseISO(props.pastStream.end_actual)
@@ -164,14 +165,17 @@ export default function Home(props) {
                         end: endDate
                     });
                     updateInterval = ((initialUpdateInterval - d.seconds)+1)
+                    newState = updateInterval
                 } catch (e) {
                     console.warn(e)
                     updateInterval = initialUpdateInterval
+                    newState = (newState !== null) ? newState-1 : updateInterval
                 }
             } else {
                 updateInterval = initialUpdateInterval
+                newState = (newState !== null) ? newState-1 : updateInterval
             }
-            return updateInterval
+            return newState
         }
         updateInterval = synchroniseUpdateInterval()
         const interval = setInterval(() => {
@@ -186,8 +190,9 @@ export default function Home(props) {
                 updateInterval = synchroniseUpdateInterval()
             }
             liveReloadProgress.style.transition = 'width 1s'
+            updateInterval = synchroniseUpdateInterval(updateInterval)
+            updateInterval = (updateInterval < 1) ? initialUpdateInterval : updateInterval
             liveReloadProgress.style.width = `${(((updateInterval-1)/initialUpdateInterval)*100)}%`
-            updateInterval -= 1
             if (updateInterval !== 1) {
                 return
             }
