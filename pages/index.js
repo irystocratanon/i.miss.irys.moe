@@ -110,9 +110,15 @@ export default function Home(props) {
     const [image, setImage] = useState(props.initialImage)
     let [liveReload,setLiveReload] = useState()
     try {
-        const __liveReload = localStorage.getItem('livereload')
         if (liveReload === undefined) {
-            setLiveReload((__liveReload === null) ? true : Boolean(Number(__liveReload)))
+            const __liveReload = localStorage.getItem('livereload')
+            let initialLiveReloadState = true
+            try {
+                let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+                let connectionType = connection.type || null;
+                initialLiveReloadState = (connectionType === 'celluar') ? false : initialLiveReloadState
+            } catch(e) {}
+            setLiveReload((__liveReload === null) ? initialLiveReloadState : Boolean(Number(__liveReload)))
         }
     } catch(e) {}
 
@@ -155,21 +161,21 @@ export default function Home(props) {
             liveReloadProgress.style.transition = 'width 1s'
             liveReloadProgress.style.width = `${(((updateInterval-1)/initialUpdateInterval)*100)}%`
             updateInterval -= 1
-            if (updateInterval === 1) {
-                setTimeout(async function() {
-                    console.log('update state!')
-                    fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
-                        const json = await res.json()
-                        const title = (props.pastStream !== null) ? props.pastStream.title : props.streamInfo.title
-                        if (json.live !== props.status || json.title !== title) {
-                            clearInterval(interval)
-                            return window.location.reload()
-                        }
-                    })
-                }, 1000)
-                updateInterval = initialUpdateInterval
-                liveReloadProgress.style.width = "100%"
+            if (updateInterval !== 1) {
+                return
             }
+            setTimeout(async function() {
+                fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
+                    const json = await res.json()
+                    const title = (props.pastStream !== null) ? props.pastStream.title : props.streamInfo.title
+                    if (json.live !== props.status || json.title !== title) {
+                        clearInterval(interval)
+                        return window.location.reload()
+                    }
+                })
+            }, 1000)
+            updateInterval = initialUpdateInterval
+            liveReloadProgress.style.width = "100%"
         }, 1000);
         return () => clearInterval(interval);
     }, []);
