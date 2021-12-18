@@ -116,7 +116,7 @@ export default function Home(props) {
             try {
                 let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
                 let connectionType = connection.type || null;
-                initialLiveReloadState = (connectionType === 'celluar') ? false : initialLiveReloadState
+                initialLiveReloadState = (connectionType === 'cellular') ? false : initialLiveReloadState
             } catch(e) {}
             setLiveReload((__liveReload === null) ? initialLiveReloadState : Boolean(Number(__liveReload)))
         }
