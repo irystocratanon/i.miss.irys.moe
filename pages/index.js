@@ -164,6 +164,7 @@ export default function Home(props) {
                 updateInterval = ((initialUpdateInterval - d.seconds)+1)
             } catch (e) {
                 console.warn(e)
+                updateInterval = initialUpdateInterval
             }
         } else {
             updateInterval = initialUpdateInterval
