@@ -153,6 +153,7 @@ export default function Home(props) {
     useEffect(() => {
         const initialUpdateInterval = 60
         let updateInterval
+        let timeout = null
         const synchroniseUpdateInterval = function(oldState = null) {
             let updateInterval
             let newState = (oldState !== null) ? Number(oldState) : null
@@ -198,7 +199,8 @@ export default function Home(props) {
             if (updateInterval !== 1) {
                 return
             }
-            setTimeout(async function() {
+            clearTimeout(timeout)
+            timeout = setTimeout(async function() {
                 fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
                     const json = await res.json()
                     const title = (props.pastStream !== null) ? props.pastStream.title : props.streamInfo.title
