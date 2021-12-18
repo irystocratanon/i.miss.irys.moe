@@ -52,7 +52,7 @@ export async function getServerSideProps({ req, res, query }) {
             startTime: result.streamStartTime?.getTime() || null,
             currentTime: (new Date()).getTime()
         },
-        liveReload: true
+        liveReload: null
     } }
 }
 
@@ -110,6 +110,9 @@ export default function Home(props) {
     let className, caption = "", favicon, imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
     let [liveReload,setLiveReload] = useState(props.liveReload)
+    if (liveReload === null) {
+        setLiveReload(true)
+    }
 
     if (props.isError) {
         className = "error"
@@ -131,8 +134,8 @@ export default function Home(props) {
     }
 
     const liveReloadHook = () => {
-        liveReload = Boolean(!liveReload)
-        return setLiveReload(liveReload)
+        const _liveReload = Boolean(!liveReload)
+        return setLiveReload(_liveReload)
     }
 
     useEffect(() => {
@@ -193,10 +196,10 @@ export default function Home(props) {
             </footer>
         </div>
         <div style={{width: 100, position: "absolute", top: 10, left: 10}}>
-            <input id="livereload" type="checkbox" defaultChecked={liveReload} checked={liveReload} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
+            <input id="livereload" type="checkbox" defaultChecked={(props.liveReload !== null) ? props.liveReload : true} checked={liveReload} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: "100%"}}>
-            <div style={{background: "#a91354", width: (liveReload) ? "100%" : "0%", height: "0.25em", visibility: (liveReload) ? "visible" : "hidden"}}>&nbsp;</div>
+            <div style={{background: "#a91354", width: (props.liveReload !== null && props.liveReload) ? "100%" : "0%", height: "0.25em", visibility: (liveReload !== null && liveReload) ? "visible" : "hidden"}}>&nbsp;</div>
         </div>
     </div>
 }
