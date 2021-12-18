@@ -4,16 +4,11 @@ import { LIVESTREAM_CACHE, PASTSTREAM_CACHE } from "../server/constants"
 import { pollCollabstreamStatus } from "../server/collabs_poller"
 import { intervalToDuration, parseISO } from "date-fns"
 import { writeLivestreamToCache } from "../server/lib/http-cache-helper"
+import { unlink } from "fs"
 
 export default async function getResult() {
     const rmCache = async function(f) {
-        try {
-            // this code doesn't belong here but the compiler complained that it couldn't find the "fs" module when I tried to move it
-            const fs = require('fs')
-            const {promisify} = require('util')
-            const unlink = promisify(fs.unlink)
-            await unlink(f)
-        } catch (e) { }
+        unlink(f, () => {})
     }
 
     let apiVal

@@ -14,7 +14,10 @@ export async function checkCache(jsonCache, minutes_to_invalidate_cache = 15) {
     const readFile = promisify(_readFile)
 
     try {
-        await exists(jsonCache)
+        const cacheExists = await exists(jsonCache)
+        if (!cacheExists) {
+            return INVALIDATE_CACHE
+        }
     } catch (e) {
         return INVALIDATE_CACHE
     }
@@ -59,12 +62,11 @@ export async function readLivestreamFromCache() {
     const exists = promisify(_exists)
     const readFile = promisify(_readFile)
 
-    const liveStreamCacheExists = await exists(LIVESTREAM_CACHE)
-    if (!liveStreamCacheExists) {
-        return
-    }
-
     try {
+        const liveStreamCacheExists = await exists(LIVESTREAM_CACHE)
+        if (!liveStreamCacheExists) {
+            return null
+        }
         let cache = await readFile(LIVESTREAM_CACHE)
         cache = JSON.parse(cache.toString())
         return cache
