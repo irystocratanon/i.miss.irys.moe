@@ -192,7 +192,9 @@ export default function Home(props) {
             liveReloadProgress.style.transition = 'width 1s'
             updateInterval = synchroniseUpdateInterval(updateInterval)
             updateInterval = (updateInterval < 1) ? initialUpdateInterval : updateInterval
-            liveReloadProgress.style.width = `${(((updateInterval-1)/initialUpdateInterval)*100)}%`
+            let percent = (updateInterval-1)/initialUpdateInterval
+            percent = (isNaN(percent)) ? 1 : percent
+            liveReloadProgress.style.width = `${percent*100}%`
             if (updateInterval !== 1) {
                 return
             }
