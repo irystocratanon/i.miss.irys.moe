@@ -4,6 +4,7 @@ import { STREAM_STATUS } from "../server/livestream_poller"
 import getResult from "../server/poller.js"
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
 import { useEffect, useState } from "react"
+import { intervalToDuration, parseISO } from "date-fns"
 import { CountdownTimer } from "../components/countdown-timer"
 
 function selectRandomImage(fromSet, excludingImage) {
@@ -151,7 +152,22 @@ export default function Home(props) {
 
     useEffect(() => {
         const initialUpdateInterval = 60
-        let updateInterval = initialUpdateInterval
+        let updateInterval
+        if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
+            try {
+                const startDate = (props.streamInfo?.startTime !== null) ? Date.now() : parseISO(props.pastStream.end_actual)
+                const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : Date.now()
+                const d = intervalToDuration({
+                    start: startDate,
+                    end: endDate
+                });
+                updateInterval = ((initialUpdateInterval - d.seconds)+1)
+            } catch (e) {
+                console.warn(e)
+            }
+        } else {
+            updateInterval = initialUpdateInterval
+        }
         const interval = setInterval(() => {
             const liveReload = document.getElementById('livereload').checked
             const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
