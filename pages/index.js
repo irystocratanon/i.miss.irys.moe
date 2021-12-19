@@ -203,9 +203,11 @@ export default function Home(props) {
             timeout = setTimeout(async function() {
                 fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
                     const json = await res.json()
-                    const title = (props.pastStream !== null) ? props.pastStream.title : props.streamInfo.title
+                    const title = (props.streamInfo.title !== null) ? props.streamInfo.title : props.pastStream.title
                     if (json.live !== props.status || json.title !== title) {
                         clearInterval(interval)
+                        console.log(`props.status: ${props.status} title: ${title}`)
+                        console.log(`json.live: ${json.live} title: ${json.title}`)
                         return window.location.reload()
                     }
                 })

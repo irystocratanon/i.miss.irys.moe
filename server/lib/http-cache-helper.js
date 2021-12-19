@@ -15,7 +15,6 @@ export function getDefaultRequestHeaders(headers = {}) {
         headers.headers = {}
     }
     headers.headers['User-Agent'] = userAgent
-    console.log(headers)
     return headers
 }
 
