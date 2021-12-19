@@ -1,4 +1,5 @@
-import {checkCache, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
+import {checkCache, getDefaultRequestHeaders, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
+
 import {parseISO} from 'date-fns'
 
 import {PASTSTREAM_CACHE} from "./constants"
@@ -46,7 +47,7 @@ export async function fetchPaststreamPage(channelID) {
     console.info('paststream-poller: cache miss!')
 
     try {
-        const res = await fetch(createPollRoute(channelID))
+        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }

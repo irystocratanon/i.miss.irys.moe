@@ -1,4 +1,4 @@
-import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
+import {checkCache, writeToCache, getDefaultRequestHeaders} from "./lib/http-cache-helper.js"
 
 import {COLLABS_CACHE} from "./constants"
 
@@ -16,7 +16,7 @@ export async function fetchCollabstreamPage(channelID) {
     }
 	console.info('collabs-poller: cache miss!')
     try {
-        const res = await fetch(createPollRoute(channelID))
+        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }

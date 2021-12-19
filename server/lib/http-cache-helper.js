@@ -6,6 +6,19 @@ const INVALIDATE_CACHE = {shouldInvalidateCache: true, cache: null}
 
 import {LIVESTREAM_CACHE} from "../constants"
 
+export function getDefaultRequestHeaders(headers = {}) {
+    const userAgent = `${process.env.PUBLIC_HOSTNAME} (${process.env.VERCEL_ENV || process.env.NODE_ENV || "development"})`
+    if (!headers instanceof Object) {
+        headers = {}
+    }
+    if (!headers.hasOwnProperty('headers')) {
+        headers.headers = {}
+    }
+    headers.headers['User-Agent'] = userAgent
+    console.log(headers)
+    return headers
+}
+
 export async function checkCache(jsonCache, minutes_to_invalidate_cache = 15) {
     if (minutes_to_invalidate_cache < 1) {
         return INVALIDATE_CACHE
