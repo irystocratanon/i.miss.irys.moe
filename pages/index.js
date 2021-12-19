@@ -223,6 +223,8 @@ export default function Home(props) {
         }
     }, []);
 
+    const validStream = isStreamInfoValid(props.streamInfo)
+
     return <div className={styles.site}>
         <Head>
             <title>I MISS IRyS</title>
@@ -238,10 +240,10 @@ export default function Home(props) {
         <div className={className}>
             <h1>{caption}</h1>
 
-            {(!isStreamInfoValid(props.streamInfo) || props.status !== STREAM_STATUS.LIVE) &&
+            {(!validStream || props.status !== STREAM_STATUS.LIVE) &&
             <img src={`${props.absolutePrefix}/${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
             }
-            {props.status === STREAM_STATUS.LIVE &&
+            {validStream && props.status === STREAM_STATUS.LIVE &&
             <iframe width="940" height="529" src={props.streamInfo.link.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             }
 
