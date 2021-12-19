@@ -1,4 +1,5 @@
 import { parse } from "node-html-parser"
+import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 
 export const STREAM_STATUS = {
     OFFLINE: 1,
@@ -20,13 +21,14 @@ function validateVideoLink(anyLink) {
 
 export async function fetchLivestreamPage(channelID) {
     try {
-        const res = await fetch(createPollRoute(channelID))
+        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }
         const youtubeHTML = await res.text()
         return { error: null, result: youtubeHTML }
     } catch (e) {
+        console.warn(e)
         return { error: e.toString(), result: null }
     }
 }

@@ -1,4 +1,5 @@
-import {checkCache, writeToCache, getDefaultRequestHeaders} from "./lib/http-cache-helper.js"
+import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
+import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 
 import {COLLABS_CACHE} from "./constants"
 

@@ -1,4 +1,5 @@
-import {checkCache, getDefaultRequestHeaders, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
+import {checkCache, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
+import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 
 import {parseISO} from 'date-fns'
 
