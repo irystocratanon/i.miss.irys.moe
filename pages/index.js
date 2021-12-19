@@ -24,7 +24,7 @@ export async function getServerSideProps({ req, res, query }) {
 
     const {error,result,pastStream} = await getResult()
 
-    if (process.env.NODE_ENV === 'production') {
+    if ((process.env.VERCEL_ENV || process.env.NODE_ENV || 'development') === 'production') {
         res.setHeader("Cache-Control", "max-age=0, s-maxage=90, stale-while-revalidate=180")
     }
 
@@ -202,7 +202,13 @@ export default function Home(props) {
             clearTimeout(timeout)
             timeout = setTimeout(async function() {
                 fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
+                    if (res.status !== 200) {
+                        return
+                    }
                     const json = await res.json()
+                    if (!json.hasOwnProperty('live') || !json.hasOwnProperty('title')) {
+                        return
+                    }
                     const title = (props.streamInfo.title !== null) ? props.streamInfo.title : props.pastStream.title
                     if (json.live !== props.status || json.title !== title) {
                         clearInterval(interval)
