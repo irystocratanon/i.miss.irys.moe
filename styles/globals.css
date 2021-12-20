@@ -5,10 +5,24 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
         Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     background: #ffbafb;
+    height: 100%;
 }
 
 * {
     box-sizing: border-box;
+    cursor: url('/cursors/xtu4jv.cur'), default;
+}
+
+a:hover, img:hover {
+    cursor: url('/cursors/uayktw.cur'), pointer;
+}
+
+b a, span a {
+	text-decoration: none;
+}
+
+b a, span a {
+	text-decoration: none;
 }
 
 b a, span a {
