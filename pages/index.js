@@ -161,8 +161,10 @@ export default function Home(props) {
         const initialUpdateInterval = 60
         let updateInterval
         let timeout = null
-        let targetRefreshTime = 1
+        const initialTargetRefreshTime = 1
+        let targetRefreshTime = initialTargetRefreshTime
         const synchroniseUpdateInterval = function(oldState = null) {
+            targetRefreshTime = initialTargetRefreshTime
             let updateInterval
             let newState = (oldState !== null) ? Number(oldState) : null
             if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
