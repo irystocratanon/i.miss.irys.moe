@@ -10,6 +10,10 @@
     width: 100%;
 }
 
+.site iframe {
+    width: 100%;
+}
+
 .site small {
     font-size: 70%;
 }

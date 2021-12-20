@@ -10,3 +10,7 @@ body {
 * {
     box-sizing: border-box;
 }
+
+b a, span a {
+	text-decoration: none;
+}
