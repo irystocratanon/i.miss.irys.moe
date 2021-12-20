@@ -196,9 +196,30 @@ export default function Home(props) {
             return newState
         }
         updateInterval = synchroniseUpdateInterval()
+
+        const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
+
+        const defaultTransition = 'width 1s'
+        const animateLiveReloadProgressToCompletion = () => {
+            liveReloadProgress.style.transition = defaultTransition
+            switch (targetRefreshTime) {
+                case 1:
+                    liveReloadProgress.style.width = "100%"
+                    break
+                default:
+                    // transition smoothly from 100% to 0%
+                    liveReloadProgress.style.transition = 'width 0.90s'
+                    liveReloadProgress.style.width = "100%"
+                    liveReloadProgress.style.transition = 'visibility 0.05s'
+                    liveReloadProgress.style.visibility = "hidden"
+                    liveReloadProgress.style.visibility = "visible"
+                    break
+            }
+            liveReloadProgress.style.transition = defaultTransition
+        }
+
         const interval = setInterval(() => {
             const liveReload = document.getElementById('livereload').checked
-            const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
             if (!liveReload) {
                 liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
@@ -207,7 +228,7 @@ export default function Home(props) {
             if (updateInterval === null) {
                 updateInterval = synchroniseUpdateInterval()
             }
-            liveReloadProgress.style.transition = 'width 1s'
+            liveReloadProgress.style.transition = defaultTransition
             updateInterval = synchroniseUpdateInterval(updateInterval)
             updateInterval = (updateInterval < 1) ? initialUpdateInterval : updateInterval
             let percent = (updateInterval-1)/initialUpdateInterval
@@ -234,13 +255,12 @@ export default function Home(props) {
                 })
             }, (((Math.random()*100)%5)*1000))
             updateInterval = initialUpdateInterval
-            liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
+            animateLiveReloadProgressToCompletion()
         }, 1000);
         return () => {
             clearInterval(interval)
             updateInterval = null
-            const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
-            liveReloadProgress.style.width = "100%"
+            animateLiveReloadProgressToCompletion()
         }
     }, []);
 
