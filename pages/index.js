@@ -119,6 +119,7 @@ export default function Home(props) {
                 let connectionType = connection.type || null;
                 initialLiveReloadState = (connectionType === 'cellular') ? false : initialLiveReloadState
             } catch(e) {}
+            initialLiveReloadState = (props.status === STREAM_STATUS.LIVE) ? false : initialLiveReloadState
             setLiveReload((__liveReload === null) ? initialLiveReloadState : Boolean(Number(__liveReload)))
         }
     } catch(e) {}
