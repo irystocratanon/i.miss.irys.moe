@@ -154,17 +154,34 @@ export default function Home(props) {
         const initialUpdateInterval = 60
         let updateInterval
         let timeout = null
+        let targetRefreshTime = 1
         const synchroniseUpdateInterval = function(oldState = null) {
             let updateInterval
             let newState = (oldState !== null) ? Number(oldState) : null
             if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
                 try {
-                    const startDate = (props.streamInfo?.startTime !== null) ? Date.now() : parseISO(props.pastStream.end_actual)
-                    const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : Date.now()
+                    const currentDate = Date.now()
+                    const startDate = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual)
+                    const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
                     const d = intervalToDuration({
                         start: startDate,
                         end: endDate
                     });
+
+                    if (endDate > currentDate) {
+                        targetRefreshTime = initialUpdateInterval-1
+                    }
+
+                    // this makes sure we refresh on 0 seconds remaining
+                    // (note: we may not actually refresh if the server cache lags behind)
+                    const targetTimeMet =  Object.keys(d).filter(e => { return d[e] != 0 })
+                    if (targetTimeMet.length === 0 || (targetTimeMet.length === 1 && targetTimeMet[0] === 'seconds' && d['seconds'] === 1)) {
+                        updateInterval = initialUpdateInterval
+                        targetRefreshTime = updateInterval
+                        newState = updateInterval
+                        return newState
+                    }
+
                     updateInterval = (d.seconds > 0 && d.seconds <= initialUpdateInterval) ? initialUpdateInterval - d.seconds : ((newState !== null) ? newState - 1 : initialUpdateInterval)
                     newState = updateInterval
                 } catch (e) {
@@ -183,7 +200,7 @@ export default function Home(props) {
             const liveReload = document.getElementById('livereload').checked
             const liveReloadProgress = document.getElementById('livereloadProgressCtr').firstChild
             if (!liveReload) {
-                liveReloadProgress.style.width = "100%"
+                liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
                 return () => clearInterval(interval)
             }
@@ -196,7 +213,7 @@ export default function Home(props) {
             let percent = (updateInterval-1)/initialUpdateInterval
             percent = (isNaN(percent)) ? 1 : percent
             liveReloadProgress.style.width = `${percent*100}%`
-            if (updateInterval !== 1) {
+            if (updateInterval !== targetRefreshTime) {
                 return
             }
             clearTimeout(timeout)
@@ -212,14 +229,12 @@ export default function Home(props) {
                     const title = (props.streamInfo.title !== null) ? props.streamInfo.title : props.pastStream.title
                     if (json.live !== props.status || json.title !== title) {
                         clearInterval(interval)
-                        console.log(`props.status: ${props.status} title: ${title}`)
-                        console.log(`json.live: ${json.live} title: ${json.title}`)
                         return window.location.reload()
                     }
                 })
             }, (((Math.random()*100)%5)*1000))
             updateInterval = initialUpdateInterval
-            liveReloadProgress.style.width = "100%"
+            liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
         }, 1000);
         return () => {
             clearInterval(interval)
