@@ -2,6 +2,7 @@ import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
 import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 
 import {CancelledStreams} from "./cancelled.js"
+import {OptimalPOV} from "./optimal-pov.js"
 import {COLLABS_CACHE} from "./constants"
 
 function createPollRoute(channelID) {
@@ -35,6 +36,7 @@ export function extractCollabstreamInfo(fromPageContent) {
         return e.type === 'stream' &&
             e.topic_id !== 'shorts' &&
             (CancelledStreams.indexOf(e.id) < 0 || e.status === 'live') &&
+            (OptimalPOV.indexOf(e.id) < 0 || e.status === 'live') &&
             ((e.status === 'upcoming' || e.status === 'live') || e.duration >= 1800)
     })
     const liveCollabs = collabs.filter(e => {
