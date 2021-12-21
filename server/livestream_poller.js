@@ -1,6 +1,8 @@
 import { parse } from "node-html-parser"
 import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 
+import {CancelledStreams} from "./cancelled.js"
+
 export const STREAM_STATUS = {
     OFFLINE: 1,
     INDETERMINATE: 2,
@@ -78,6 +80,16 @@ export function extractLivestreamInfo(fromPageContent) {
 
     // Check if stream frame is actually live, or just a waiting room
     const videoDetails = playerInfo.videoDetails
+
+    if (videoDetails.hasOwnProperty('id')) {
+        const cancelled = CancelledStreams.find(e => {
+            return e === videoDetails.id
+        })
+        if (cancelled) {
+            return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null } }
+        }
+    }
+
     if (videoDetails?.isLiveContent && videoDetails?.isUpcoming) {
         basicResponse.result.live = STREAM_STATUS.STARTING_SOON
     } else if (videoDetails?.isLiveContent && !videoDetails?.isUpcoming) {

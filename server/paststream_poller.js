@@ -1,5 +1,6 @@
 import {checkCache, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
 import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
+import {CancelledStreams} from "./cancelled.js"
 
 import {parseISO} from 'date-fns'
 
@@ -24,6 +25,7 @@ const isPastStream = e => {
     return e.status === 'past' &&
            e.type === 'stream' &&
            e.topic_id !== 'shorts' &&
+           (CancelledStreams.indexOf(e.id) < 0 || e.status === 'live') &&
            e.duration >= 1800 || (e.duration === 0 && e.status === 'live')
 }
 
