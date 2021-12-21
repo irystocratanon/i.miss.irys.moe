@@ -34,8 +34,15 @@ export function extractCollabstreamInfo(fromPageContent) {
         return e.type === 'stream' &&
             e.topic_id !== 'shorts' &&
             ((e.status === 'upcoming' || e.status === 'live') || e.duration >= 1800)
-    })[0]
-    return collabs
+    })
+    const liveCollabs = collabs.filter(e => {
+        return e.status === 'live'
+    })
+    if (liveCollabs.length === 0) {
+        return collabs[0]
+    } else {
+        return liveCollabs[Math.floor(Math.random()*liveCollabs.length)]
+    }
 }
 
 export async function pollCollabstreamStatus(channelID) {
