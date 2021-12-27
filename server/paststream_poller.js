@@ -56,7 +56,7 @@ export async function fetchPaststreamPage(channelID) {
     try {
         abortTimeout = setTimeout(() => controller.abort, 2500)
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal: controller.signal}))
-        clearInterval(abortTimeout)
+        clearTimeout(abortTimeout)
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }
