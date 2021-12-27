@@ -24,7 +24,16 @@ export default async function getResult() {
 
 	if (result.live !== STREAM_STATUS.LIVE) {
         collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
-        pastStream = (collabs.status === 'live') ? null : await getPastStream()
+        if (collabs.error !== null) {
+            collabs = null
+        }
+        pastStream = (collabs?.status === 'live') ? null : await getPastStream()
+        if (pastStream.error !== null) {
+            pastStream = null
+        }
+        if (pastStream === null && collabs === null) {
+            return {error, result, pastStream}
+        }
         if (pastStream?.status !== 'live' && pastStream?.status !== 'just-ended') {
             switch (collabs.status) {
                 case 'upcoming':
@@ -60,8 +69,8 @@ export default async function getResult() {
             }
         } else {
             result.live = STREAM_STATUS.JUST_ENDED
-            result.title = String(pastStream.title)
-            result.videoLink = (pastStream.videoLink) ? String(pastStream.videoLink) : `https://www.youtube.com/watch?v=${pastStream.id}`
+            result.title = String(pastStream?.title)
+            result.videoLink = (pastStream?.videoLink) ? String(pastStream.videoLink) : `https://www.youtube.com/watch?v=${pastStream.id}`
             result.streamStartTime = null
             pastStream = null
             rmCache(PASTSTREAM_CACHE)

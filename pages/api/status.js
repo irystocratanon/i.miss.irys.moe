@@ -9,8 +9,8 @@ export default async function(req, res) {
         return res.status(503).json({error: (error instanceof Error) ? error.message : "Service Unavailable"})
     }
     const json = {
-        live: result.live,
-        title: result.title || pastStream.title
+        live: result?.live,
+        title: result?.title || pastStream?.title || null
     }
     return res.status(200).json(json)
 }

@@ -259,7 +259,7 @@ export default function Home(props) {
                     const title = (props.streamInfo.title !== null) ? props.streamInfo.title : props.pastStream.title
                     if (json.live !== props.status || json.title !== title) {
                         clearInterval(interval)
-                        return window.location.reload()
+                        return window.location.reload(true)
                     }
                 })
             }, (((Math.random()*100)%5)*1000))
