@@ -25,13 +25,13 @@ export default async function getResult() {
     if (result.live !== STREAM_STATUS.LIVE) {
         try {
             collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
-            if (collabs.error !== null) {
+            if (collabs.error !== null && collabs.error !== undefined) {
                 collabs = null
             }
         } catch(e) { collabs = null }
         try {
             pastStream = (collabs?.status === 'live') ? null : await getPastStream()
-            if (pastStream.error !== null) {
+            if (pastStream.error !== null && pastStream.error !== undefined) {
                 pastStream = null
             }
         } catch (e) { pastStream = null }
