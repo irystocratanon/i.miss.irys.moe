@@ -23,7 +23,7 @@ export async function fetchCollabstreamPage(channelID) {
     let abortTimeout
     try {
         abortTimeout = setTimeout(() => controller.abort, 2500)
-        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
+        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal: controller.signal}))
         clearTimeout(abortTimeout)
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
