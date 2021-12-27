@@ -52,8 +52,9 @@ export async function fetchPaststreamPage(channelID) {
     console.info('paststream-poller: cache miss!')
 
     const controller = new AbortController()
+    let abortTimeout
     try {
-        let abortTimeout = setTimeout(() => { throw new Error('AbortTimeout') }, 2500)
+        abortTimeout = setTimeout(() => controller.abort, 2500)
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal}))
         clearInterval(abortTimeout)
         if (res.status !== 200) {
@@ -81,7 +82,6 @@ export async function fetchPaststreamPage(channelID) {
         }
         return { error: null, result: youtubeJSON }
     } catch (e) {
-        controller.abort()
         return { error: e.toString(), result: { items: [] } }
     }
 }

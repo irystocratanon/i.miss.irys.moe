@@ -20,8 +20,9 @@ export async function fetchCollabstreamPage(channelID) {
     console.info('collabs-poller: cache miss!')
 
     const controller = new AbortController()
+    let abortTimeout
     try {
-        let abortTimeout = setTimeout(() => { throw new Error('AbortTimeout') }, 2500)
+        abortTimeout = setTimeout(() => controller.abort, 2500)
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
         clearTimeout(abortTimeout)
         if (res.status !== 200) {
@@ -31,7 +32,6 @@ export async function fetchCollabstreamPage(channelID) {
         writeToCache(COLLABS_CACHE, youtubeJSON)
         return { error: null, result: youtubeJSON }
     } catch (e) {
-        controller.abort()
         return { error: e.toString(), result: { items: [] } }
     }
 }
