@@ -256,7 +256,7 @@ export default function Home(props) {
                     if (!json.hasOwnProperty('live') || !json.hasOwnProperty('title')) {
                         return
                     }
-                    const title = (props.streamInfo.title !== null) ? props.streamInfo.title : props.pastStream.title
+                    const title = (props.streamInfo.title !== null) ? props.streamInfo.title : (props.pastStream?.title || null)
                     if (json.live !== props.status || json.title !== title) {
                         clearInterval(interval)
                         return window.location.reload(true)

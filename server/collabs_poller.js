@@ -1,3 +1,4 @@
+import "abortcontroller-polyfill/dist/polyfill-patch-fetch"
 import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
 import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 
@@ -11,15 +12,18 @@ function createPollRoute(channelID) {
 }
 
 export async function fetchCollabstreamPage(channelID) {
-
     const {shouldInvalidateCache, cache} = await checkCache(COLLABS_CACHE)
     if (!shouldInvalidateCache) {
         console.info('collabs-poller: cache hit!');
         return {error: null, result: cache["result"]};
     }
-	console.info('collabs-poller: cache miss!')
+    console.info('collabs-poller: cache miss!')
+
+    const controller = new AbortController()
     try {
+        let abortTimeout = setTimeout(() => { throw new Error('AbortTimeout') }, 2500)
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
+        clearTimeout(abortTimeout)
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: null }
         }
@@ -27,6 +31,7 @@ export async function fetchCollabstreamPage(channelID) {
         writeToCache(COLLABS_CACHE, youtubeJSON)
         return { error: null, result: youtubeJSON }
     } catch (e) {
+        controller.abort()
         return { error: e.toString(), result: { items: [] } }
     }
 }
