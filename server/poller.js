@@ -22,15 +22,19 @@ export default async function getResult() {
 
     let { result, error } = apiVal
 
-	if (result.live !== STREAM_STATUS.LIVE) {
-        collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
-        if (collabs.error !== null) {
-            collabs = null
-        }
-        pastStream = (collabs?.status === 'live') ? null : await getPastStream()
-        if (pastStream.error !== null) {
-            pastStream = null
-        }
+    if (result.live !== STREAM_STATUS.LIVE) {
+        try {
+            collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
+            if (collabs.error !== null) {
+                collabs = null
+            }
+        } catch(e) { collabs = null }
+        try {
+            pastStream = (collabs?.status === 'live') ? null : await getPastStream()
+            if (pastStream.error !== null) {
+                pastStream = null
+            }
+        } catch (e) { pastStream = null }
         if (pastStream === null && collabs === null) {
             return {error, result, pastStream}
         }
