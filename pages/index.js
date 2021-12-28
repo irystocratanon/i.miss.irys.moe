@@ -157,6 +157,11 @@ export default function Home(props) {
         return setLiveReload(_liveReload)
     }
 
+    let [intervalDuration,setIntervalDuration] = useState()
+    if (intervalDuration === undefined) {
+        setIntervalDuration({})
+    }
+
     useEffect(() => {
         const initialUpdateInterval = 60
         let updateInterval
@@ -176,6 +181,7 @@ export default function Home(props) {
                         start: startDate,
                         end: endDate
                     });
+                    setIntervalDuration(Object(d))
 
                     if (endDate > currentDate) {
                         targetRefreshTime = initialUpdateInterval-1
@@ -301,7 +307,7 @@ export default function Home(props) {
             }
 
             {bottomInfo}
-            <CountdownTimer status={props.status} nextStream={props.streamInfo} pastStream={props.pastStream} />
+            <CountdownTimer status={props.status} intervalDuration={intervalDuration} nextStream={props.streamInfo} pastStream={props.pastStream} />
 
             <footer>
                 <a href={props.channelLink}>IRyS Ch. hololive-EN</a> <br />

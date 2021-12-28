@@ -5,7 +5,13 @@ import { intervalToDuration, parseISO } from "date-fns"
 export class CountdownTimer extends Component {
     constructor(props) {
         super(props)
-        this.state = {label: '', status: props.status, nextStream: props.nextStream, pastStream: props.pastStream}
+        this.state = {
+            label: '',
+            status: props.status,
+            nextStream: props.nextStream,
+            pastStream: props.pastStream,
+            intervalDuration: props.intervalDuration
+        }
         this.state.label = this.formatLabel()
     }
 
@@ -21,12 +27,8 @@ export class CountdownTimer extends Component {
         const descriptor = (this.state.nextStream?.startTime) ? 'until' : 'without'
         try {
             const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream.end_actual)
-            const endDate = (descriptor === 'until') ? this.state.nextStream.startTime : Date.now()
             if (descriptor === 'until' && startDate >= (endDate-900)) { return "Waiting for IRyS…"; }
-            const d = intervalToDuration({
-                start: startDate,
-                end: endDate
-            });
+            const d = Object(this.props.intervalDuration)
             return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
                 return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ` + ((d[k] < 2) ? k.substr(0, k.length-1) : k)
             }).join('') + ` ${descriptor} IRyS`
