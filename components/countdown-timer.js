@@ -1,6 +1,6 @@
 import { Component } from "react"
 import { STREAM_STATUS } from "../server/livestream_poller"
-import { intervalToDuration, parseISO } from "date-fns"
+import { parseISO } from "date-fns"
 
 export class CountdownTimer extends Component {
     constructor(props) {
