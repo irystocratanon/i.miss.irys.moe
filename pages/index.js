@@ -248,7 +248,9 @@ export default function Home(props) {
             }
             clearTimeout(timeout)
             timeout = setTimeout(async function() {
-                fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`).then(async function(res) {
+                const controller = new AbortController()
+                let abortTimeout = setTimeout(() => { return controller.abort() }, 30*1000)
+                await fetch(`${window.location.protocol}//${window.location.hostname}${(window.location.port !== "80" && window.location.port !== "443") ? `:${window.location.port}` : ''}/api/status`, {signal: controller.signal}).then(async function(res) {
                     if (res.status !== 200) {
                         return
                     }
@@ -261,7 +263,8 @@ export default function Home(props) {
                         clearInterval(interval)
                         return window.location.reload(true)
                     }
-                })
+                }).catch((err) => { if (err.name !== 'AbortError') { console.error(err); } })
+                clearTimeout(abortTimeout)
             }, (((Math.random()*100)%5)*1000))
             updateInterval = initialUpdateInterval
             animateLiveReloadProgressToCompletion()
