@@ -157,9 +157,18 @@ export default function Home(props) {
         return setLiveReload(_liveReload)
     }
 
-    let [intervalDuration,setIntervalDuration] = useState()
+    let [intervalDuration,_setIntervalDuration] = useState()
+
+    const setIntervalDuration = (
+        start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual),
+        end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : Date.now()) => {
+        const d = intervalToDuration({start, end})
+        _setIntervalDuration(Object(d))
+        return d
+    }
+
     if (intervalDuration === undefined) {
-        setIntervalDuration({})
+        setIntervalDuration()
     }
 
     useEffect(() => {
@@ -175,13 +184,8 @@ export default function Home(props) {
             if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
                 try {
                     const currentDate = Date.now()
-                    const startDate = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual)
                     const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
-                    const d = intervalToDuration({
-                        start: startDate,
-                        end: endDate
-                    });
-                    setIntervalDuration(Object(d))
+                    const d = setIntervalDuration()
 
                     if (endDate > currentDate) {
                         targetRefreshTime = initialUpdateInterval-1
