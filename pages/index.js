@@ -107,8 +107,9 @@ function StreamInfo(props) {
 }
 
 export default function Home(props) {
-    let className, caption = "", favicon, imageSet, bottomInfo
+    let className, caption = "", imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
+    let [favicon, setFavicon] = useState()
     let [liveReload,setLiveReload] = useState()
 
     let initialLiveReloadState = true
@@ -140,13 +141,13 @@ export default function Home(props) {
         className = "miss-her"
         imageSet = NO_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
-        favicon = (Math.floor((Math.random()*10)%2)) ? 'Byerys.png' : 'Byerys2.png'
+        favicon || setFavicon((Math.floor((Math.random()*10)%2)) ? 'Byerys.png' : 'Byerys2.png')
     } else {
         className = "comfy" 
         caption = "I Don't Miss IRyS"
         imageSet = HAVE_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
-        favicon = 'Hirys.png'
+        favicon || setFavicon('Hirys.png')
     }
 
     const liveReloadHook = () => {
