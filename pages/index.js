@@ -238,7 +238,8 @@ export default function Home(props) {
             if (!liveReload) {
                 liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
-                return () => clearInterval(interval)
+                synchroniseUpdateInterval()
+                return
             }
             if (updateInterval === null) {
                 updateInterval = synchroniseUpdateInterval()
@@ -276,7 +277,6 @@ export default function Home(props) {
             animateLiveReloadProgressToCompletion()
         }, 1000);
         return () => {
-            clearInterval(interval)
             updateInterval = null
             animateLiveReloadProgressToCompletion()
         }

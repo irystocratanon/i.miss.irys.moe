@@ -29,6 +29,9 @@ export class CountdownTimer extends Component {
             const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream.end_actual)
             if (descriptor === 'until' && startDate >= (endDate-900)) { return "Waiting for IRyS…"; }
             const d = Object(this.props.intervalDuration)
+            if (!d.hasOwnProperty('seconds')) {
+                return ''
+            }
             return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
                 return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ` + ((d[k] < 2) ? k.substr(0, k.length-1) : k)
             }).join('') + ` ${descriptor} IRyS`
