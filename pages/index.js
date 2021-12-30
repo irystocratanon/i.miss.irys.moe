@@ -161,7 +161,7 @@ export default function Home(props) {
     let [intervalDuration,_setIntervalDuration] = useState()
 
     const setIntervalDuration = (
-        start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual),
+        start = (props.streamInfo?.startTime !== null) ? Date.now() : parseISO(props.pastStream.end_actual),
         end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : Date.now()) => {
         const d = intervalToDuration({start, end})
         _setIntervalDuration(Object(d))
