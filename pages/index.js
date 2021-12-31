@@ -161,24 +161,15 @@ export default function Home(props) {
     let [intervalDuration,_setIntervalDuration] = useState()
 
     const setIntervalDuration = (start = null, end = null) => {
+
         const currentDate = Date.now()
         if (start === null) {
-            if (props.streamInfo?.startTime) {
-                start = props.streamInfo.startTime
-            } else {
-                if (props.pastStream?.end_actual) {
-                    start = props.pastStream.end_actual
-                }
-            }
-            start = (start === null) ? currentDate : start
+            start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual)
         }
         if (end === null) {
-            if (props.pastStream?.end_actual) {
-                end = props.pastStream.end_actual
-            } else {
-                end = currentDate
-            }
+            end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
         }
+
         console.debug(`[setIntervalDuration start] ${start}`)
         console.debug(`[setIntervalDuration end] ${start}`)
         start = (start instanceof String || typeof start === 'string') ? parseISO(start) : start
@@ -190,7 +181,6 @@ export default function Home(props) {
         _setIntervalDuration(Object(d))
         return d
     }
-
     if (intervalDuration === undefined) {
         setIntervalDuration()
     }
@@ -208,7 +198,9 @@ export default function Home(props) {
             if ((props.pastStream !== null || props.streamInfo !== null) && props.status !== STREAM_STATUS.LIVE && props.status !== STREAM_STATUS.JUST_ENDED) {
                 try {
                     const currentDate = Date.now()
+                    const startDate = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual)
                     const endDate = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
+
                     const d = setIntervalDuration()
 
                     if (endDate > currentDate) {
