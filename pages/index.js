@@ -179,7 +179,14 @@ export default function Home(props) {
                 end = currentDate
             }
         }
+        console.debug(`[setIntervalDuration start] ${start}`)
+        console.debug(`[setIntervalDuration end] ${start}`)
+        start = (start instanceof String || typeof start === 'string') ? parseISO(start) : start
+        end = (end instanceof String || typeof end === 'string') ? parseISO(end) : end
+        console.debug(`[setIntervalDuration start] ${start}`)
+        console.debug(`[setIntervalDuration end] ${start}`)
         const d = intervalToDuration({start, end})
+        console.debug(`[setIntervalDuration d] ${JSON.stringify(d)}`)
         _setIntervalDuration(Object(d))
         return d
     }

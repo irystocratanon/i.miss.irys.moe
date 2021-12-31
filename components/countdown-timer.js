@@ -32,6 +32,9 @@ export class CountdownTimer extends Component {
             if (!d.hasOwnProperty('seconds')) {
                 return ''
             }
+            if (d.years === 0 && d.months === 0 && d.days === 0 && d.hours === 0 && d.hours === 0 && d.seconds === 0) {
+                return ''
+            }
             return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
                 return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ` + ((d[k] < 2) ? k.substr(0, k.length-1) : k)
             }).join('') + ` ${descriptor} IRyS`
