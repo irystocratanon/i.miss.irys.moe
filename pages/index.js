@@ -161,10 +161,13 @@ export default function Home(props) {
     let [intervalDuration,_setIntervalDuration] = useState()
 
     const setIntervalDuration = (start = null, end = null) => {
-
+        if (props.status === STREAM_STATUS.LIVE) {
+            _setIntervalDuration({})
+            return {}
+        }
         const currentDate = Date.now()
         if (start === null) {
-            start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream.end_actual)
+            start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream?.end_actual)
         }
         if (end === null) {
             end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
