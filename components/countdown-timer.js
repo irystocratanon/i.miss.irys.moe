@@ -26,19 +26,26 @@ export class CountdownTimer extends Component {
     formatLabel() {
         const descriptor = (this.state.nextStream?.startTime) ? 'until' : 'without'
         try {
-            const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream.end_actual)
+            if (!this.state.pastStream?.end_actual && !this.state.nextStream?.startTime) {
+                return ''
+            }
+            if (descriptor === 'until' && !this.state.nextStream?.startTime) {
+                return ''
+            }
+            const startDate = (descriptor === 'until') ? Date.now() : parseISO(this.state.pastStream?.end_actual)
+            const endDate = (descriptor === 'until') ? this.state.nextStream?.startTime : Date.now()
             if (descriptor === 'until' && startDate >= (endDate-900)) { return "Waiting for IRyS…"; }
             const d = Object(this.props.intervalDuration)
             if (!d.hasOwnProperty('seconds')) {
                 return ''
             }
-            if (d.years === 0 && d.months === 0 && d.days === 0 && d.hours === 0 && d.hours === 0 && d.seconds === 0) {
+            if (d.years === 0 && d.months === 0 && d.days === 0 && d.hours === 0 && d.minutes === 0 && d.seconds === 0) {
                 return ''
             }
             return Object.keys(d).filter(k => { return d[k] > 0 }).map((k, i) => {
                 return ((i > 0) ? ((k !== 'seconds') ? ', ' : ' and ') : '') + `${d[k]} ` + ((d[k] < 2) ? k.substr(0, k.length-1) : k)
             }).join('') + ` ${descriptor} IRyS`
-        } catch (e) { return ''; }
+        } catch (e) { console.error(e); return ''; }
     }
 
     tick() {
