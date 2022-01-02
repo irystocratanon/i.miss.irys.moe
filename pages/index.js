@@ -279,6 +279,10 @@ export default function Home(props) {
 
         const interval = setInterval(() => {
             const liveReload = document.getElementById('livereload').checked
+            const irysartDOM = document.getElementById('irysart')
+            if(irysartDOM.checked && !irysart) {
+                setIrysart(true)
+            }
             if (!liveReload) {
                 liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
@@ -314,7 +318,7 @@ export default function Home(props) {
                         clearInterval(interval)
                         return window.location.reload(true)
                     }
-                    if (document.getElementById('irysart').checked) {
+                    if (irysartDOM.checked) {
                         irysartPoller(setIrysartSet)
                     }
                 }).catch((err) => { if (err.name !== 'AbortError') { console.error(err); } })
