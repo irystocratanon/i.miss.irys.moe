@@ -59,7 +59,7 @@ export async function fetchPaststreamPage(channelID) {
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal: controller.signal}))
         clearTimeout(abortTimeout)
         if (res.status !== 200) {
-            return { error: `HTTP status: ${res.status}`, result: null }
+            return { error: `HTTP status: ${res.status}`, result: {items: []} }
         }
         let youtubeJSON = await res.json()
         writeToCache(PASTSTREAM_CACHE, youtubeJSON)

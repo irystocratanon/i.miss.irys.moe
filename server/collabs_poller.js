@@ -22,11 +22,11 @@ export async function fetchCollabstreamPage(channelID) {
     const controller = new AbortController()
     let abortTimeout
     try {
-        abortTimeout = setTimeout(() => controller.abort, 2500)
+        abortTimeout = setTimeout(() => { controller.abort(); }, 2500)
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal: controller.signal}))
         clearTimeout(abortTimeout)
         if (res.status !== 200) {
-            return { error: `HTTP status: ${res.status}`, result: null }
+            return { error: `HTTP status: ${res.status}`, result: { items: [] }}
         }
 		const youtubeJSON = await res.json()
         writeToCache(COLLABS_CACHE, youtubeJSON)

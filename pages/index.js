@@ -190,12 +190,22 @@ export default function Home(props) {
                 _setIntervalDuration({})
                 return {}
             }
+            if (!props.streamInfo?.startTime && !props.pastStream?.end_actual) {
+                _setIntervalDuration({})
+                return {}
+            }
             const currentDate = Date.now()
+
             if (start === null) {
                 start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream?.end_actual)
             }
             if (end === null) {
                 end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
+            }
+
+            if (!start && !end) {
+                _setIntervalDuration({})
+                return {}
             }
 
             start = (start instanceof String || typeof start === 'string') ? parseISO(start) : start
