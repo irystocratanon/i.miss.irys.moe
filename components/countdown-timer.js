@@ -55,7 +55,7 @@ export class CountdownTimer extends Component {
     }
 
     render() {
-        if ((this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream?.startTime) || this.state.status === STREAM_STATUS.LIVE || (this.state.nextStream?.startTime === null && this.state.pastStream === null)) { this.componentWillUnmount(); return <></> }
+        if ((this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream?.startTime) || this.state.status === STREAM_STATUS.LIVE || this.state.status === STREAM_STATUS.JUST_ENDED || (this.state.nextStream?.startTime === null && this.state.pastStream === null)) { this.componentWillUnmount(); return <></> }
         return <>
             {this.state.label}
             <p>{!this.state.nextStream?.startTime ? <span>(time since <a href={`https://www.youtube.com/watch?v=${this.state.pastStream.id}`}>{this.state.pastStream.title.trimLeft()}</a>)</span> : null}</p>

@@ -75,7 +75,7 @@ export default async function getResult() {
             result.live = STREAM_STATUS.JUST_ENDED
             result.title = String(pastStream?.title)
             result.videoLink = (pastStream?.videoLink) ? String(pastStream.videoLink) : `https://www.youtube.com/watch?v=${pastStream.id}`
-            result.streamStartTime = null
+            result.streamStartTime = (pastStream?.end_actual) ? parseISO(pastStream.end_actual) : null
             pastStream = null
             rmCache(PASTSTREAM_CACHE)
         }

@@ -161,28 +161,25 @@ export default function Home(props) {
     let [intervalDuration,_setIntervalDuration] = useState()
 
     const setIntervalDuration = (start = null, end = null) => {
-        if (props.status === STREAM_STATUS.LIVE) {
-            _setIntervalDuration({})
-            return {}
-        }
-        const currentDate = Date.now()
-        if (start === null) {
-            start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream?.end_actual)
-        }
-        if (end === null) {
-            end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
-        }
+        try {
+            if (props.status === STREAM_STATUS.LIVE) {
+                _setIntervalDuration({})
+                return {}
+            }
+            const currentDate = Date.now()
+            if (start === null) {
+                start = (props.streamInfo?.startTime !== null) ? currentDate : parseISO(props.pastStream?.end_actual)
+            }
+            if (end === null) {
+                end = (props.streamInfo?.startTime !== null) ? props.streamInfo?.startTime : currentDate
+            }
 
-        console.debug(`[setIntervalDuration start] ${start}`)
-        console.debug(`[setIntervalDuration end] ${start}`)
-        start = (start instanceof String || typeof start === 'string') ? parseISO(start) : start
-        end = (end instanceof String || typeof end === 'string') ? parseISO(end) : end
-        console.debug(`[setIntervalDuration start] ${start}`)
-        console.debug(`[setIntervalDuration end] ${start}`)
-        const d = intervalToDuration({start, end})
-        console.debug(`[setIntervalDuration d] ${JSON.stringify(d)}`)
-        _setIntervalDuration(Object(d))
-        return d
+            start = (start instanceof String || typeof start === 'string') ? parseISO(start) : start
+            end = (end instanceof String || typeof end === 'string') ? parseISO(end) : end
+            const d = intervalToDuration({start, end})
+            _setIntervalDuration(Object(d))
+            return d
+        } catch (e) { console.debug('[setIntervalDuration ERROR]'); console.error(e); return {}; }
     }
     if (intervalDuration === undefined) {
         setIntervalDuration()
