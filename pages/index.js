@@ -6,6 +6,7 @@ import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../
 import { useEffect, useState } from "react"
 import { intervalToDuration, parseISO } from "date-fns"
 import { CountdownTimer } from "../components/countdown-timer"
+import irysartPoller from "../server/irysart_poller"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -110,7 +111,9 @@ export default function Home(props) {
     let className, caption = "", imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
     let [favicon, setFavicon] = useState()
-    let [liveReload,setLiveReload] = useState()
+    let [liveReload, setLiveReload] = useState()
+    let [irysart, setIrysart] = useState()
+    let [irysartSet, setIrysartSet] = useState()
 
     let initialLiveReloadState = true
     initialLiveReloadState = (props.status === STREAM_STATUS.LIVE) ? false : initialLiveReloadState
@@ -148,6 +151,27 @@ export default function Home(props) {
         imageSet = HAVE_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
         favicon || setFavicon('Hirys.png')
+    }
+
+    if (irysart) {
+        if (!irysartSet) {
+            irysartPoller(setIrysartSet)
+        } else {
+            if (image.startsWith('imagesets/')) {
+                imageSet = irysartSet
+                setImage(imageSet[0], image)
+            }
+        }
+        imageSet = irysartSet
+    } else {
+        if (image.startsWith('//nitter.irys.moe')) {
+            setImage(imageSet[0], image)
+        }
+    }
+
+    const irysartHook = () => {
+        const _irysart = Boolean(!irysart)
+        setIrysart(_irysart)
     }
 
     const liveReloadHook = () => {
@@ -290,6 +314,9 @@ export default function Home(props) {
                         clearInterval(interval)
                         return window.location.reload(true)
                     }
+                    if (document.getElementById('irysart').checked) {
+                        irysartPoller(setIrysartSet)
+                    }
                 }).catch((err) => { if (err.name !== 'AbortError') { console.error(err); } })
                 clearTimeout(abortTimeout)
             }, (((Math.random()*100)%5)*1000))
@@ -315,12 +342,17 @@ export default function Home(props) {
             <meta content={`${props.absolutePrefix}/${image}`} property="og:image" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
-
+        <div style={{display: "block", position: "absolute", top: 10, left: 10}}>
+            <input id="livereload" type="checkbox" checked={liveReload} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
+        </div>
+        <div style={{display: "block", position: "absolute", top: 10, right: 10}}>
+            <input id="irysart" type="checkbox" checked={irysart} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>
+        </div>
         <div className={className}>
             <h1>{caption}</h1>
 
             {(!validStream || props.status !== STREAM_STATUS.LIVE) &&
-            <img src={`${props.absolutePrefix}/${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
+            <img src={`${(image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
             }
             {validStream && props.status === STREAM_STATUS.LIVE &&
             <iframe width="940" height="529" src={props.streamInfo.link.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
@@ -335,9 +367,6 @@ export default function Home(props) {
                     Not affiliated with IRyS or hololive - <a href="https://github.com/irystocratanon/i.miss.irys.moe">Source</a>
                 </small>
             </footer>
-        </div>
-        <div style={{width: 100, position: "absolute", top: 10, left: 10}}>
-            <input id="livereload" type="checkbox" checked={liveReload} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: "100%"}}>
             <div style={{background: "#a91354", width: "100%", height: "0.25em"}}>&nbsp;</div>
