@@ -24,12 +24,13 @@ function createPollRoute(channelID) {
 }
 
 const isPastStream = e => {
+    const minDuration = 1800 /* min of 30 minutes to count */
     return e.status === 'past' &&
            e.type === 'stream' &&
            e.topic_id !== 'shorts' &&
            (CancelledStreams.indexOf(e.id) < 0 || e.status === 'live') &&
            (OptimalPOV.indexOf(e.id) < 0 || e.status === 'live') &&
-           e.duration >= 1800 || (e.duration === 0 && e.status === 'live')
+           e.duration >= minDuration || (e.duration === 0 && e.status === 'live') || (e.duration >= minDuration && e.status === 'missing')
 }
 
 export async function fetchPaststreamPage(channelID) {
