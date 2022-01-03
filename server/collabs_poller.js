@@ -40,7 +40,7 @@ export function extractCollabstreamInfo(fromPageContent) {
     const collabs = fromPageContent.items.filter(e => {
         return e.type === 'stream' &&
             e.topic_id !== 'shorts' &&
-            (CancelledStreams.indexOf(e.id) < 0 || e.status === 'live') &&
+            CancelledStreams.indexOf(e.id) < 0 &&
             (OptimalPOV.indexOf(e.id) < 0 || e.status === 'live') &&
             ((e.status === 'upcoming' || e.status === 'live') || e.duration >= 1800)
     })
