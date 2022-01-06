@@ -134,6 +134,13 @@ export default function Home(props) {
         }
     }
 
+    if (irysart === undefined) {
+        try {
+            const __irysart = localStorage.getItem('irysart')
+            setIrysart((props.status === STREAM_STATUS.LIVE) ? false : Boolean(Number(__irysart)))
+        } catch (e) {}
+    }
+
     if (props.isError) {
         className = "error"
         imageSet = ERROR_IMAGE_SET
@@ -171,6 +178,9 @@ export default function Home(props) {
 
     const irysartHook = () => {
         const _irysart = Boolean(!irysart)
+        try {
+            localStorage.setItem('irysart', Number(_irysart))
+        } catch (e) {}
         setIrysart(_irysart)
     }
 
