@@ -43,7 +43,7 @@ export default async function getResult() {
                 case 'upcoming':
                 case 'live':
                     const collabStart = parseISO(collabs.start_scheduled)
-		    		const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart)) : false
+		    		const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart || (result.streamStartTime instanceof Date && collabStart instanceof Date && result.streamStartTime.getTime() === collabStart.getTime()))) : false
                     if (streamEarlierThanCollab) {
                         break
                     }
