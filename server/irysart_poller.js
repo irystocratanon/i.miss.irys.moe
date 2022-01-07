@@ -4,8 +4,11 @@ const {parseString} = require('xml2js')
 //
 //const rssFeed = fs.readFileSync('rss.xml')
 
-export default async function irysartPoller(callback) {
+export default async function irysartPoller(image, callback) {
     let images = []
+    if (image.startsWith('//')) {
+        images.push(String(image))
+    }
     let rssFeed
     const controller = new AbortController()
     let abortTimeout = setTimeout(() => { return controller.abort() }, 30*1000)
@@ -19,12 +22,14 @@ export default async function irysartPoller(callback) {
                 return e.description.join('').indexOf('<img src="') > -1
             })
             await items.forEach(item => {
-                let urls = item.description.join('').match(/\<img src=".*" \/\>/)
-                let url = urls[0]
-                url = url.split('=')
-                url = (url[1].split('"')[1])
-                url = url.replace(/^https?:\/\//, '//')
-                images.push(url)
+                let urls = item.description.join('').match(/\<img src=".*" \/\>/g)
+                for (let i = 0; i < urls.length; i++) {
+                    let url = urls[i]
+                    url = url.split('=')
+                    url = (url[1].split('"')[1])
+                    url = url.replace(/^https?:\/\//, '//')
+                    images.push(url)
+                }
             })
             if (callback && images.length > 0) {
                 callback(images)

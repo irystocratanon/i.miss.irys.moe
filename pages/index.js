@@ -162,7 +162,7 @@ export default function Home(props) {
 
     if (irysart) {
         if (!irysartSet) {
-            irysartPoller(setIrysartSet)
+            irysartPoller(image, setIrysartSet)
         } else {
             if (image.startsWith('imagesets/')) {
                 imageSet = irysartSet
@@ -339,7 +339,7 @@ export default function Home(props) {
                         return window.location.reload(true)
                     }
                     if (irysartDOM.checked) {
-                        irysartPoller(setIrysartSet)
+                        irysartPoller(image, setIrysartSet)
                     }
                 }).catch((err) => { if (err.name !== 'AbortError') { console.error(err); } })
                 clearTimeout(abortTimeout)
