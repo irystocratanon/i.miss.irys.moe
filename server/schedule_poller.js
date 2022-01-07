@@ -1,25 +1,20 @@
 const {parseString} = require('xml2js')
 
-export default async function irysartPoller(opts, callback) {
+export default async function schedulePoller(callback) {
     let images = []
-    if (opts.hasOwnProperty('image') && opts.image.startsWith('//')) {
-        images.push(String(opts.image))
-    }
-    if (opts.scheduleRef?.current?.checked && opts.scheduleImg) {
-        if (opts.scheduleImg && images.indexOf(opts.scheduleImg) < 0 && opts.scheduleImg.startsWith('//')) {
-            images.push(String(opts.scheduleImg))
-        }
-    }
     let rssFeed
     const controller = new AbortController()
     let abortTimeout = setTimeout(() => { return controller.abort() }, 30*1000)
-    fetch('https://nitter.irys.moe/search/rss\?f\=tweets\&q\=%23IRySart\&f-images\=on\&since\=\&until\=\&near\=', {signal: controller.signal}).then(async function(res) {
+    fetch('https://nitter.irys.moe/irys_en/search/rss?f=tweets&q=%F0%9F%92%8ESchedule+(.*)%F0%9F%92%8E&since=&until=&near=', {signal: controller.signal}).then(async function(res) {
         rssFeed = await res.text()
         parseString(rssFeed, {trim: true}, async function(err, result) {
             if (err) {
                 return 
             }
             let items = result.rss.channel[0].item.filter(e => {
+                if (e['dc:creator'][0] !== '@irys_en') {
+                    return false
+                }
                 return e.description.join('').indexOf('<img src="') > -1
             })
             await items.forEach(item => {

@@ -3,10 +3,11 @@ import Head from "next/head"
 import { STREAM_STATUS } from "../server/livestream_poller"
 import getResult from "../server/poller.js"
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { intervalToDuration, parseISO } from "date-fns"
 import { CountdownTimer } from "../components/countdown-timer"
 import irysartPoller from "../server/irysart_poller"
+import schedulePoller from "../server/schedule_poller"
 
 function selectRandomImage(fromSet, excludingImage) {
     let excludeIndex
@@ -110,10 +111,15 @@ function StreamInfo(props) {
 export default function Home(props) {
     let className, caption = "", imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
+    const currentImage = useRef()
     let [favicon, setFavicon] = useState()
     let [liveReload, setLiveReload] = useState()
     let [irysart, setIrysart] = useState()
     let [irysartSet, setIrysartSet] = useState()
+    const [scheduleImg, setScheduleImg] = useState()
+    const scheduleRef = useRef()
+    const irysartRef = useRef()
+    const liveReloadRef = useRef()
 
     let initialLiveReloadState = true
     initialLiveReloadState = (props.status === STREAM_STATUS.LIVE) ? false : initialLiveReloadState
@@ -162,7 +168,7 @@ export default function Home(props) {
 
     if (irysart) {
         if (!irysartSet) {
-            irysartPoller(image, setIrysartSet)
+            irysartPoller({image, scheduleRef, scheduleImg}, setIrysartSet)
         } else {
             if (image.startsWith('imagesets/')) {
                 imageSet = irysartSet
@@ -171,13 +177,27 @@ export default function Home(props) {
         }
         imageSet = irysartSet
     } else {
-        if (image.startsWith('//nitter.irys.moe')) {
+        if (image.startsWith('//nitter.irys.moe') && (!scheduleRef?.current?.checked && image !== scheduleImg)) {
             setImage(imageSet[0], image)
         }
     }
 
+    const scheduleHook = (updateImage = false) => {
+        if (!scheduleRef?.current?.checked) {
+            return
+        }
+        schedulePoller(function(schedule) {
+            const oldSchedule = String(scheduleImg)
+            const newSchedule = String(schedule[0])
+            setScheduleImg(newSchedule)
+            if (currentImage?.current?.src === oldSchedule || (oldSchedule.startsWith('//') && oldSchedule !== newSchedule) || updateImage === true) {
+                setImage(newSchedule, newSchedule)
+            }
+        })
+    }
+
     const irysartHook = () => {
-        const _irysart = Boolean(!irysart)
+        const _irysart = Boolean(irysartRef.current.checked)
         try {
             localStorage.setItem('irysart', Number(_irysart))
         } catch (e) {}
@@ -185,7 +205,7 @@ export default function Home(props) {
     }
 
     const liveReloadHook = () => {
-        const _liveReload = Boolean(!liveReload)
+        const _liveReload = Boolean(liveReloadRef.current.checked)
         try {
             localStorage.setItem('livereload', Number(_liveReload))
         } catch (e) {}
@@ -298,11 +318,6 @@ export default function Home(props) {
         }
 
         const interval = setInterval(() => {
-            const liveReload = document.getElementById('livereload').checked
-            const irysartDOM = document.getElementById('irysart')
-            if(irysartDOM.checked && !irysart) {
-                setIrysart(true)
-            }
             if (!liveReload) {
                 liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
@@ -338,8 +353,11 @@ export default function Home(props) {
                         clearInterval(interval)
                         return window.location.reload(true)
                     }
-                    if (irysartDOM.checked) {
-                        irysartPoller(image, setIrysartSet)
+                    if (scheduleRef?.current?.checked) {
+                        scheduleHook()
+                    }
+                    if (irysartRef?.current?.checked) {
+                        irysartPoller({image, scheduleRef, scheduleImg}, setIrysartSet)
                     }
                 }).catch((err) => { if (err.name !== 'AbortError') { console.error(err); } })
                 clearTimeout(abortTimeout)
@@ -367,16 +385,17 @@ export default function Home(props) {
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <div style={{display: "block", position: "absolute", top: 10, left: 10}}>
-            <input id="livereload" type="checkbox" checked={liveReload} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
+            <input id="livereload" type="checkbox" checked={liveReload} ref={liveReloadRef} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <div style={{display: "block", position: "absolute", top: 10, right: 10}}>
-            <input id="irysart" type="checkbox" checked={irysart} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>
+            <input id="schedule" type="checkbox" ref={scheduleRef} onChange={() => {}} onClick={() => scheduleHook(true)} /><label htmlFor="schedule">Schedule&nbsp;</label>
+            <input id="irysart" type="checkbox" checked={irysart} ref={irysartRef} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>
         </div>
         <div className={className}>
             <h1>{caption}</h1>
 
             {(!validStream || props.status !== STREAM_STATUS.LIVE) &&
-            <img src={`${(image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
+            <img ref={currentImage} src={`${(image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
             }
             {validStream && props.status === STREAM_STATUS.LIVE &&
             <iframe width="940" height="529" src={props.streamInfo.link.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
