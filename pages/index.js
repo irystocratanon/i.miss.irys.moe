@@ -10,6 +10,9 @@ import irysartPoller from "../server/irysart_poller"
 import schedulePoller from "../server/schedule_poller"
 
 function selectRandomImage(fromSet, excludingImage) {
+    if (!fromSet) {
+        return (excludingImage) ? excludingImage : ''
+    }
     let excludeIndex
     if (excludingImage && fromSet.length > 1 && (excludeIndex = fromSet.indexOf(excludingImage)) > -1) {
         // This is to prevent the same image from being selected again.
@@ -373,6 +376,14 @@ export default function Home(props) {
 
     const validStream = isStreamInfoValid(props.streamInfo)
 
+    let imageSetPreload = []
+    if (imageSet && imageSet instanceof Array && imageSet.length > 0) {
+        for (let i = 0; i < imageSet.length; i++) {
+            let _image = imageSet[i]
+            imageSetPreload.push(<img decoding='async' src={`${(_image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${_image}`} />)
+        }
+    }
+
     return <div className={styles.site}>
         <Head>
             <title>I MISS IRyS</title>
@@ -397,6 +408,9 @@ export default function Home(props) {
             {(!validStream || props.status !== STREAM_STATUS.LIVE) &&
             <img ref={currentImage} src={`${(image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
             }
+            <div style={{display: 'none', visibility: 'hidden'}}>
+                {imageSetPreload}
+            </div>
             {validStream && props.status === STREAM_STATUS.LIVE &&
             <iframe width="940" height="529" src={props.streamInfo.link.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             }
