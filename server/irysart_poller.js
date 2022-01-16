@@ -33,6 +33,13 @@ export default async function irysartPoller(opts, callback) {
                 }
             })
             if (callback && images.length > 0) {
+                if (images.length < 5 && opts.irysartSet && opts.irysartSet instanceof Array) {
+                    for (let i = 0; i < opts.irysartSet.length; i++) {
+                        if (images.indexOf(opts.irysartSet[i]) < 0) {
+                            images.push(opts.irysartSet[i])
+                        }
+                    }
+                }
                 callback(images)
             }
         })

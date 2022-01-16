@@ -360,7 +360,7 @@ export default function Home(props) {
                         scheduleHook()
                     }
                     if (irysartRef?.current?.checked) {
-                        irysartPoller({image, scheduleRef, scheduleImg}, setIrysartSet)
+                        irysartPoller({image, irysartSet, scheduleRef, scheduleImg}, setIrysartSet)
                     }
                 }).catch((err) => { if (err.name !== 'AbortError') { console.error(err); } })
                 clearTimeout(abortTimeout)
@@ -380,7 +380,7 @@ export default function Home(props) {
     if (imageSet && imageSet instanceof Array && imageSet.length > 0) {
         for (let i = 0; i < imageSet.length; i++) {
             let _image = imageSet[i]
-            imageSetPreload.push(<img decoding='async' src={`${(_image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${_image}`} />)
+            imageSetPreload.push(<img key={i} decoding='async' src={`${(_image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${_image}`} />)
         }
     }
 
@@ -408,7 +408,7 @@ export default function Home(props) {
             {(!validStream || props.status !== STREAM_STATUS.LIVE) &&
             <img ref={currentImage} src={`${(image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
             }
-            <div style={{display: 'none', visibility: 'hidden'}}>
+            <div id="imageSetPreload" style={{display: 'none', visibility: 'hidden'}}>
                 {imageSetPreload}
             </div>
             {validStream && props.status === STREAM_STATUS.LIVE &&
