@@ -25,7 +25,7 @@ export async function getPastStream() {
 }
 
 function createPollRoute(channelID) {
-    return `https://holodex.net/api/v2/channels/${channelID}/videos?lang=en&type=stream%2Cplaceholder&include=live_info&limit=5&offset=0&paginated=true`
+    return `https://holodex.net/api/v2/channels/${channelID}/videos?lang=en&type=stream%2Cplaceholder&include=live_info&limit=24&offset=0&paginated=true`
 }
 
 const isPastStream = e => {
@@ -52,7 +52,10 @@ export async function fetchPaststreamPage(channelID) {
                 shouldInvalidateCache = true
             }
         }
-    } catch(e) {}
+    } catch(e) {
+        console.debug(`[fetchPaststreamPage ERROR]`);
+        console.error(e)
+    }
     if (!shouldInvalidateCache) {
         console.info('paststream-poller: cache hit!');
         return {error: null, result: cache["result"]};
