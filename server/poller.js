@@ -5,8 +5,11 @@ import { pollCollabstreamStatus } from "../server/collabs_poller"
 import { intervalToDuration, parseISO } from "date-fns"
 import { writeLivestreamToCache } from "../server/lib/http-cache-helper"
 import { unlink } from "fs"
+import { performance } from "perf_hooks"
 
 export default async function getResult() {
+    let t0 = performance.now()
+    let t1
     const rmCache = async function(f) {
         unlink(f, () => {})
     }
@@ -18,6 +21,9 @@ export default async function getResult() {
         apiVal = await pollLivestreamStatusDummy(process.env.WATCH_CHANNEL_ID, query.mock)
     } else {
         apiVal = await pollLivestreamStatus(process.env.WATCH_CHANNEL_ID)
+        t1 = performance.now()
+        console.debug(`[getResult pollLivestreamStatus] ${t1-t0}`);
+        t0 = performance.now()
 	}
 
     let { result, error } = apiVal
@@ -25,12 +31,19 @@ export default async function getResult() {
     if (result.live !== STREAM_STATUS.LIVE) {
         try {
             collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
+            t1 = performance.now()
+            console.debug(`[getResult pollCollabstreamStatus] ${t1-t0}`);
+            t0 = performance.now()
             if (collabs.error !== null && collabs.error !== undefined) {
                 collabs = null
             }
         } catch(e) { collabs = null }
         try {
             pastStream = (collabs?.status === 'live') ? null : await getPastStream()
+            if (collabs.status !== 'live') {
+                t1 = performance.now()
+                console.debug(`[getResult getPastStream] ${t1-t0}`);
+            }
             if (pastStream.error !== null && pastStream.error !== undefined) {
                 pastStream = null
             }
