@@ -5,7 +5,7 @@ export default async function schedulePoller(callback) {
     let rssFeed
     const controller = new AbortController()
     let abortTimeout = setTimeout(() => { return controller.abort() }, 30*1000)
-    fetch('https://nitter.irys.moe/irys_en/search/rss?f=tweets&q=%F0%9F%92%8ESchedule+(.*)%F0%9F%92%8E&since=&until=&near=', {signal: controller.signal}).then(async function(res) {
+    fetch('https://nitter.irys.moe/irys_en/search/rss?f=tweets&q=%F0%9F%92%8E%28.*%29Schedule+%28.*%29%F0%9F%92%8E&f-images=on&since=&until=&near=', {signal: controller.signal}).then(async function(res) {
         rssFeed = await res.text()
         parseString(rssFeed, {trim: true}, async function(err, result) {
             if (err) {
