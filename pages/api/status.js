@@ -10,7 +10,8 @@ export default async function(req, res) {
     }
     const json = {
         live: result?.live,
-        title: result?.title || pastStream?.title || null
+        title: result?.title || pastStream?.title || null,
+        videoLink: result?.videoLink || `https://www.youtube.com/watch?v=${pastStream?.id}`
     }
     return res.status(200).json(json)
 }
