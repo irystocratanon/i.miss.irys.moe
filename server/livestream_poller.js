@@ -74,6 +74,15 @@ export function extractLivestreamInfo(fromPageContent) {
         }
     }
 
+    try {
+        if (basicResponse.result.title.indexOf('【FREE CHAT】') === 0 && basicResponse.result.live !== STREAM_STATUS.LIVE) {
+            return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null } }
+        }
+    } catch (e) {
+        console.error("livestream_poller::FREE_CHAT")
+        console.error(e)
+    }
+
     if (!playerInfo) {
         return basicResponse
     }

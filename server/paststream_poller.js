@@ -77,6 +77,18 @@ export async function fetchPaststreamPage(channelID) {
             return { error: `HTTP status: ${res.status}`, result: {items: []} }
         }
         let youtubeJSON = await res.json()
+        try {
+            while (youtubeJSON.items[0].title.indexOf('【FREE CHAT】') === 0) {
+                // very unlikely but who knows…
+                if (youtubeJSON.items[0].status === 'live') {
+                    break;
+                }
+                youtubeJSON.items.shift()
+            }
+        } catch (e) {
+            console.error("paststream_poller::FREE_CHAT")
+            console.error(e)
+        }
         writeToCache(PASTSTREAM_CACHE, youtubeJSON)
         if (liveStreamCache !== null) {
             try {
