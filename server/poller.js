@@ -40,7 +40,7 @@ export default async function getResult() {
         } catch(e) { collabs = null }
         try {
             pastStream = (collabs?.status === 'live') ? null : await getPastStream()
-            if (collabs.status !== 'live') {
+            if (collabs && collabs?.status !== 'live') {
                 t1 = performance.now()
                 console.debug(`[getResult getPastStream] ${t1-t0}`);
             }
@@ -68,6 +68,7 @@ export default async function getResult() {
                         title: collabs.title,
                         videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
                         id: collabs.id,
+                        channel: collabs.channel.name || "IRyS Ch. hololive-EN",
                         streamStartTime: collabStart
                     }
                     if (collabs.status === 'live') {
