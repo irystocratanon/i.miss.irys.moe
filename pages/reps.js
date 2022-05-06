@@ -64,8 +64,10 @@ Home.getInitialProps = async function ({ res }) {
             Location: rep
         });
         res.end();
-    } else {
-        res.writeHead(200)
+    } else if (res) {
+        res.writeHead(302, {
+            Location: `https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}/videos`
+        });
         res.end();
     }
     return {};
