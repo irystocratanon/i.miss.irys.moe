@@ -7,6 +7,8 @@ Home.getInitialProps = async function ({ res }) {
     let rep = ''
     let leastViews = 0
     let leastViewsIndex = ''
+    let leastTopicViews = 0
+    let leastTopicViewsIndex = ''
     const playlistURLs = [
         'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw07nf_D8u-g6a3_MdLWVdIc',
         'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2Wlox1cPU2-WGM5VmMYR8m',
@@ -29,10 +31,21 @@ Home.getInitialProps = async function ({ res }) {
                     return null
                 }
                 let e_views = (e['media:group'][0]['media:community'][0]['media:statistics'][0]['$'].views)
-                leastViews = (leastViews === 0) ? Number(e_views) : leastViews
-                leastViews = (e_views < leastViews) ? Number(e_views) : leastViews
-                if (leastViews === Number(e_views)) {
-                    leastViewsIndex = link
+                switch (e['yt:channelId'][0]) {
+                    case process.env.WATCH_CHANNEL_ID:
+                        leastViews = (leastViews === 0) ? Number(e_views) : leastViews
+                        leastViews = (e_views < leastViews) ? Number(e_views) : leastViews
+                        if (leastViews === Number(e_views)) {
+                            leastViewsIndex = link
+                        }
+                        break;
+                    case 'UCyWyNomzTjBvuRsqZU1bRCg':
+                        leastTopicViews = (leastTopicViews === 0) ? Number(e_views) : leastTopicViews
+                        leastTopicViews = (e_views < leastTopicViews) ? Number(e_views) : leastTopicViews
+                        if (leastTopicViews === Number(e_views)) {
+                            leastTopicViewsIndex = link
+                        }
+                        break;
                 }
                 return link
             }).forEach(v => {
@@ -51,13 +64,17 @@ Home.getInitialProps = async function ({ res }) {
     }
 
     leastViewsIndex = reps.indexOf(leastViewsIndex)
+    leastTopicViewsIndex = reps.indexOf(leastTopicViewsIndex)
+
+    let randomBias = ((Math.floor(Math.random()*2)) === 0) ? leastViewsIndex : leastTopicViewsIndex
+
     // this should never happen
-    if (leastViewsIndex < 0 || leastViewsIndex > reps.length) {
+    if (randomBias < 0 || randomBias > reps.length) {
         rep = reps[Math.floor(Math.random()*reps.length)]
     } else {
         // get rep with a slight bias towards the video with the least views
-        console.debug(`[reps bias] ${leastViewsIndex}: ${reps[leastViewsIndex]}`);
-        rep = reps[Math.floor(getRndBias(0, reps.length-1, leastViewsIndex, 0.25))]
+        console.debug(`[reps bias] ${randomBias}: ${reps[randomBias]}`);
+        rep = reps[Math.floor(getRndBias(0, reps.length-1, randomBias, 0.25))]
     }
 
     if (res && String(rep).startsWith('http')) {
