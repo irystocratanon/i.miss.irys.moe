@@ -12,7 +12,8 @@ Home.getInitialProps = async function ({ res }) {
         'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2Wlox1cPU2-WGM5VmMYR8m'
     ]
     const skip_vids = [
-        'https://www.youtube.com/watch?v=-HZ9gAiIoAw' /* IRyS 2nd EP ｢Journey｣ Trailer */
+        'https://www.youtube.com/watch?v=-HZ9gAiIoAw', /* IRyS 2nd EP ｢Journey｣ Trailer */
+        'https://www.youtube.com/watch?v=w0sSTxFSAlQ' /* ||:Caesura of Despair - First EP Preview video */
     ]
 
     for (let i = 0; i < playlistURLs.length; i++) {
@@ -54,6 +55,7 @@ Home.getInitialProps = async function ({ res }) {
         rep = reps[Math.floor(Math.random()*reps.length)]
     } else {
         // get rep with a slight bias towards the video with the least views
+        console.debug(`[reps bias] ${leastViewsIndex}: ${reps[leastViewsIndex]}`);
         rep = reps[Math.floor(getRndBias(0, reps.length-1, leastViewsIndex, 0.25))]
     }
 
