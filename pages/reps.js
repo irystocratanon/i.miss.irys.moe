@@ -2,6 +2,18 @@ export default function Home(props) {}
 
 // https://linguinecode.com/post/how-to-redirect-on-the-server-side-with-next-js
 Home.getInitialProps = async function ({ res }) {
+    let _performance
+    if (typeof performance !== 'object') {
+        try {
+            _performance = require('perf_hooks')
+            _performance = _performance.performance
+        } catch (e) {
+            _performance = {now: function(){}}
+        }
+    } else {
+        _performance = performance
+    }
+    let reqT0 = _performance.now()
     const {parseString} = require('xml2js')
     let reps = []
     let rep = ''
@@ -20,10 +32,16 @@ Home.getInitialProps = async function ({ res }) {
     ]
 
     for (let i = 0; i < playlistURLs.length; i++) {
+        let t0 = _performance.now()
         let url = playlistURLs[i]
         let xmlRes = await fetch(url)
+        let t1 = _performance.now()
+        console.debug(`[reps fetch:${url}] ${t1-t0}`);
+        t0 = _performance.now()
         let xml = await xmlRes.text()
         parseString(xml, {trim: true}, function(err, result) {
+            t1 = _performance.now()
+            console.debug(`[reps parseString] ${t1-t0}`);
             if (err) { return; }
             result.feed.entry.map(e => {
                 let link = e.link[0]['$'].href
@@ -88,5 +106,7 @@ Home.getInitialProps = async function ({ res }) {
         });
         res.end();
     }
+    let reqT1 = _performance.now()
+    console.debug(`[reps total request time] ${reqT1-reqT0}`);
     return {};
 }
