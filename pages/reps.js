@@ -1,3 +1,4 @@
+import getReps from "../server/reps_poller"
 export default function Home(props) {}
 
 // https://linguinecode.com/post/how-to-redirect-on-the-server-side-with-next-js
@@ -14,65 +15,13 @@ Home.getInitialProps = async function ({ res }) {
         _performance = performance
     }
     let reqT0 = _performance.now()
-    const {parseString} = require('xml2js')
-    let reps = []
-    let rep = ''
-    let leastViews = 0
-    let leastViewsIndex = ''
-    let leastTopicViews = 0
-    let leastTopicViewsIndex = ''
-    const playlistURLs = [
-        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw07nf_D8u-g6a3_MdLWVdIc',
-        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2Wlox1cPU2-WGM5VmMYR8m',
-        'https://www.youtube.com/feeds/videos.xml?channel_id=UCyWyNomzTjBvuRsqZU1bRCg'
-    ]
-    const skip_vids = [
-        'https://www.youtube.com/watch?v=-HZ9gAiIoAw', /* IRyS 2nd EP ｢Journey｣ Trailer */
-        'https://www.youtube.com/watch?v=w0sSTxFSAlQ' /* ||:Caesura of Despair - First EP Preview video */
-    ]
+    const reps = Array.from(await getReps())
+                    .sort((a,b) => a.views - b.views)
+    const leastViewsIndex = reps.findIndex(e => { return e.channel === process.env.WATCH_CHANNEL_ID })
+    const leastTopicViewsIndex = reps.findIndex(e => { return e.topic && e.title.toLowerCase().indexOf('instrumental') !== e.title.length-13 })
 
-    for (let i = 0; i < playlistURLs.length; i++) {
-        let t0 = _performance.now()
-        let url = playlistURLs[i]
-        let xmlRes = await fetch(url)
-        let t1 = _performance.now()
-        console.debug(`[reps fetch:${url}] ${t1-t0}`);
-        t0 = _performance.now()
-        let xml = await xmlRes.text()
-        parseString(xml, {trim: true}, function(err, result) {
-            t1 = _performance.now()
-            console.debug(`[reps parseString] ${t1-t0}`);
-            if (err) { return; }
-            result.feed.entry.map(e => {
-                let link = e.link[0]['$'].href
-                if (skip_vids.indexOf(link) > -1) {
-                    return null
-                }
-                let e_views = (e['media:group'][0]['media:community'][0]['media:statistics'][0]['$'].views)
-                switch (e['yt:channelId'][0]) {
-                    case process.env.WATCH_CHANNEL_ID:
-                        leastViews = (leastViews === 0) ? Number(e_views) : leastViews
-                        leastViews = (e_views < leastViews) ? Number(e_views) : leastViews
-                        if (leastViews === Number(e_views)) {
-                            leastViewsIndex = link
-                        }
-                        break;
-                    case 'UCyWyNomzTjBvuRsqZU1bRCg':
-                        leastTopicViews = (leastTopicViews === 0) ? Number(e_views) : leastTopicViews
-                        leastTopicViews = (e_views < leastTopicViews) ? Number(e_views) : leastTopicViews
-                        if (leastTopicViews === Number(e_views)) {
-                            leastTopicViewsIndex = link
-                        }
-                        break;
-                }
-                return link
-            }).forEach(v => {
-                if (String(v).startsWith('http')) {
-                    reps.push(v)
-                }
-            })
-        })
-    }
+    console.debug(`[reps leastViewsIndex]: ${reps[leastViewsIndex].title} - ${reps[leastViewsIndex].url}`);
+    console.debug(`[reps leastTopicViewsIndex]: ${reps[leastTopicViewsIndex].title} - ${reps[leastTopicViewsIndex].url}`);
 
     // https://stackoverflow.com/a/29325222
     function getRndBias(min, max, bias, influence) {
@@ -81,17 +30,15 @@ Home.getInitialProps = async function ({ res }) {
         return rnd * (1 - mix) + bias * mix;           // mix full range and bias
     }
 
-    leastViewsIndex = reps.indexOf(leastViewsIndex)
-    leastTopicViewsIndex = reps.indexOf(leastTopicViewsIndex)
-
     let randomBias = ((Math.floor(Math.random()*2)) === 0) ? leastViewsIndex : leastTopicViewsIndex
+    let rep
 
     // this should never happen
     if (randomBias < 0 || randomBias > reps.length) {
         rep = reps[Math.floor(Math.random()*reps.length)]
     } else {
         // get rep with a slight bias towards the video with the least views
-        console.debug(`[reps bias] ${randomBias}: ${reps[randomBias]}`);
+        console.debug(`[reps bias] (${(reps[randomBias].topic) ? 'IRyS - Topic' : 'IRyS Ch. hololive-EN'}): ${reps[randomBias].title} - ${reps[randomBias].url}`);
         rep = reps[Math.floor(getRndBias(0, reps.length-1, randomBias, 0.25))]
     }
 
