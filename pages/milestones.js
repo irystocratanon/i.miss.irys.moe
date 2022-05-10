@@ -91,7 +91,7 @@ export default class MilestonesApp extends React.Component {
                 <table width="100%">
                     <tbody>
                         {nonTopics.slice(0, 3).map((r) => (
-                        <tr>
+                        <tr key={r.url}>
                             <td className={styles.titlecol}><a href={r.url}>{r.title}</a></td>
                             <td className={styles.numcol}><NumberFormat value={r.milestone.delta}/> away from <NumberFormat value={r.milestone.milestone}/>!!</td>
                         </tr>
@@ -104,7 +104,7 @@ export default class MilestonesApp extends React.Component {
                 <table width="100%">
                     <tbody>
                         {topics.slice(0, 3).map((r) => (
-                        <tr>
+                        <tr key={r.url}>
                             <td className={styles.titlecol}><a href={r.url}>{r.title}</a></td>
                             <td className={styles.numcol}><NumberFormat value={r.milestone.delta}/> away from <NumberFormat value={r.milestone.milestone}/>!!</td>
                         </tr>
