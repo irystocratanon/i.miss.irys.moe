@@ -1,4 +1,4 @@
-
+import Head from "next/head"
 import React from 'react';
 import styles from '../styles/Milestones.module.css'
 import { milestoneDelta } from "../server/milestone"
@@ -77,7 +77,16 @@ export default class MilestonesApp extends React.Component {
   render() {
     let { vids, top, topics, nonTopics } = this.props;
 
-    return (
+    return <div className={styles.site}>
+        <Head>
+            <title>Milestones</title>
+            <link rel="shortcut icon" href="/Woah.png" />
+            <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            <meta name="theme-color" content="#ffbafb" />
+            <meta content="I MISS IRyS" property="og:title" />
+            <meta content="IRyS Milestones" property="og:description" />
+            <meta name="twitter:card" content="summary_large_image" />
+        </Head>
         <div>
             <section className={styles.top}>
                 <h3>Next Milestone</h3>
@@ -113,7 +122,7 @@ export default class MilestonesApp extends React.Component {
                 </table>
             </section>
         </div>
-    )
+    </div>
 
     return 
   }
