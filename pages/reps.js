@@ -42,9 +42,9 @@ Home.getInitialProps = async function ({ res }) {
         rep = reps[Math.floor(getRndBias(0, reps.length-1, randomBias, 0.25))]
     }
 
-    if (res && String(rep).startsWith('http')) {
+    if (res && String(rep.url).startsWith('http')) {
         res.writeHead(302, {
-            Location: rep
+            Location: rep.url
         });
         res.end();
     } else if (res) {
