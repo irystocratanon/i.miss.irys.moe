@@ -1,0 +1,35 @@
+.catalog {
+    padding: 10px 80px 60px 80px;
+}
+.search {
+    padding: 10px 80px 0 80px;
+}
+.search form {
+    text-align: left;
+}
+.search input {
+    width: 100%;
+    max-width: 600px;
+}
+.titlerow {
+    font-weight: bold;
+    background-color: #ffffff;
+}
+
+.site table {
+    margin-top: 10px;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+.site td, .search th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+.site tr:nth-child(even) {
+    background-color: #eee;
+}
+.site tr:nth-child(odd) {
+    background-color: #fafafa;
+}
