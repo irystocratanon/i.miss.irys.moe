@@ -63,6 +63,31 @@ let data = {
             ]
         },
         {
+            videoId: "aj0nklIZQGU",
+            title: "【Superchat Reading + Bonus Singing】Chatting and a bit of singing!",
+            date: "Jul 23, 2021",
+            songs: [
+                {
+                    timestamp: "25m26s",
+                    title: "Hana ni Bourei (花に亡霊)",
+                    artist: "Yorushika",
+                    keywords: "hana ni bourei yorushika"
+                },
+                {
+                    timestamp: "1h06m14s",
+                    title: "Nandemonaiya",
+                    artist: "RADWIMPS",
+                    keywords: "nandemonaiya radwimps"
+                },
+                {
+                    timestamp: "2h22m23s",
+                    title: "Balalaika",
+                    artist: "Kusumi Koharu",
+                    keywords: "balalaika kusumi koharu"
+                },
+            ]
+        },
+        {
             videoId: "9GMtBsMSUw4",
             title: "【Singing】Some more songs!",
             date: "Jul 31, 2021",
@@ -340,12 +365,6 @@ let data = {
                     title: "Hitchcock",
                     artist: "Yorushika",
                     keywords: "hitchcock yorushika"
-                },
-                {
-                    timestamp: "27m48s",
-                    title: "The Name of Life (いのちの名前)",
-                    artist: "Spirited Away",
-                    keywords: "spirited away ghibli the name of life inochi no namae"
                 },
                 {
                     timestamp: "27m48s",
@@ -698,7 +717,7 @@ let data = {
                     timestamp: "10m28s",
                     title: "Fukai Mori (深い森) - Mori duet",
                     artist: "Do As Infinity",
-                    keywords: "fukai mori duet do as infinity"
+                    keywords: "fukai mori duet do as infinity inuyasha"
                 },
                 {
                     timestamp: "19m20s",
@@ -778,12 +797,6 @@ let data = {
                     title: "Fragile",
                     artist: "Every Little Thing",
                     keywords: "fragile every little thing"
-                },
-                {
-                    timestamp: "39m34s",
-                    title: "Bouken Desho Desho? (冒険でしょでしょ?)",
-                    artist: "Aya Hirano",
-                    keywords: "bouken desho aya hirano"
                 },
                 {
                     timestamp: "39m34s",
@@ -879,7 +892,7 @@ let data = {
                 {
                     timestamp: "1h05m20s",
                     title: "Sparkle (スパークル)",
-                    artist: "RADWIMP",
+                    artist: "RADWIMPS",
                     keywords: "sparkle radwimps"
                 },
                 {
@@ -911,6 +924,49 @@ let data = {
                     title: "Motteke! Sailor Fuku! (もってけ！セーラーふく)",
                     artist: "Lucky Star",
                     keywords: "motteke sailor fuku take it uniform lucky star"
+                },
+            ]
+        },
+        {
+            videoId: "D7Kyu8aL_y8",
+            title: "IRyS - YouTube Music Weekend",
+            date: "Dec 3, 2021",
+            songs: [
+                {
+                    timestamp: "2m24s",
+                    title: "Caesura of Despair",
+                    artist: "IRyS",
+                    keywords: "caesura of despair cod irys ymw youtube music weekend"
+                },
+                {
+                    timestamp: "7m02s",
+                    title: "BLUE CLAPPER",
+                    artist: "hololive IDOL PROJECT",
+                    keywords: "blue clapper hololive idol project ymw youtube music weekend"
+                },
+                {
+                    timestamp: "11m24s",
+                    title: "diorama",
+                    artist: "IRyS",
+                    keywords: "diorama irys ymw youtube music weekend"
+                },
+                {
+                    timestamp: "16m09s",
+                    title: "Suspect",
+                    artist: "hololive IDOL PROJECT",
+                    keywords: "suspect hololive idol project ymw youtube music weekend"
+                },
+                {
+                    timestamp: "20m45s",
+                    title: "HERE COMES HOPE",
+                    artist: "IRyS",
+                    keywords: "here comes hope hch irys ymw youtube music weekend"
+                },
+                {
+                    timestamp: "24m01s",
+                    title: "Kirameki Rider",
+                    artist: "hololive IDOL PROJECT",
+                    keywords: "kirameki rider hololive idol project ymw youtube music weekend"
                 },
             ]
         },
@@ -980,6 +1036,37 @@ let data = {
                     keywords: "one last kiss utada hikaru evangelion"
                 },
             ],
+        },
+        {
+            videoId: "UEMcl5rzLPU",
+            title: "『#BirthdayRyS』ITS MY B-DAY Woo~!🎈【BIRTHDAY STREAM】",
+            date: "Mar 6, 2022",
+            songs: [
+                {
+                    timestamp: "3h28m28s",
+                    title: "Lum no love song (ラムのラブソング)",
+                    artist: "Yuko Matsutani",
+                    keywords: "lum no love song yuko matsutani"
+                },
+                {
+                    timestamp: "3h33m51s",
+                    title: "Caesura Of Despair",
+                    artist: "IRyS",
+                    keywords: "caesura of despair cod irys"
+                },
+                {
+                    timestamp: "3h43m18s",
+                    title: "One Last Kiss",
+                    artist: "Hikaru Utada",
+                    keywords: "one last kiss utada hikaru evangelion"
+                },
+                {
+                    timestamp: "3h50m36s",
+                    title: "Renai Circulation (恋愛サーキュレーション)",
+                    artist: "Kana Hanazawa",
+                    keywords: "renai circulation kana hanazawa"
+                },
+            ]
         },
         {
             videoId: "TdYFeuMXkLc",
@@ -1164,7 +1251,19 @@ let data = {
                 },
             ],
         },
-
+        {
+            videoId: "az2L7dtSgjc",
+            title: "【HADES】a rebellious phase",
+            date: "Apr 30, 2022",
+            songs: [
+                {
+                    timestamp: "4h17m09s",
+                    title: "あかつきと花 (Akatsuki to Hana)",
+                    artist: "IRyS",
+                    keywords: "akatsuki to hana irys"
+                }
+            ]
+        },
     ]
 }
 
