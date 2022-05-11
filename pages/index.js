@@ -1,5 +1,6 @@
 import styles from '../styles/Home.module.css'
 import Head from "next/head"
+import Link from "next/link"
 import { STREAM_STATUS } from "../server/livestream_poller"
 import getResult from "../server/poller.js"
 import { ERROR_IMAGE_SET, HAVE_STREAM_IMAGE_SET, NO_STREAM_IMAGE_SET } from "../imagesets"
@@ -398,6 +399,11 @@ export default function Home(props) {
         <div style={{display: "block", position: "absolute", top: 10, left: 10}}>
             <input id="livereload" type="checkbox" checked={liveReload} ref={liveReloadRef} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
+        <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <a href={`${process.env.PUBLIC_HOST || ''}/milestones`}>Milestones</a>
+            &nbsp;|&nbsp;
+            <Link href="/karaoke">Karaoke</Link>
+        </section>
         <div style={{display: "block", position: "absolute", top: 10, right: 10}}>
             <input id="schedule" type="checkbox" ref={scheduleRef} onChange={() => {}} onClick={() => scheduleHook(true)} /><label htmlFor="schedule">Schedule&nbsp;</label>
             <input id="irysart" type="checkbox" checked={irysart} ref={irysartRef} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>

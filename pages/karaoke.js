@@ -1,5 +1,6 @@
 import Head from "next/head"
-import React from 'react';
+import Link from "next/link"
+import React from 'react'
 import styles from '../styles/Karaoke.module.css'
 import KaraokeData from "../server/karaoke_data"
 
@@ -57,6 +58,13 @@ export default class KaraokeApp extends React.Component {
             <meta content="IRyS Karaoke" property="og:description" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
+        <section style={{display: 'flex', flexDirection: 'column-reverse', "margin": '10px'}}>
+            <Link href="/">I miss her&hellip;</Link>
+            &nbsp;|&nbsp;
+            <a href={`${process.env.PUBLIC_HOST || ''}/milestones`}>Milestones</a>
+            &nbsp;|&nbsp;
+            <Link href="/karaoke">Karaoke</Link>
+        </section>
         
             <section className={styles.search}>
             <h3>Find Archived Karaoke Song</h3>

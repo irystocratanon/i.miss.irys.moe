@@ -1,5 +1,6 @@
 import Head from "next/head"
-import React from 'react';
+import Link from "next/link"
+import React from 'react'
 import styles from '../styles/Milestones.module.css'
 import { milestoneDelta } from "../server/milestone"
 import getReps from "../server/reps_poller"
@@ -42,6 +43,13 @@ export default class MilestonesApp extends React.Component {
             <meta content="IRyS Milestones" property="og:description" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
+        <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Link href="/">I miss her&hellip;</Link>
+                &nbsp;|&nbsp;
+                <a href={`${process.env.PUBLIC_HOST || ''}/milestones`}>Milestones</a>
+                &nbsp;|&nbsp;
+                <Link href="/karaoke">Karaoke</Link>
+        </section>
         <div>
             <section className={styles.top}>
                 <h3>Next Milestone</h3>
