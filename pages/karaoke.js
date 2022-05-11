@@ -1,6 +1,6 @@
 import Head from "next/head"
 import React from 'react';
-import styles from '../styles/Karaokes.module.css'
+import styles from '../styles/Karaoke.module.css'
 import KaraokeData from "../server/karaoke_data"
 
 function songUrl(k, s) {
@@ -14,7 +14,7 @@ function search(kws, s) {
   }
   
 
-export default class KaraokesApp extends React.Component {
+export default class KaraokeApp extends React.Component {
 
   constructor(props) {
     super(props);
@@ -34,9 +34,9 @@ export default class KaraokesApp extends React.Component {
 
   render() {
 
-    let { karaokes, songs } = KaraokeData;
+    let { karaoke, songs } = KaraokeData;
     let { searchText } = this.state;
-    let list = karaokes.list;
+    let list = karaoke.list;
     var searchResults = [];
 
     if(searchText && searchText.length && searchText != this.lastSearchText) {
@@ -49,12 +49,12 @@ export default class KaraokesApp extends React.Component {
 
     return <div className={styles.site}>
         <Head>
-            <title>Karaokes</title>
+            <title>Karaoke</title>
             <link rel="shortcut icon" href="/Woah.png" />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <meta name="theme-color" content="#ffbafb" />
             <meta content="I MISS IRyS" property="og:title" />
-            <meta content="IRyS Karaokes" property="og:description" />
+            <meta content="IRyS Karaoke" property="og:description" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
         

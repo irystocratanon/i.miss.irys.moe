@@ -1177,6 +1177,6 @@ data.list.forEach(k => {
 })
 
 export default {
-    karaokes: data,
+    karaoke: data,
     songs: songs
 }
