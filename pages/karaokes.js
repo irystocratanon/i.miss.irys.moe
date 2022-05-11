@@ -79,7 +79,7 @@ export default class KaraokesApp extends React.Component {
                     {searchResults.map((s, i) => (
                         <tr key={i}>
                             <td>{i+1}.</td>
-                            <td><a href={songUrl(s.karaoke, s)} target="_blank">{s.title} - {s.artist}</a></td>
+                            <td><a href={songUrl(s.karaoke, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
                             <td>{s.karaoke.date} -{s.karaoke.title}</td>
                         </tr>
                     ))}
@@ -104,7 +104,7 @@ export default class KaraokesApp extends React.Component {
                         {k.songs.map((s, i) => (
                             <tr key={i}>
                                 <td>{i+1}.</td>
-                                <td><a href={songUrl(k, s)} target="_blank">{s.title} - {s.artist}</a></td>
+                                <td><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
                             </tr>
                         ))}
                     
