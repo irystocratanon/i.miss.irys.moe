@@ -11,9 +11,7 @@ class NumberFormat extends React.Component {
     }
 }
 
-export default class MilestonesApp extends React.Component {
-
-  static async getInitialProps({ res }) {
+export async function getServerSideProps({ res }) {
     const reps = Array.from(await getReps())
           .map(rep => {
               if (typeof rep !== 'object') { return; }
@@ -22,16 +20,16 @@ export default class MilestonesApp extends React.Component {
           })
           .sort((a, b) => a.milestone.delta - b.milestone.delta);
 
-    return { 
+    return {props: {
         vids: reps, 
         top: reps[0],
         topics: reps.filter(v => v.topic),
         nonTopics: reps.filter(v => !v.topic)
-     };
+     }};
   }
 
-  render() {
-    let { vids, top, topics, nonTopics } = this.props;
+export default function Milestones(props) {
+    let { vids, top, topics, nonTopics } = props;
 
     return <div className={styles.site}>
         <Head>
@@ -88,5 +86,4 @@ export default class MilestonesApp extends React.Component {
     </div>
 
     return 
-  }
 }
