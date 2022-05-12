@@ -12,14 +12,20 @@ function search(kws, s) {
     kws = kws.toLowerCase().split(/\s+/);
     var ts = s.toLowerCase().split(/\s+/);
     return ts.reduce((r, t) => r && kws.reduce((r, kw) => r || kw.indexOf(t) === 0, false), true);
-  }
+}
   
 
 export default class KaraokeApp extends React.Component {
 
+  static getInitialProps({query}) {
+    return {query}
+  }
+
   constructor(props) {
     super(props);
-    this.state = {searchText: ''};
+
+    this.state = {searchText: props.query.s || ''};
+    
     this.lastSearchText = 'andkjanskdjnaskjdnakjs'
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
