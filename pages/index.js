@@ -322,7 +322,7 @@ export default function Home(props) {
         }
 
         const interval = setInterval(() => {
-            if (!liveReload) {
+            if (!liveReloadRef.current.checked) {
                 liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
                 synchroniseUpdateInterval()
