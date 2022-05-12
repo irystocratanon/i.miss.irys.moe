@@ -431,7 +431,7 @@ export default function Home(props) {
                 </small>
             </footer>
         </div>
-        <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: "100%"}}>
+        <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: `${(props.streamInfo && props.streamInfo.startTime && props.streamInfo.currentTime && props.streamInfo.startTime > props.streamInfo.currentTime && ((liveReloadRef && liveReloadRef.current) ? liveReloadRef.current.checked : true)) ? "100%" : "0%"}`}}>
             <div style={{background: "#a91354", width: "100%", height: "0.25em"}}>&nbsp;</div>
         </div>
     </div>
