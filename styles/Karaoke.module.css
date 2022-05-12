@@ -1,8 +1,18 @@
-.catalog {
-    padding: 10px 80px 60px 80px;
+@media (max-width: 480px) {
+    .catalog {
+        padding: 2.5px;
+    }
+    .search {
+        padding: 2.5px;
+    }
 }
-.search {
-    padding: 10px 80px 0 80px;
+@media (min-width: 481px) {
+    .catalog {
+        padding: 10px 80px 60px 80px;
+    }
+    .search {
+        padding: 10px 80px 0 80px;
+    }
 }
 .search form {
     text-align: left;
