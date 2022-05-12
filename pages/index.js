@@ -157,7 +157,7 @@ export default function Home(props) {
         bottomInfo = <div className="stream-info">
             <p>There was a problem checking stream status. <a href={props.channelLink}>You can check IRyS&apos;s channel yourself</a>!</p>
         </div>
-    } else if (props.status != STREAM_STATUS.LIVE && props.status != STREAM_STATUS.STARTING_SOON) {
+        } else if ((props.status != STREAM_STATUS.LIVE && props.status != STREAM_STATUS.STARTING_SOON) || (props.streamInfo && props.streamInfo.startTime >= 0 && props.streamInfo.currentTime >= 0 && ((props.streamInfo.startTime - props.streamInfo.currentTime) / ((3600*24)*1000) >= 1))) {
         className = "miss-her"
         imageSet = NO_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
