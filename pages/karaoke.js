@@ -52,7 +52,7 @@ export default class KaraokeApp extends React.Component {
         searchResults = [];
     }
 
-    list = list.sort((a,b) => { return Date.parse(a.date) + Date.parse(b.date) });
+    list = list.sort((a,b) => { return Date.parse(a.date) < Date.parse(b.date) || -1 });
 
     this.lastSearchText = searchText;
 
