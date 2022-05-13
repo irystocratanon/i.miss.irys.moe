@@ -411,7 +411,7 @@ export default function Home(props) {
             <input id="livereload" type="checkbox" checked={liveReload} ref={liveReloadRef} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <a href={`${process.env.PUBLIC_HOST || ''}/milestones`}>Milestones</a>
+            <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link href="/karaoke">Karaoke</Link>
         </section>

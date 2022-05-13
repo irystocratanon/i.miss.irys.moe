@@ -80,7 +80,7 @@ export default class KaraokeApp extends React.Component {
         <section style={{display: 'flex', flexDirection: 'column-reverse', "margin": '10px'}}>
             <Link href="/">I miss her&hellip;</Link>
             &nbsp;|&nbsp;
-            <a href={`${process.env.PUBLIC_HOST || ''}/milestones`}>Milestones</a>
+            <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link href="/karaoke">Karaoke</Link>
         </section>

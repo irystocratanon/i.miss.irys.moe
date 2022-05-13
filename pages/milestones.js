@@ -44,7 +44,7 @@ export default function Milestones(props) {
         <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Link href="/">I miss her&hellip;</Link>
                 &nbsp;|&nbsp;
-                <a href={`${process.env.PUBLIC_HOST || ''}/milestones`}>Milestones</a>
+                <Link href="/milestones">Milestones</Link>
                 &nbsp;|&nbsp;
                 <Link href="/karaoke">Karaoke</Link>
         </section>
