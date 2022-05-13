@@ -52,6 +52,8 @@ export default class KaraokeApp extends React.Component {
         searchResults = [];
     }
 
+    list = list.sort((a,b) => { return Date.parse(a.date) + Date.parse(b.date) });
+
     this.lastSearchText = searchText;
 
     return <div className={styles.site}>
@@ -94,7 +96,7 @@ export default class KaraokeApp extends React.Component {
                         <tr key={i}>
                             <td>{i+1}.</td>
                             <td><a href={songUrl(s.karaoke, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
-                            <td>{s.karaoke.date} -{s.karaoke.title}</td>
+                            <td>{s.karaoke.date.toString().split(' ').map((e,i) => { if (i < 1 || i > 3) { return; } if (i == 2) { return `${e},`; } return e }).filter(e => { return (e) ? e : false }).join(' ')} -{s.karaoke.title}</td>
                         </tr>
                     ))}
             </tbody>
@@ -113,7 +115,7 @@ export default class KaraokeApp extends React.Component {
                     <tbody>
                     
                         <tr>
-                            <td className={styles.titlerow} colSpan="2">{k.date} -{k.title}</td>
+                            <td className={styles.titlerow} colSpan="2">{k.date.toString().split(' ').map((e,i) => { if (i < 1 || i > 3) { return; } if (i == 2) { return `${e},`; } return e }).filter(e => { return (e) ? e : false }).join(' ')} -{k.title}</td>
                         </tr>
                         {k.songs.map((s, i) => (
                             <tr key={i}>

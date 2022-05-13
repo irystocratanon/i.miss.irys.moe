@@ -4,7 +4,7 @@ let data = {
         {
             videoId: "XGzuTH_-dIU",
             title: "【Singing】Very First Karaoke Party♪",
-            date: "Jul 16, 2021",
+            date: new Date("Jul 16, 2021"),
             songs: [
                 {
                     timestamp: "4m18s",
@@ -65,7 +65,7 @@ let data = {
         {
             videoId: "aj0nklIZQGU",
             title: "【Superchat Reading + Bonus Singing】Chatting and a bit of singing!",
-            date: "Jul 23, 2021",
+            date: new Date("Jul 23, 2021"),
             songs: [
                 {
                     timestamp: "25m26s",
@@ -90,7 +90,7 @@ let data = {
         {
             videoId: "9GMtBsMSUw4",
             title: "【Singing】Some more songs!",
-            date: "Jul 31, 2021",
+            date: new Date("Jul 31, 2021"),
             songs: [
                 {
                     timestamp: "5m19s",
@@ -151,7 +151,7 @@ let data = {
         {
             videoId: "4WJCjPlw5P4",
             title: "【Singing Stream】Another day for some fun Karaoke!",
-            date: "Aug 7, 2021",
+            date: new Date("Aug 7, 2021"),
             songs: [
                 {
                     timestamp: "7m35s",
@@ -218,7 +218,7 @@ let data = {
         {
             videoId: "nndLjEBzFFA",
             title: "【Karaoke!!】Casually singing!",
-            date: "Aug 15, 2021",
+            date: new Date("Aug 15, 2021"),
             songs: [
                 {
                     timestamp: "12m24s",
@@ -285,7 +285,7 @@ let data = {
         {
             videoId: "_Z_ppGumqQ4",
             title: "【Karaoke!!】Another Day Another Song!",
-            date: "Aug 21, 2021",
+            date: new Date("Aug 21, 2021"),
             songs: [
                 {
                     timestamp: "9m37s",
@@ -352,7 +352,7 @@ let data = {
         {
             videoId: "PTmb3LaR15g",
             title: "【Karaoke!!】Singing before the month ends!",
-            date: "Aug 28, 2021",
+            date: new Date("Aug 28, 2021"),
             songs: [
                 {
                     timestamp: "9m13s",
@@ -419,7 +419,7 @@ let data = {
         {
             videoId: "K769BpJroos",
             title: "【Karaoke!!】Gotta Love Singing!",
-            date: "Sep 12, 2021",
+            date: new Date("Sep 12, 2021"),
             songs: [
                 {
                     timestamp: "14m05s",
@@ -480,7 +480,7 @@ let data = {
         {
             videoId: "2Y5uFZllX8o",
             title: "【Karaoke!!】It's my favorite time of the week!",
-            date: "Sep 25, 2021",
+            date: new Date("Sep 25, 2021"),
             songs: [
                 {
                     timestamp: "9m03s",
@@ -553,7 +553,7 @@ let data = {
         {
             videoId: "mbSezLioaTc",
             title: "【Karaoke!!】What better day to do a Karaoke Night!!",
-            date: "Oct 3, 2021",
+            date: new Date("Oct 3, 2021"),
             songs: [
                 {
                     timestamp: "10m43s",
@@ -632,7 +632,7 @@ let data = {
         {
             videoId: "UdDZ1MR1omA",
             title: "【Karaoke!!】Isn’t it time for some more Karaoke Night?",
-            date: "Oct 12, 2021",
+            date: new Date("Oct 12, 2021"),
             songs: [
                 {
                     timestamp: "8m33s",
@@ -711,7 +711,7 @@ let data = {
         {
             videoId: "ZhZOywPYLNE-dIU",
             title: "【KARAOKE COLLAB】IRyS x Calliope Mori!!",
-            date: "Oct 19, 2021",
+            date: new Date("Oct 19, 2021"),
             songs: [
                 {
                     timestamp: "10m28s",
@@ -784,7 +784,7 @@ let data = {
         {
             videoId: "ij9XQH-0Hl0",
             title: "【KARAOKE PARTY】100 Day Celebration Karaoke!! First Karaoke Party♪",
-            date: "Oct 20, 2021",
+            date: new Date("Oct 20, 2021"),
             songs: [
                 {
                     timestamp: "12m52s",
@@ -857,7 +857,7 @@ let data = {
         {
             videoId: "Gxtn6EpXY54",
             title: "【KARAOKE NIGHT】THANK YOU FOR 700k SUBS!! It's a singing party!",
-            date: "Nov 12, 2021",
+            date: new Date("Nov 12, 2021"),
             songs: [
                 {
                     timestamp: "10m43s",
@@ -930,7 +930,7 @@ let data = {
         {
             videoId: "D7Kyu8aL_y8",
             title: "IRyS - YouTube Music Weekend",
-            date: "Dec 3, 2021",
+            date: new Date("Dec 3, 2021"),
             songs: [
                 {
                     timestamp: "2m24s",
@@ -973,7 +973,7 @@ let data = {
         {
             videoId: "c_gZHcV4SxE",
             title: "【6 MONTH ANNIVERSARY】SINGING and ANNOUNCEMENTS!!💎",
-            date: "Jan 10, 2022",
+            date: new Date("Jan 10, 2022"),
             songs: [
                 {
                     timestamp: "11m04s",
@@ -1040,7 +1040,7 @@ let data = {
         {
             videoId: "UEMcl5rzLPU",
             title: "『#BirthdayRyS』ITS MY B-DAY Woo~!🎈【BIRTHDAY STREAM】",
-            date: "Mar 6, 2022",
+            date: new Date("Mar 6, 2022"),
             songs: [
                 {
                     timestamp: "3h28m28s",
@@ -1071,7 +1071,7 @@ let data = {
         {
             videoId: "TdYFeuMXkLc",
             title: "【Karaoke Endurance】Singing until 801k Subs!",
-            date: "Mar 28, 2022",
+            date: new Date("Mar 28, 2022"),
             songs: [
                 {
                     timestamp: "9m26s",
@@ -1168,7 +1168,7 @@ let data = {
         {
             videoId: "t0trlM9JHeM",
             title: "【ROOM REVEAL】Flexing New Room and Sing some? ;D",
-            date: "Apr 10, 2022",
+            date: new Date("Apr 10, 2022"),
             songs: [
                 
                 {
@@ -1254,7 +1254,7 @@ let data = {
         {
             videoId: "az2L7dtSgjc",
             title: "【HADES】a rebellious phase",
-            date: "Apr 30, 2022",
+            date: new Date("Apr 30, 2022"),
             songs: [
                 {
                     timestamp: "4h17m09s",
