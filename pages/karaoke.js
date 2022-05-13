@@ -56,6 +56,17 @@ export default class KaraokeApp extends React.Component {
 
     this.lastSearchText = searchText;
 
+    const formatDate = (d) => {
+        return d.toString().split(' ').filter((e,i) => { return !(i < 1 || i > 3) }).map((e,i) => { return (i == 1) ? `${e},` : e }).join(' ')
+    }
+
+    const formatDateId = (d) => {
+        const year = d.getFullYear()
+        const month = (d.getMonth()+1 < 10) ? `0${d.getMonth()+1}` : d.getMonth()+1
+        const day = (d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()
+        return `${year}-${month}-${day}`
+    }
+
     return <div className={styles.site}>
         <Head>
             <title>Karaoke</title>
@@ -96,7 +107,8 @@ export default class KaraokeApp extends React.Component {
                         <tr key={i}>
                             <td>{i+1}.</td>
                             <td><a href={songUrl(s.karaoke, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
-                            <td>{s.karaoke.date.toString().split(' ').map((e,i) => { if (i < 1 || i > 3) { return; } if (i == 2) { return `${e},`; } return e }).filter(e => { return (e) ? e : false }).join(' ')} -{s.karaoke.title}</td>
+                            <td>{formatDate(s.karaoke.date)} -{s.karaoke.title}</td>
+
                         </tr>
                     ))}
             </tbody>
@@ -115,12 +127,15 @@ export default class KaraokeApp extends React.Component {
                     <tbody>
                     
                         <tr>
-                            <td className={styles.titlerow} colSpan="2">{k.date.toString().split(' ').map((e,i) => { if (i < 1 || i > 3) { return; } if (i == 2) { return `${e},`; } return e }).filter(e => { return (e) ? e : false }).join(' ')} -{k.title}</td>
+                            <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">{formatDate(k.date)} -{k.title}</td>
+                            <td className={styles.titlerow} style={{borderLeft: 'none'}}><a href={`#${formatDateId(k.date)}`}>#</a></td>
                         </tr>
                         {k.songs.map((s, i) => (
                             <tr key={i}>
                                 <td>{i+1}.</td>
-                                <td><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
+                                <td style={{borderRight: 'none'}}><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
+                                <td style={{borderLeft: 'none'}}>&nbsp;</td>
+
                             </tr>
                         ))}
                     
