@@ -128,7 +128,7 @@ export default class KaraokeApp extends React.Component {
                     
                         <tr>
                             <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">{formatDate(k.date)} -{k.title}</td>
-                            <td className={styles.titlerow} style={{borderLeft: 'none'}}><a href={`#${formatDateId(k.date)}`}>#</a></td>
+                            <td className={styles.titlerow} style={{borderLeft: 'none'}}><a style={{display: 'flex', justifyContent: 'right', textAlign: 'right'}} href={`#${formatDateId(k.date)}`}>#</a></td>
                         </tr>
                         {k.songs.map((s, i) => (
                             <tr key={i}>
