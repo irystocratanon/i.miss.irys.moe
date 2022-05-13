@@ -322,10 +322,21 @@ export default function Home(props) {
         }
 
         const interval = setInterval(() => {
-            if (!liveReloadRef.current.checked) {
+            const endLiveReload = () => {
                 liveReloadProgress.style.width = (targetRefreshTime === 1) ? "100%" : "0%"
                 updateInterval = null
                 synchroniseUpdateInterval()
+                return
+            }
+            try {
+                // can throw when exiting from home -> another page
+                // using the back/forward button
+                if (!liveReloadRef.current.checked) {
+                    endLiveReload()
+                    return
+                }
+            } catch (e) {
+                endLiveReload()
                 return
             }
             if (updateInterval === null) {
