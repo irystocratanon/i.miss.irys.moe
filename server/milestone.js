@@ -19,5 +19,12 @@ export function closestMilestone(views) {
 
 export function milestoneDelta(views) {
     var m = closestMilestone(views)
-    return { milestone: m, delta: m - views, million: (m % 1_000_000) == 0 } 
+    var mm = closestMillion(views)
+    return { 
+        milestone: m, 
+        delta: m - views, 
+        million: (m % 1_000_000) == 0,
+        millionDelta: mm - views,
+        millionMilestone: mm
+    } 
 }
