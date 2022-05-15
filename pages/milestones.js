@@ -12,10 +12,17 @@ class NumberFormat extends React.Component {
 }
 
 export async function getServerSideProps({ res }) {
+    
+    var closestMillion = 1_000_000;
+    var closestMillionaire = null;
     const reps = Array.from(await getReps())
           .map(rep => {
               if (typeof rep !== 'object') { return; }
               rep.milestone = milestoneDelta(rep.views || 0);
+              if(rep.milestone.millionDelta < closestMillion) {
+                closestMillion = rep.milestone.millionDelta
+                closestMillionaire = rep;
+              }
               return rep;
           })
           .sort((a, b) => a.milestone.delta - b.milestone.delta);
@@ -23,13 +30,14 @@ export async function getServerSideProps({ res }) {
     return {props: {
         vids: reps, 
         top: reps[0],
+        topMillionaire: closestMillionaire,
         topics: reps.filter(v => v.topic),
         nonTopics: reps.filter(v => !v.topic)
      }};
   }
 
 export default function Milestones(props) {
-    let { vids, top, topics, nonTopics } = props;
+    let { vids, top, topics, nonTopics, topMillionaire } = props;
 
     return <div className={styles.site}>
         <Head>
@@ -49,6 +57,14 @@ export default function Milestones(props) {
                 <Link href="/karaoke">Karaoke</Link>
         </section>
         <div>
+
+            {!top.milestone.million && <section className={styles.top}>
+                <h3>Next Millionaire</h3>
+                <div><a href={topMillionaire.url}><img src={topMillionaire.thumbnail.url}></img></a></div>
+                <a href={topMillionaire.url}>{topMillionaire.title}</a>
+                <div> is <NumberFormat value={topMillionaire.milestone.millionDelta}></NumberFormat> views away from <NumberFormat className={styles.million} value={top.milestone.millionMilestone}></NumberFormat>!!</div>
+            </section>}
+
             <section className={styles.top}>
                 <h3>Next Milestone</h3>
                 <div><a href={top.url}><img src={top.thumbnail.url}></img></a></div>
