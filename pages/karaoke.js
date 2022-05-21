@@ -133,7 +133,7 @@ export default class KaraokeApp extends React.Component {
                         {k.songs.map((s, i) => (
                             <tr key={i}>
                                 <td>{i+1}.</td>
-                                <td style={{borderRight: 'none'}}><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
+                                <td style={{borderRight: 'none'}}><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title}{s.artist.length > 0 ? ' - ' : ''}{s.artist}</a></td>
                                 <td style={{borderLeft: 'none'}}>&nbsp;</td>
 
                             </tr>

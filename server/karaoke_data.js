@@ -1276,6 +1276,91 @@ let data = {
                     keywords: "hibana match tokino sora irys"
                 }
             ]
+        },
+        {
+            videoId: "0Gab9leyukI",
+            title: "【KARAOKE】Let's sing baby",
+            date: new Date("May 21, 2022"),
+            songs: [
+                {
+                    timestamp: "8m52s",
+                    title: "Charles / シャルル",
+                    artist: "Keina Suda",
+                    keywords: "charles sharuru keina suda"
+                },
+                {
+                    timestamp: "19m35s",
+                    title: "Kawaranai Mono (変わらないもの)",
+                    artist: "Hanako Oku",
+                    keywords: "kawaranai mono hanako oku"
+                },
+                {
+                    timestamp: "27m40s",
+                    title: "Hitchcock",
+                    artist: "Yorushika",
+                    keywords: "hitchcock yorushika"
+                },
+                {
+                    timestamp: "35m03s",
+                    title: "Deriheru Yondara Kimi ga Kita (デリヘル呼んだら君が来た)",
+                    artist: "Nanahoshi Kangengakudan",
+                    keywords: "deriheru yondara kimi ga kita nanahoshi kangengakudan"
+                },
+                {
+                    timestamp: "42m37s",
+                    title: "The Everlasting Guilty Crown",
+                    artist: "EGOIST",
+                    keywords: "the everlasting guilty crown egoist"
+                },
+                {
+                    timestamp: "51m19s",
+                    title: "Anna ni Issho Datta no ni (あんなに一緒だったのに)",
+                    artist: "See-Saw",
+                    keywords: "anna ni issho datta no ni see saw"
+                },
+                {
+                    timestamp: "59m03s",
+                    title: "INVOKE",
+                    artist: "T.M.Revolution",
+                    keywords: "invoke tm revolution"
+                },
+                {
+                    timestamp: "1h09m34s",
+                    title: "Sorairo Days (空色デイズ)",
+                    artist: "Shoko Nakagawa",
+                    keywords: "sorairo days shoko nakagawa"
+                },
+                {
+                    timestamp: "1h18m32s",
+                    title: "Shangri-La",
+                    artist: "Angela",
+                    keywords: "shangri la angela"
+                },
+                {
+                    timestamp: "1h28m26s",
+                    title: "Ikanaide",
+                    artist: "Sohta",
+                    keywords: "ikanaide sohta"
+                },
+                {
+                    timestamp: "1h35m37s",
+                    title: "Irony",
+                    artist: "Majiko",
+                    keywords: "irony majiko"
+                },
+                {
+                    timestamp: "1h43m44s",
+                    title: "I Beg You",
+                    artist: "Aimer",
+                    keywords: "i beg you aimer"
+                },
+                {
+                    timestamp: "1h53m33s",
+                    title: "VIOLET (TV Size)",
+                    artist: "Ninomae Ina'nis",
+                    keywords: "violet ninomae ina nis"
+                }
+            ]
         }
     ]
 }
