@@ -25,6 +25,10 @@
     font-weight: bold;
     background-color: #ffffff;
 }
+.deadlink {
+    text-decoration: line-through;
+    color: #999
+}
 
 .site table {
     margin-top: 10px;
