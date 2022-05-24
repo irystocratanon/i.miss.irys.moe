@@ -106,7 +106,9 @@ export default class KaraokeApp extends React.Component {
                     {searchResults.map((s, i) => (
                         <tr key={i}>
                             <td>{i+1}.</td>
-                            <td><a href={songUrl(s.karaoke, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>
+                            {s.dead 
+                            && <td className={styles.deadlink}>{s.title} - {s.artist}</td>
+                            || <td><a href={songUrl(s.karaoke, s)} target="_blank" rel="noreferrer">{s.title} - {s.artist}</a></td>}
                             <td>{formatDate(s.karaoke.date)} -{s.karaoke.title}</td>
 
                         </tr>
@@ -133,7 +135,9 @@ export default class KaraokeApp extends React.Component {
                         {k.songs.map((s, i) => (
                             <tr key={i}>
                                 <td>{i+1}.</td>
-                                <td style={{borderRight: 'none'}}><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title}{s.artist.length > 0 ? ' - ' : ''}{s.artist}</a></td>
+                                {s.dead 
+                                && <td style={{borderRight: 'none'}} className={styles.deadlink}>{s.title}{s.artist.length > 0 ? ' - ' : ''}{s.artist}</td>
+                                || <td style={{borderRight: 'none'}}><a href={songUrl(k, s)} target="_blank" rel="noreferrer">{s.title}{s.artist.length > 0 ? ' - ' : ''}{s.artist}</a></td>}
                                 <td style={{borderLeft: 'none'}}>&nbsp;</td>
 
                             </tr>

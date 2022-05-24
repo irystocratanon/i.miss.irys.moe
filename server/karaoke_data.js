@@ -1273,7 +1273,7 @@ let data = {
                     timestamp: "44m22s",
                     title: "ヒバナ (Match) /  (w.アイリス / IRyS)",
                     artist: "DECO*27",
-                    keywords: "hibana match tokino sora irys"
+                    keywords: "hibana match tokino sora irys deco27 deco 27 duet"
                 }
             ]
         },
@@ -1316,46 +1316,48 @@ let data = {
                     timestamp: "51m19s",
                     title: "Anna ni Issho Datta no ni (あんなに一緒だったのに)",
                     artist: "See-Saw",
-                    keywords: "anna ni issho datta no ni see saw"
+                    keywords: "anna ni issho datta no ni see saw",
+                    dead: true
                 },
                 {
                     timestamp: "59m03s",
                     title: "INVOKE",
                     artist: "T.M.Revolution",
-                    keywords: "invoke tm revolution"
+                    keywords: "invoke tm revolution",
+                    dead: true
                 },
                 {
-                    timestamp: "1h09m34s",
+                    timestamp: "54m29s",
                     title: "Sorairo Days (空色デイズ)",
                     artist: "Shoko Nakagawa",
                     keywords: "sorairo days shoko nakagawa"
                 },
                 {
-                    timestamp: "1h18m32s",
+                    timestamp: "1h03m26s",
                     title: "Shangri-La",
                     artist: "Angela",
                     keywords: "shangri la angela"
                 },
                 {
-                    timestamp: "1h28m26s",
+                    timestamp: "1h13m21s",
                     title: "Ikanaide",
                     artist: "Sohta",
                     keywords: "ikanaide sohta"
                 },
                 {
-                    timestamp: "1h35m37s",
+                    timestamp: "1h20m33s",
                     title: "Irony",
                     artist: "Majiko",
                     keywords: "irony majiko"
                 },
                 {
-                    timestamp: "1h43m44s",
+                    timestamp: "1h28m39s",
                     title: "I Beg You",
                     artist: "Aimer",
                     keywords: "i beg you aimer"
                 },
                 {
-                    timestamp: "1h53m33s",
+                    timestamp: "1h38m30s",
                     title: "VIOLET (TV Size)",
                     artist: "Ninomae Ina'nis",
                     keywords: "violet ninomae ina nis"
