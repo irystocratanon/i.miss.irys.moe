@@ -46,6 +46,15 @@ export default async function schedulePoller(callback) {
         clearTimeout(abortTimeout)
     }
     if (callback && images.length > 0) {
+        let currentDate = Date.now()
+        const subtractWeek = date => {
+            return date-(((3600*24)*7)*1000)
+        }
+        if (subtractWeek(currentDate) < currentDate-Date.parse(pubDate)) {
+                    console.log(`schedule: ${pubDate} is longer than a week old`)
+                    images = []
+                    return
+        }
         callback(images)
     }
 }
