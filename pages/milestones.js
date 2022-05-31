@@ -55,6 +55,8 @@ export default function Milestones(props) {
                 <Link href="/milestones">Milestones</Link>
                 &nbsp;|&nbsp;
                 <Link href="/karaoke">Karaoke</Link>
+                &nbsp;|&nbsp;
+                <Link href="/social">IRySocial</Link>
         </section>
         <div>
 

@@ -1,0 +1,26 @@
+.socialItem {
+    background: #fff;
+    display: flex;
+    margin: 1em;
+    border-radius: 0.5em;
+}
+
+.socialItem img {
+    max-width: 75vw !important;
+}
+
+@media (max-width: 480px) {
+    .socialItem img {
+        max-width: 250px !important;
+    }
+}
+
+.socialItem img {
+    box-sizing: border-box;
+    cursor: url('/cursors/xtu4jv.cur'), default;
+}
+
+.socialItem a img:hover {
+    cursor: url('/cursors/uayktw.cur'), pointer;
+}
+
