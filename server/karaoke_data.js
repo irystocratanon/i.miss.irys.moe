@@ -327,13 +327,13 @@ let data = {
                     timestamp: "1h00m46s",
                     title: "Hametsu no Junjou (破滅の純情)",
                     artist: "Walkure",
-                    keywords: "hametsu no junjou walkure"
+                    keywords: "hametsu no junjou walkure macross"
                 },
                 {
                     timestamp: "1h08m59s",
                     title: "Namidame Bakuhatsuon (涙目爆発音)",
                     artist: "Walkure",
-                    keywords: "namidame bakuhatsuon baku walkure"
+                    keywords: "namidame bakuhatsuon baku walkure macross"
                 },
                 {
                     timestamp: "1h18m31s",
@@ -668,7 +668,7 @@ let data = {
                     timestamp: "1h00m55s",
                     title: "Ikenai Borderline (いけないボーダーライン)",
                     artist: "Walküre",
-                    keywords: "ikenai borderline walkure"
+                    keywords: "ikenai borderline walkure macross"
                 },
                 {
                     timestamp: "1h10m32s",
@@ -1363,7 +1363,86 @@ let data = {
                     keywords: "violet ninomae ina nis"
                 }
             ]
-        }
+        },
+        {
+            videoId: "z_jRGSbooPQ",
+            title: "【NEW COVER RELEASED】AFTERPARTY KARAOKE!",
+            date: new Date("May 30, 2022"),
+            songs: [
+                {
+                    timestamp: "12m28s",
+                    title: "Betelgeuse",
+                    artist: "Yuuri",
+                    keywords: "betelgeuse yuuri"
+                },
+                {
+                    timestamp: "23m15s",
+                    title: "Hana ni Bourei",
+                    artist: "Yorushika",
+                    keywords: "hana ni bourei yorushika"
+                },
+                {
+                    timestamp: "33m41s",
+                    title: "HOT LIMIT",
+                    artist: "T.M.Revolution",
+                    keywords: "hot limit tm revolution"
+                },
+                {
+                    timestamp: "41m26s",
+                    title: "Kataomoi (カタオモイ)",
+                    artist: "Aimer",
+                    keywords: "kataomoi aimer"
+                },
+                {
+                    timestamp: "54m26s",
+                    title: "Chouchou Musubi (蝶々結び)",
+                    artist: "Aimer",
+                    keywords: "chouchou musubi aimer"
+                },
+                {
+                    timestamp: "1h01m57s",
+                    title: "Zankyou Sanka (残響散歌)",
+                    artist: "Aimer",
+                    keywords: "chouchou musubi aimer"
+                },
+                {
+                    timestamp: "1h11m15s",
+                    title: "Till the end of me",
+                    artist: "IRyS",
+                    keywords: "irys shinzou ga tomaru made till the end of me"
+                },
+                {
+                    timestamp: "1h20m43s",
+                    title: "Kokoronashi (心做し)",
+                    artist: "Chouchou-P ft. GUMI",
+                    keywords: "kokoronashi chouchou gumi"
+                },
+                {
+                    timestamp: "1h31m13s",
+                    title: "FIRE GROUND",
+                    artist: "Official Hige Dandism",
+                    keywords: "fire ground official hige dandism"
+                },
+                {
+                    timestamp: "1h39m56s",
+                    title: "Ai Oboete Imasuka (愛・おぼえていますか)",
+                    artist: "Mari Iijima",
+                    keywords: "ai oboete imasuka do you remember love macross mari iijima"
+                },
+                {
+                    timestamp: "1h49m36s",
+                    title: "Time After Time ～花舞う街で～",
+                    artist: "Kuraki Mai",
+                    keywords: "time after kuraki mai detective conan"
+                },
+                {
+                    timestamp: "1h58m42s",
+                    title: "Balalaika",
+                    artist: "Kusumi Koharu",
+                    keywords: "balalaika kusumi koharu"
+                },
+            ]
+        },
     ]
 }
 
