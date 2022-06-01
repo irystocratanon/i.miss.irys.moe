@@ -11,9 +11,18 @@ export async function getServerSideProps({ res }) {
     const currentDate = new Date()
     return { props: {
         social: social.map(e => {
+            const duration = intervalToDuration({start: e.date, end: currentDate})
+            let formatDurationOpts = {format: ['years']}
+            if (duration.years === 0 || !duration.hasOwnProperty('years')) { formatDurationOpts['format'].push('months') }
+            if (duration.months === 0 || !duration.hasOwnProperty('months')) { formatDurationOpts['format'].push('weeks') }
+            if (duration.weeks === 0 || !duration.hasOwnProperty('weeks')) { formatDurationOpts['format'].push('days') }
+            if (duration.days === 0 || !duration.hasOwnProperty('days')) { formatDurationOpts['format'].push('hours') }
+            if (duration.hours === 0 || !duration.hasOwnProperty('hours')) { formatDurationOpts['format'].push('minutes') }
+            if (duration.minutes === 0 || !duration.hasOwnProperty('minutes')) { formatDurationOpts['format'].push('seconds') }
+
             return {
                 type: e.type,
-                date: `${formatDuration(intervalToDuration({start: e.date, end: currentDate}))} ago`,
+                date: `${formatDuration(duration, formatDurationOpts)} ago`,
                 data: e.data
             }})
         }}
