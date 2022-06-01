@@ -1,13 +1,22 @@
 import Head from "next/head"
 import Link from "next/link"
-import React from 'react'
+
+import {intervalToDuration,formatDuration} from "date-fns"
 
 import {getSocials} from '../pages/api/social.js'
 import styles from '../styles/Social.module.css'
 
 export async function getServerSideProps({ res }) {
     const social = await getSocials()
-    return { props: { social: social.map(e => { return {type: e.type, data: e.data} }) } }
+    const currentDate = new Date()
+    return { props: {
+        social: social.map(e => {
+            return {
+                type: e.type,
+                date: `${formatDuration(intervalToDuration({start: e.date, end: currentDate}))} ago`,
+                data: e.data
+            }})
+        }}
 }
 
 export default function SocialsApp(props) {
@@ -17,6 +26,7 @@ export default function SocialsApp(props) {
             const guid = t.data.guid[0].replace(/#.*/g, '').split('/').pop()
             return (
                 <div style={{margin: '0.5em'}}>
+                    <small style={{color: 'dimgray'}}>{t.date}</small>
                     <blockquote dangerouslySetInnerHTML={{__html: t.data.description[0]}}>
                     </blockquote>
                     <small><a href={`https://twitter.com/irys_en/status/${guid}`}>{`https://twitter.com/irys_en/status/${guid}`}</a></small>
@@ -29,7 +39,8 @@ export default function SocialsApp(props) {
             const permalink = l.data.link[0]['$'].href
             return (
                 <div className={styles.reddit} style={{margin: '0.5em'}}>
-                    <strong>{l.data.title[0]}</strong>
+                    <small style={{color: 'dimgray'}}>{l.date}</small>
+                    <br /><strong>{l.data.title[0]}</strong>
                     <blockquote dangerouslySetInnerHTML={{__html: l.data.content[0]['_'] }}>
                     </blockquote>
                     {!hasLink && <small><a href={permalink}>{permalink}</a></small>}
@@ -40,6 +51,7 @@ export default function SocialsApp(props) {
         const formatYouTubeCommunity = y => {
             return (
                 <div style={{margin: '0.5em'}}>
+                    <small style={{color: 'dimgray'}}>{y.date}</small>
                 <blockquote>
                     {y.data.content[0].text}
                     {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={y.data.id} />,<iframe key={y.data.id} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
