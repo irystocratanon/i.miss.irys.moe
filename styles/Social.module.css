@@ -23,6 +23,23 @@
     }
 }
 
+@media (min-width: 801px) {
+    .socialContainer {
+        padding: 10px 80px 60px;
+    }
+    .socialItem img {
+        max-height: 75vw;
+        width: auto;
+        padding: 2em;
+    }
+    .socialItem iframe {
+        padding: 2em;
+    }
+    .socialItem .reddit img {
+        max-width: 55vw !important;
+    }
+}
+
 .socialItem img {
     box-sizing: border-box;
     cursor: url('/cursors/xtu4jv.cur'), default;

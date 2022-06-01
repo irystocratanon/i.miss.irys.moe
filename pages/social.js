@@ -86,9 +86,11 @@ export default function SocialsApp(props) {
                 &nbsp;|&nbsp;
                 <Link href="/social">IRySocial</Link>
             </section>
+            <section className={styles.socialContainer}>
             {social.map((s, i) => (
                 <div key={i} className={styles.socialItem}>{formatSocial(s)}</div>
-             ))}
+            ))}
+            </section>
         </div>
     </div>
 }
