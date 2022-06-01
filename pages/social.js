@@ -34,7 +34,7 @@ export default function SocialsApp(props) {
         const formatTwitter = t => {
             const guid = t.data.guid[0].replace(/#.*/g, '').split('/').pop()
             return (
-                <div style={{margin: '0.5em'}}>
+                <div style={{margin: '0.5em', overflowWrap: 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{t.date}</small>
                     <blockquote dangerouslySetInnerHTML={{__html: t.data.description[0]}}>
                     </blockquote>
@@ -47,7 +47,7 @@ export default function SocialsApp(props) {
             const hasLink = (l.data.content[0]['_'].indexOf('submitted by &#32; <a href="https://old.reddit.com/user/IRySoWise"> /u/IRySoWise </a>') > -1)
             const permalink = l.data.link[0]['$'].href
             return (
-                <div className={styles.reddit} style={{margin: '0.5em'}}>
+                <div className={styles.reddit} style={{margin: '0.5em', overflowWrap: (hasLink) ? 'initial' : 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{l.date}</small>
                     <br /><strong>{l.data.title[0]}</strong>
                     <blockquote dangerouslySetInnerHTML={{__html: l.data.content[0]['_'] }}>
@@ -59,7 +59,7 @@ export default function SocialsApp(props) {
 
         const formatYouTubeCommunity = y => {
             return (
-                <div style={{margin: '0.5em'}}>
+                <div style={{margin: '0.5em', overflowWrap: 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{y.date}</small>
                 <blockquote>
                     {y.data.content[0].text}

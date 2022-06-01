@@ -1,8 +1,6 @@
 .socialItem {
     background: #fff;
     display: flex;
-    margin: 1em;
-    border-radius: 0.5em;
 }
 
 .socialItem img, .socialItem iframe {
@@ -12,6 +10,30 @@
 
 .socialItem iframe {
     min-height: 480px;
+}
+
+/*
+ * add min-width for extremely small devices like the Galaxy Fold
+ * I don't have this device to test but it seems to look better in Chrome Dev Tools
+ */
+@media (max-width: 280px) {
+    .socialItem {
+        min-width: 335px;
+    }
+}
+
+@media (max-width: 375px) {
+    .socialItem {
+        margin: 0.25em;
+        border-radius: 0.25em;
+    }
+}
+
+@media (min-width: 376px) {
+    .socialItem {
+        margin: 1em;
+        border-radius: 0.5em;
+    }
 }
 
 @media (max-width: 800px) {
@@ -24,9 +46,6 @@
 }
 
 @media (min-width: 801px) {
-    .socialContainer {
-        padding: 10px 80px 60px;
-    }
     .socialItem img {
         max-height: 75vw;
         width: auto;
@@ -37,6 +56,15 @@
     }
     .socialItem .reddit img {
         max-width: 55vw !important;
+    }
+    .socialItem blockquote {
+        max-width: 87%;
+    }
+}
+
+@media (min-width: 821px) {
+    .socialContainer {
+        padding: 10px 80px 60px;
     }
 }
 
