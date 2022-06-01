@@ -35,7 +35,7 @@ export default function SocialsApp(props) {
             const guid = t.data.guid[0].replace(/#.*/g, '').split('/').pop()
             return (
                 <div style={{margin: '0.5em', overflowWrap: 'anywhere'}}>
-                    <small style={{color: 'dimgray'}}>{t.date}</small>
+                    {!t.data.retweet && <small style={{color: 'dimgray'}}>{t.date}</small>}
                     <blockquote dangerouslySetInnerHTML={{__html: t.data.description[0]}}>
                     </blockquote>
                     <small><a href={`https://twitter.com/irys_en/status/${guid}`}>{`https://twitter.com/irys_en/status/${guid}`}</a></small>
