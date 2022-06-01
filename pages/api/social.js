@@ -1,4 +1,5 @@
 const {parseString} = require('xml2js')
+import { extractCommunityPosts } from "yt-scraping-utilities"
 
 const fetchTweets = async function (endpoint, url) {
     try {
@@ -27,24 +28,43 @@ const fetchTweets = async function (endpoint, url) {
 
 export async function getSocials() {
     let socials = []
-    let leddit = await fetch('https://old.reddit.com/user/IRySoWise.rss')
-    await parseString(await leddit.text(), {trim: true}, function(err,res) {
-        if (err) { return; }
-        if (!res || !res.feed) { return; }
-        let items = res.feed.entry
-        if (!items || items.length < 1) { return; }
-        items.forEach(item => {
-            socials.push({type: 'reddit', date: new Date(item.updated), data: item})
+    try {
+        let leddit = await fetch('https://old.reddit.com/user/IRySoWise.rss')
+        await parseString(await leddit.text(), {trim: true}, function(err,res) {
+            if (err) { return; }
+            if (!res || !res.feed) { return; }
+            let items = res.feed.entry
+            if (!items || items.length < 1) { return; }
+            items.forEach(item => {
+                socials.push({type: 'reddit', date: new Date(item.updated), data: item})
+            })
         })
-    })
-    let nitterEndpoints = ['https://nitter.irys.moe', 'https://nitter.net']
+    } catch (err) { console.error(err); }
+
+    const nitterEndpoints = ['https://nitter.irys.moe', 'https://nitter.net']
 
     for (let endpoint of nitterEndpoints) {
-        let tweets = await fetchTweets(endpoint.replace(/https?:\/\//, ''), `${endpoint}/irys_en/with_replies/rss`)
+        let tweets
+        try {
+            tweets = await fetchTweets(endpoint.replace(/https?:\/\//, ''), `${endpoint}/irys_en/with_replies/rss`)
+        } catch (err) { console.error(err); }
         if (tweets.length === 0 || !tweets) { continue; }
         tweets.forEach(tweet => { socials.push(tweet); })
         break   
     }
+
+    try {
+        let youtubeCommunityPostReq = await fetch(`https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}/community`)
+        let youtubeCommunityPosts = extractCommunityPosts(await youtubeCommunityPostReq.text())
+        youtubeCommunityPosts.forEach(post => {
+            let social = {type: 'youtube', date: new Date(post.approximatePostDate)}
+            post.approximatePostDate = post.approximatePostDate.toString()
+            social.data = post
+            post.content = post.content.filter(e => { return (!e) ? false : true })
+            socials.push(social)
+        })
+    } catch (err) { console.error(err); }
+
     return socials.sort((a,b) => { return Date.parse(a.date) < Date.parse(b.date) || -1 });
 }
 

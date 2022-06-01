@@ -14,7 +14,8 @@
     "node-html-parser": "^5.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.4.23",
+    "yt-scraping-utilities": "git+https://github.com/irystocratanon/yt-scraping-utilities.git"
   },
   "devDependencies": {
     "eslint": "7",
