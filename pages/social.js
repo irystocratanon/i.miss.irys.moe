@@ -28,7 +28,7 @@ export default function SocialsApp(props) {
             const hasLink = (l.data.content[0]['_'].indexOf('submitted by &#32; <a href="https://old.reddit.com/user/IRySoWise"> /u/IRySoWise </a>') > -1)
             const permalink = l.data.link[0]['$'].href
             return (
-                <div style={{margin: '0.5em'}}>
+                <div className={styles.reddit} style={{margin: '0.5em'}}>
                     <strong>{l.data.title[0]}</strong>
                     <blockquote dangerouslySetInnerHTML={{__html: l.data.content[0]['_'] }}>
                     </blockquote>
@@ -42,7 +42,7 @@ export default function SocialsApp(props) {
                 <div style={{margin: '0.5em'}}>
                 <blockquote>
                     {y.data.content[0].text}
-                    {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && <iframe width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>}
+                    {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={y.data.id} />,<iframe key={y.data.id} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
                     {y.data.images instanceof Array && y.data.images.length > 0 && y.data.attachmentType === 'IMAGE' && y.data.images.map((img,i) => (
                     <span key={i}>
                         <br />

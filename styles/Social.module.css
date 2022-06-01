@@ -5,13 +5,21 @@
     border-radius: 0.5em;
 }
 
-.socialItem img {
+.socialItem img, .socialItem iframe {
     max-width: 75vw !important;
+    height: auto;
 }
 
-@media (max-width: 480px) {
-    .socialItem img {
-        max-width: 250px !important;
+.socialItem iframe {
+    min-height: 480px;
+}
+
+@media (max-width: 800px) {
+    .socialItem .reddit img {
+        max-width: 49vw !important;
+    }
+    .socialItem iframe {
+        min-height: 240px;
     }
 }
 
