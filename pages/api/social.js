@@ -25,8 +25,12 @@ const fetchTweets = async function (endpoint, url) {
                 item.retweet = isRetweet(item)
                 for (let j = i+1; j < items.length; j++) {
                     if (!isRetweet(items[j])) {
-                        item.pubDate = new Date(items[j].pubDate)
-                        item.pubDate = new Date(Date.parse(item.pubDate)+(1000*(nth_retweet)))
+                        let pubDate
+                        pubDate = new Date(items[j].pubDate)
+                        if (Date.parse(new Date(item.pubDate)) > Date.parse(pubDate)) {
+                            break
+                        }
+                        item.pubDate = new Date(Date.parse(pubDate)+(1000*(nth_retweet)))
                         item.pubDate = item.pubDate.toString()
                         nth_retweet-=1
                         break
