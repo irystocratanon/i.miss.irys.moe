@@ -12,27 +12,28 @@ const fetchTweets = async function (endpoint, url) {
             if (!res || !res.rss || !res.rss.channel || ! res.rss.channel instanceof Array || res.rss.channel.length < 1) { return []; }
             let items = res.rss.channel[0].item
             if (!items || items.length < 1) { return []; }
+            let nth_retweet = items.length
             await items.forEach((item,i) => {
                 item.description = item.description.map(d => {
                     return d.replace(/piped.kavin.rocks\//g, 'www.youtube.com/watch?v=').replace(/youtu.be\//g, 'www.youtube.com/watch?v=').replace(endpointRegExp, 'href="https://twitter.com/').replace(/nitter.*\/(?<status>\w+)\/status/g, function(match, p1, p2, p3, offset, string) {return `twitter.com/${p1}/status`}).replace(/http:\/\//g, 'https://').replace(/#m\<\/a\>/g, '</a>')
                 })
-                const isRetweet = (item.title[0].startsWith('RT by @irys_en:'))
-                item.retweet = !!isRetweet
-                _tweets.push({type: 'twitter', date: new Date(item.pubDate), data: item})
-            })
-            let nth_retweet = _tweets.length
-            for (let i = 0; i < _tweets.length; i++) {
-                if (_tweets[i].data.retweet) {
-                    for (let j = i; j < _tweets.length; j++) {
-                        if (!_tweets[j].data.retweet) {
-                            _tweets[i].date = _tweets[j].date
-                            _tweets[i].date = new Date(Date.parse(_tweets[i].date)+(3600*(nth_retweet)))
-                            nth_retweet-=1
-                            break
-                        }
+                const isRetweet = rt => {
+                        if (rt.retweet) { return true; }
+                        rt.retweet = !!(rt.title[0].startsWith('RT by @irys_en:'))
+                        return rt.retweet
+                }
+                item.retweet = isRetweet(item)
+                for (let j = i+1; j < items.length; j++) {
+                    if (!isRetweet(items[j])) {
+                        item.pubDate = new Date(items[j].pubDate)
+                        item.pubDate = new Date(Date.parse(item.pubDate)+(1000*(nth_retweet)))
+                        item.pubDate = item.pubDate.toString()
+                        nth_retweet-=1
+                        break
                     }
                 }
-            }
+                _tweets.push({type: 'twitter', date: new Date(item.pubDate), data: item})
+            })
         })
         return _tweets
     } catch (err) {
