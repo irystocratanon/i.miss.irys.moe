@@ -47,7 +47,7 @@
 
 @media (min-width: 801px) {
     .socialItem img {
-        max-height: 75vw;
+        max-height: 75vh;
         width: auto;
         padding: 2em;
     }
