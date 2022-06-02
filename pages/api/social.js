@@ -23,6 +23,11 @@ const fetchTweets = async function (endpoint, url) {
                         return rt.retweet
                 }
                 item.retweet = isRetweet(item)
+                /*
+                 * Sometimes the pubDate of a retweet will be the time it was created by its creator as opposed to the time it was retweeted
+                 * this loop corrects that by fudging the pubDate timestamp based on the previous non-retweet.
+                 * After this correction the retweets will be ordered semi-correctly when the socials array is sorted
+                 */
                 for (let j = i+1; j < items.length; j++) {
                     if (!isRetweet(items[j])) {
                         let pubDate
