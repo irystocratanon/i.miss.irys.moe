@@ -75,8 +75,25 @@ export async function getSocials() {
             let social = {type: 'youtube', date: new Date(post.approximatePostDate)}
             post.approximatePostDate = post.approximatePostDate.toString()
             social.data = post
+            social.data.href = `https://www.youtube.com/post/${post.id}`
             post.content = post.content.filter(e => { return (!e) ? false : true })
             socials.push(social)
+        })
+    } catch (err) { console.error(err); }
+
+    try {
+        let youtubeVODsReq = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id\=${process.env.WATCH_CHANNEL_ID}`)
+        parseString(await youtubeVODsReq.text(), function(err, res) {
+            if (err) { return; }
+            if (! res instanceof Object || !res.feed || !res.feed.entry || ! res.feed.entry instanceof Array || res.feed.entry.length <=0 ) { return; }
+            res.feed.entry.forEach(vod => {
+                socials.push({type: 'youtube', date: new Date(vod.published[0]), data: {
+                    attachmentType: 'VIDEO',
+                    video: {id: vod['yt:videoId'][0]},
+                    href: `https://www.youtube.com/watch?v=${vod['yt:videoId'][0]}`,
+                    content: [{text: vod.title}]
+                }})
+            })
         })
     } catch (err) { console.error(err); }
 

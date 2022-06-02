@@ -57,13 +57,13 @@ export default function SocialsApp(props) {
             )
         }
 
-        const formatYouTubeCommunity = y => {
+        const formatYouTubeCommunity = (y, i) => {
             return (
                 <div style={{margin: '0.5em', overflowWrap: 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{y.date}</small>
                 <blockquote>
                     {y.data.content[0].text}
-                    {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={y.data.id} />,<iframe key={y.data.id} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
+                    {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={`${y.data.id}${i}0`} />,<iframe key={`${y.data.id}${i}1`} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
                     {y.data.choices instanceof Array && y.data.choices.length > 0 && y.data.attachmentType === 'POLL' &&
                     <ul>
                         {y.data.choices.map((choice,i) => (<li key={i}>{choice}</li>))}
@@ -75,19 +75,19 @@ export default function SocialsApp(props) {
                     </span>
                     ))}
                 </blockquote>
-                <small><a href={`https://www.youtube.com/post/${y.data.id}`}>{`https://www.youtube.com/post/${y.data.id}`}</a></small>
+                <small><a href={`${y.data.href}`}>{`${y.data.href}`}</a></small>
                 </div>
             )
         }
 
-        const formatSocial = s => {
+        const formatSocial = (s, i) => {
             switch (s.type) {
                 case 'twitter':
                     return formatTwitter(s)
                 case 'reddit':
                     return formatLeddit(s)
                 case 'youtube':
-                    return formatYouTubeCommunity(s)
+                    return formatYouTubeCommunity(s, i)
             }
         }
 
@@ -113,7 +113,7 @@ export default function SocialsApp(props) {
             </section>
             <section className={styles.socialContainer}>
             {social.map((s, i) => (
-                <div key={i} className={styles.socialItem}>{formatSocial(s)}</div>
+                <div key={i} className={styles.socialItem}>{formatSocial(s, i)}</div>
             ))}
             </section>
         </div>
