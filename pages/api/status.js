@@ -11,7 +11,7 @@ export default async function(req, res) {
     const json = {
         live: result?.live,
         title: result?.title || pastStream?.title || null,
-        videoLink: result?.videoLink || `https://www.youtube.com/watch?v=${pastStream?.id}`,
+        videoLink: result?.videoLink || (pastStream?.videoLink ? pastStream.videoLink : `https://www.youtube.com/watch?v=${pastStream?.id}`),
         channel: result?.channel || pastStream?.channel || "IRyS Ch. hololive-EN"
     }
     return res.status(200).json(json)

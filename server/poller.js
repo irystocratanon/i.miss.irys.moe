@@ -4,6 +4,7 @@ import { LIVESTREAM_CACHE, PASTSTREAM_CACHE } from "../server/constants"
 import { pollCollabstreamStatus } from "../server/collabs_poller"
 import { intervalToDuration, parseISO } from "date-fns"
 import { writeLivestreamToCache } from "../server/lib/http-cache-helper"
+import manualPoller from "../server/manual-poller.json"
 import { unlink } from "fs"
 import { performance } from "perf_hooks"
 
@@ -99,6 +100,16 @@ export default async function getResult() {
 
     if (result.live !== STREAM_STATUS.LIVE && result.live !== STREAM_STATUS.JUST_ENDED) {
         rmCache(LIVESTREAM_CACHE)
+    }
+
+    if (result.live !== STREAM_STATUS.LIVE) {
+        try {
+            manualPoller.end_actual = new Date(manualPoller.end_actual)
+            if (new Date(pastStream?.end_actual) < manualPoller.end_actual) {
+                pastStream = manualPoller
+                pastStream.end_actual = pastStream.end_actual.toISOString()
+            }
+        } catch (err) { console.error(err); }
     }
 
     return {error, result, pastStream}
