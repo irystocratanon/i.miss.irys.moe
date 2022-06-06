@@ -112,5 +112,18 @@ export async function getSocials() {
 
 export default async function(req, res) {
     let socials = await getSocials()
+    if (req.method === 'PATCH') {
+        let date
+        if (req.body.date) {
+            try {
+                date = new Date(req.body.date)
+            } catch (e) { }
+        }
+        if (socials instanceof Array && socials.length > 0 && date instanceof Date) {
+            socials = socials.filter(s => {
+                return new Date(s.date) >= date
+            })
+        }
+    }
     return res.status(200).json(JSON.stringify(socials))
 }
