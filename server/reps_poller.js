@@ -12,6 +12,7 @@ export default async function getReps() {
         ]
 
         let reps = [];
+        let ids = {};
 
         for(const url of playlistURLs) {
             let xmlRes = await fetch(url)
@@ -37,6 +38,14 @@ export default async function getReps() {
                         return;
                     }
 
+                    // don't add duplicates
+                    if(ids[String(link)] === true) {
+                        // is already in the list
+                        return;
+                    }
+
+                    ids[String(link)] = true;
+
                     reps.push({ 
                         url: String(link), 
                         views, 
@@ -46,7 +55,6 @@ export default async function getReps() {
                         thumbnail,
                         topic: channel == 'UCyWyNomzTjBvuRsqZU1bRCg'
                     });
-                    
                 });
             });
         }
