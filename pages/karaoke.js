@@ -77,7 +77,7 @@ export default class KaraokeApp extends React.Component {
             <meta content="IRyS Karaoke" property="og:description" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
-        <section style={{display: 'flex', flexDirection: 'column-reverse', "margin": '10px'}}>
+        <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Link href="/">I miss her&hellip;</Link>
             &nbsp;|&nbsp;
             <Link href="/milestones">Milestones</Link>
