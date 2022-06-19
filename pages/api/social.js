@@ -41,7 +41,9 @@ const fetchTweets = async function (endpoint, url) {
                         break
                     }
                 }
-                _tweets.push({type: 'twitter', date: new Date(item.pubDate), data: item})
+                let id = `${item.guid[0].split('/').pop().match(/^[0-9]+/)[0].toString()}`
+                item.id = id
+                _tweets.push({type: 'twitter', id: `tw${id}`, date: new Date(item.pubDate), data: item})
             })
         })
         return _tweets
@@ -61,7 +63,7 @@ export async function getSocials() {
             let items = res.feed.entry
             if (!items || items.length < 1) { return; }
             items.forEach(item => {
-                socials.push({type: 'reddit', date: new Date(item.updated), data: item})
+                socials.push({type: 'reddit', id: `rdt${item.id[0]}`, date: new Date(item.updated), data: item})
             })
         })
     } catch (err) { console.error(err); }
@@ -86,6 +88,7 @@ export async function getSocials() {
             post.approximatePostDate = post.approximatePostDate.toString()
             social.data = post
             social.data.href = `https://www.youtube.com/post/${post.id}`
+            social.id = `ytc${post.id}`
             post.content = post.content.filter(e => { return (!e) ? false : true })
             socials.push(social)
         })
@@ -97,9 +100,10 @@ export async function getSocials() {
             if (err) { return; }
             if (! res instanceof Object || !res.feed || !res.feed.entry || ! res.feed.entry instanceof Array || res.feed.entry.length <=0 ) { return; }
             res.feed.entry.forEach(vod => {
-                socials.push({type: 'youtube', date: new Date(vod.published[0]), data: {
+                let id = vod['yt:videoId'][0]
+                socials.push({type: 'youtube', id: `yt${id}`, date: new Date(vod.published[0]), data: {
                     attachmentType: 'VIDEO',
-                    video: {id: vod['yt:videoId'][0]},
+                    video: {id: id},
                     href: `https://www.youtube.com/watch?v=${vod['yt:videoId'][0]}`,
                     content: [{text: vod.title}]
                 }})
@@ -121,8 +125,16 @@ export default async function(req, res) {
         }
         if (socials instanceof Array && socials.length > 0 && date instanceof Date) {
             socials = socials.filter(s => {
-                return new Date(s.date) >= date
+                if (req.body.id) {
+                    return new Date(s.date) >= date && s.id !== req.body.id
+                } else {
+                    return new Date(s.date) >= date
+                }
             })
+            if (socials.length <= 0) {
+                res.status(304)
+                return res.end()
+            }
         }
     }
     return res.status(200).json(JSON.stringify(socials))

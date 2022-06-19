@@ -1,28 +1,39 @@
 import Head from "next/head"
 import Link from "next/link"
 
+import { useEffect, useState } from "react"
+
 import {intervalToDuration,formatDuration} from "date-fns"
 
 import {getSocials} from '../pages/api/social.js'
 import styles from '../styles/Social.module.css'
 
+function formatSocialItemDuration(d) {
+    const currentDate = new Date()
+    d = (d instanceof Date) ? d : new Date(d)
+    const duration = intervalToDuration({start: d, end: currentDate})
+    let formatDurationOpts = {format: ['years']}
+    if (duration.years === 0 || !duration.hasOwnProperty('years')) { formatDurationOpts['format'].push('months') }
+    if (duration.months === 0 || !duration.hasOwnProperty('months')) { formatDurationOpts['format'].push('weeks') }
+    if (duration.weeks === 0 || !duration.hasOwnProperty('weeks')) { formatDurationOpts['format'].push('days') }
+    if (duration.days === 0 || !duration.hasOwnProperty('days')) { formatDurationOpts['format'].push('hours') }
+    if (duration.hours === 0 || !duration.hasOwnProperty('hours')) { formatDurationOpts['format'].push('minutes') }
+    if (duration.minutes === 0 || !duration.hasOwnProperty('minutes')) { formatDurationOpts['format'].push('seconds') }
+
+    return `${formatDuration(duration, formatDurationOpts)} ago`
+}
+
 export async function getServerSideProps({ res }) {
     const social = await getSocials()
-    const currentDate = new Date()
     return { props: {
         social: social.map(e => {
-            const duration = intervalToDuration({start: e.date, end: currentDate})
-            let formatDurationOpts = {format: ['years']}
-            if (duration.years === 0 || !duration.hasOwnProperty('years')) { formatDurationOpts['format'].push('months') }
-            if (duration.months === 0 || !duration.hasOwnProperty('months')) { formatDurationOpts['format'].push('weeks') }
-            if (duration.weeks === 0 || !duration.hasOwnProperty('weeks')) { formatDurationOpts['format'].push('days') }
-            if (duration.days === 0 || !duration.hasOwnProperty('days')) { formatDurationOpts['format'].push('hours') }
-            if (duration.hours === 0 || !duration.hasOwnProperty('hours')) { formatDurationOpts['format'].push('minutes') }
-            if (duration.minutes === 0 || !duration.hasOwnProperty('minutes')) { formatDurationOpts['format'].push('seconds') }
+            e.timestamp = e.date.toISOString()
 
             return {
                 type: e.type,
-                date: `${formatDuration(duration, formatDurationOpts)} ago`,
+                id: e.id,
+                timestamp: e.timestamp,
+                date: formatSocialItemDuration(e.date),
                 data: e.data
             }})
         }}
@@ -62,14 +73,14 @@ export default function SocialsApp(props) {
                 <div style={{margin: '0.5em', overflowWrap: 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{y.date}</small>
                 <blockquote>
-                    {y.data.content[0].text}
+                    {y.data.content.map(e => { return (e.url) ? <><a href={e.url}>{e.text}</a></> : <>{e.text}</>;})}
                     {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={`${y.data.id}${i}0`} />,<iframe key={`${y.data.id}${i}1`} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
                     {y.data.choices instanceof Array && y.data.choices.length > 0 && y.data.attachmentType === 'POLL' &&
                     <ul>
-                        {y.data.choices.map((choice,i) => (<li key={i}>{choice}</li>))}
+                        {y.data.choices.map((choice,i) => (<li key={`${y.data.id}${i}2`}>{choice}</li>))}
                     </ul>}
                     {y.data.images instanceof Array && y.data.images.length > 0 && y.data.attachmentType === 'IMAGE' && y.data.images.map((img,i) => (
-                    <span key={i}>
+                    <span key={`${y.data.id}${i}3`}>
                         <br />
                         <img src={img} />
                     </span>
@@ -89,6 +100,50 @@ export default function SocialsApp(props) {
                 case 'youtube':
                     return formatYouTubeCommunity(s, i)
             }
+        }
+
+        let [newStateDOM, setNewStateDOM] = useState([])
+        let [newState, setNewState] = useState([])
+        newState = newState.filter(e => {
+            const index = social.findIndex(j => { return e.id === j.id })
+            return index === -1
+        })
+        let [interval, setIntervalState] = useState(null)
+        if (interval === null) {
+            setIntervalState(setInterval(async function() {
+                try {
+                    let timestamp = (newState instanceof Array && newState.length > 0) ? newState[0].timestamp : social[0].timestamp
+                    let id = (newState instanceof Array && newState.length > 0) ? newState[0].id : social[0].id
+                    let date = new Date(timestamp)
+                    let fetchReq = await fetch(`/api/social`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            date: date.toISOString(),
+                            id: id
+                        })
+                    })
+                    if (fetchReq.status !== 200) { return; }
+                    let json = await fetchReq.json()
+                    if (json instanceof Array && json.length > 0) {
+                        json = json.map(e => {
+                            const date = new Date(e.date)
+                            e.timestamp = date.toISOString()
+                            e.date = formatSocialItemDuration(date)
+                            return e
+                        })
+                        let _newState = Array.from([...json, ...newState])
+                        setNewState(_newState)
+                        newState = _newState
+                        setNewStateDOM(Array.from(_newState).map((s, i) => (
+                            <div key={s.id} className={styles.socialItem}>{formatSocial(s, i)}</div>
+                        )))
+                    }
+                } catch (e) { console.error(e) }
+            }, (1000*60)*2) + (((Math.random()*100)%5)*1000))
         }
 
         return <div className={styles.site}>
@@ -112,8 +167,9 @@ export default function SocialsApp(props) {
                 <Link href="/social">IRySocial</Link>
             </section>
             <section className={styles.socialContainer}>
+            {newStateDOM}
             {social.map((s, i) => (
-                <div key={i} className={styles.socialItem}>{formatSocial(s, i)}</div>
+                <div key={s.id} className={styles.socialItem}>{formatSocial(s, i)}</div>
             ))}
             </section>
         </div>
