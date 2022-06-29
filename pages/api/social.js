@@ -94,22 +94,30 @@ export async function getSocials() {
         })
     } catch (err) { console.error(err); }
 
-    try {
-        let youtubeVODsReq = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id\=${process.env.WATCH_CHANNEL_ID}`)
-        parseString(await youtubeVODsReq.text(), function(err, res) {
-            if (err) { return; }
-            if (! res instanceof Object || !res.feed || !res.feed.entry || ! res.feed.entry instanceof Array || res.feed.entry.length <=0 ) { return; }
-            res.feed.entry.forEach(vod => {
-                let id = vod['yt:videoId'][0]
-                socials.push({type: 'youtube', id: `yt${id}`, date: new Date(vod.published[0]), data: {
-                    attachmentType: 'VIDEO',
-                    video: {id: id},
-                    href: `https://www.youtube.com/watch?v=${vod['yt:videoId'][0]}`,
-                    content: [{text: vod.title}]
-                }})
+    const ytChannelFeeds = [
+        `https://www.youtube.com/feeds/videos.xml?channel_id\=${process.env.WATCH_CHANNEL_ID}`,
+        'https://www.youtube.com/feeds/videos.xml?channel_id=UCyWyNomzTjBvuRsqZU1bRCg'
+    ]
+    for (let feed of ytChannelFeeds) {
+        try {
+            let youtubeVODsReq = await fetch(feed)
+            parseString(await youtubeVODsReq.text(), function(err, res) {
+                if (err) { return; }
+                if (! res instanceof Object || !res.feed || !res.feed.entry || ! res.feed.entry instanceof Array || res.feed.entry.length <=0 ) { return; }
+                res.feed.entry.forEach(vod => {
+                    let id = vod['yt:videoId'][0]
+                    let _id = id
+                    _id = (id.video && id.video.id) ? id.video.id : id
+                    socials.push({type: 'youtube', id: `yt${_id}`, date: new Date(vod.published[0]), data: {
+                        attachmentType: 'VIDEO',
+                        video: {id: id},
+                        href: `https://www.youtube.com/watch?v=${vod['yt:videoId'][0]}`,
+                        content: [{text: vod.title}]
+                    }})
+                })
             })
-        })
-    } catch (err) { console.error(err); }
+        } catch (err) { console.error(err); }
+    }
 
     return socials.sort((a,b) => { return Date.parse(a.date) < Date.parse(b.date) || -1 });
 }
@@ -126,7 +134,8 @@ export default async function(req, res) {
         if (socials instanceof Array && socials.length > 0 && date instanceof Date) {
             socials = socials.filter(s => {
                 if (req.body.id) {
-                    return new Date(s.date) >= date && s.id !== req.body.id
+                    let offset = req.body.id.split('|')
+                    return new Date(s.date) >= date && offset.indexOf(s.id) === -1
                 } else {
                     return new Date(s.date) >= date
                 }

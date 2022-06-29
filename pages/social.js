@@ -112,9 +112,21 @@ export default function SocialsApp(props) {
         if (interval === null) {
             setIntervalState(setInterval(async function() {
                 try {
-                    let timestamp = (newState instanceof Array && newState.length > 0) ? newState[0].timestamp : social[0].timestamp
-                    let id = (newState instanceof Array && newState.length > 0) ? newState[0].id : social[0].id
-                    let date = new Date(timestamp)
+                    let stateEl = (newState instanceof Array && newState.length > 0) ? newState[0] : social[0]
+                    let ids = []
+                    let states = [newState, social]
+                    for (let state of states) {
+                        let timestampA = new Date(stateEl.timestamp)
+                        let timestampB
+                        state = state.filter(el => {
+                            timestampB = new Date(el.timestamp)
+                            return Date.parse(timestampA) === Date.parse(timestampB)
+                        })
+                        state.forEach(el => {
+                            ids.push(el.id)
+                        })
+                    }
+                    let date = new Date(stateEl.timestamp)
                     let fetchReq = await fetch(`/api/social`, {
                         method: 'PATCH',
                         headers: {
@@ -123,7 +135,7 @@ export default function SocialsApp(props) {
                         },
                         body: JSON.stringify({
                             date: date.toISOString(),
-                            id: id
+                            id: ids.join('|')
                         })
                     })
                     if (fetchReq.status !== 200) { return; }
