@@ -433,6 +433,9 @@ export default function Home(props) {
             {validStream && props.status === STREAM_STATUS.LIVE && props.streamInfo.link.indexOf('www.youtube.com') > -1 && 
             <iframe width="940" height="529" src={props.streamInfo.link.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             }
+            {validStream && props.status === STREAM_STATUS.LIVE && props.streamInfo.link.indexOf('www.youtube.com') > -1 && 
+            <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${props.streamInfo.link.split('?v=').pop()}.html`}>Supas</a>]</p>
+            }
 
             {bottomInfo}
             <CountdownTimer status={props.status} intervalDuration={intervalDuration} nextStream={props.streamInfo} pastStream={props.pastStream} />
