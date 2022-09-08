@@ -56,9 +56,16 @@ export class CountdownTimer extends Component {
 
     render() {
         if ((this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream?.startTime) || this.state.status === STREAM_STATUS.LIVE || this.state.status === STREAM_STATUS.JUST_ENDED || (this.state.nextStream?.startTime === null && this.state.pastStream === null)) { this.componentWillUnmount(); return <></> }
+        const videoLink = (this.state.pastStream?.videoLink) ? this.state.pastStream.videoLink : `https://www.youtube.com/watch?v=${this.state.pastStream.id}`
+        let supasLink
+        if (videoLink && videoLink.indexOf('youtu.be') > -1 || videoLink.indexOf('youtube.com') > -1) {
+            supasLink = videoLink.split('?v=').pop()
+            supasLink = (supasLink?.length > 0) ? supasLink : null
+        }
         return <>
             {this.state.label}
-            <p>{!this.state.nextStream?.startTime ? <span>(time since <a href={(this.state.pastStream?.videoLink) ? this.state.pastStream.videoLink : `https://www.youtube.com/watch?v=${this.state.pastStream.id}`}>{this.state.pastStream.title.trimLeft()}</a>)</span> : null}</p>
+            <p>{!this.state.nextStream?.startTime ? <span>(time since <a href={videoLink}>{this.state.pastStream.title.trimLeft()}</a>)</span> : null}</p>
+            {supasLink ? <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${supasLink}.html`}>Supas</a>]</p> : <></>}
             </>
     }
 }
