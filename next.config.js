@@ -3,6 +3,11 @@ module.exports = {
     async redirects() {
         return [
             {
+                source: '/index.html',
+                destination: '/',
+                permanent: true
+            },
+            {
                 source: '/karaokes',
                 destination: '/karaoke',
                 permanent: true
