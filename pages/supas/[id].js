@@ -7,7 +7,18 @@ Home.getInitialProps = async function ({ req, res, query }) {
     }
     if (res) {
         try {
-            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`)
+            let supaReqHeaders = {}
+            const modified_since = req.headers['if-modified-since']
+            if (modified_since) {
+                supaReqHeaders['If-Modified-Since'] = modified_since
+            }
+            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {headers: supaReqHeaders})
+
+            if (supaReq.status === 304) {
+                res.writeHead(304);
+                return res.end();
+            }
+
             let last_modified = supaReq.headers.get('Last-Modified')
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
             res.writeHead(supaReq.status, {
