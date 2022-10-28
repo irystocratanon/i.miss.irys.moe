@@ -22,6 +22,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let last_modified = supaReq.headers.get('Last-Modified')
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
             res.writeHead(supaReq.status, {
+                "Cache-Control": "public, max-age=10, must-revalidate",
                 "Content-Type": "text/html",
                 "Last-Modified": last_modified
             });
