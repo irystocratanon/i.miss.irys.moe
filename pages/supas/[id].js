@@ -5,6 +5,21 @@ Home.getInitialProps = async function ({ req, res, query }) {
         res.writeHead(404);
         res.end()
     }
+
+    let _performance
+    if (typeof performance !== 'object') {
+        try {
+            _performance = require('perf_hooks')
+            _performance = _performance.performance
+        } catch (e) {
+            _performance = {now: function(){}}
+        }
+    } else {
+        _performance = performance
+    }
+    let reqT0 = _performance.now()
+    let reqT1 = Number(reqT0)
+
     if (res) {
         try {
             let supaReqHeaders = {}
@@ -13,6 +28,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
             }
             const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {headers: supaReqHeaders})
+            reqT1 = _performance.now()
 
             if (supaReq.status === 304) {
                 res.writeHead(304);
@@ -24,7 +40,8 @@ Home.getInitialProps = async function ({ req, res, query }) {
             res.writeHead(supaReq.status, {
                 "Cache-Control": "public, max-age=10, must-revalidate",
                 "Content-Type": "text/html",
-                "Last-Modified": last_modified
+                "Last-Modified": last_modified,
+                "x-supas-res-time": reqT1-reqT0
             });
             res.end(await supaReq.text());
         } catch (err) {
