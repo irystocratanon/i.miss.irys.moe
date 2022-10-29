@@ -41,7 +41,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let etag = supaReq.headers.get('ETag')
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
             res.writeHead(supaReq.status, {
-                "Cache-Control": "public, max-age=10, must-revalidate",
+                "Cache-Control": "public, max-age=10, stale-if-error=59, must-revalidate",
                 "Content-Type": "text/html",
                 "Last-Modified": last_modified,
                 "ETag": (etag) ? etag : (+(new Date())).toString(),
