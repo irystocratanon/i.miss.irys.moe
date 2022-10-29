@@ -43,7 +43,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 "Content-Type": "text/html",
                 "Last-Modified": last_modified,
                 "ETag": (etag) ? etag : (+(new Date())).toString(),
-                "x-supas-res-time": reqT1-reqT0
+                "Server-Timing": `supas;dur=${reqT1-reqT0}`
             });
             res.end(await supaReq.text());
         } catch (err) {
