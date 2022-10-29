@@ -22,7 +22,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
     if (res) {
         try {
-            let supaReqHeaders = {}
+            let supaReqHeaders = {
+                "Accept-Encoding": "gzip, deflate, br"
+            }
             const modified_since = req.headers['if-modified-since']
             if (modified_since) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
