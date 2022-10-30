@@ -42,7 +42,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let last_modified = supaReq.headers.get('Last-Modified')
             let etag = supaReq.headers.get('ETag')
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
-            cache_control = (cache_control && cache_control.indexOf('immutable') > -1) ? cache_control : "public, max-age=10, stale-if-error=59, must-revalidate"
+            cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=10, stale-if-error=59, must-revalidate"
             res.writeHead(supaReq.status, {
                 "Cache-Control": cache_control,
                 "Content-Type": "text/html",
