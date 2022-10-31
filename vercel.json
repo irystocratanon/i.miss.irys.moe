@@ -1,0 +1,19 @@
+{
+  "headers": [
+    {
+      "source": "/supas.min.js",
+	  "has": [
+		  {
+			  "type": "query",
+			  "key": "v"
+		  }
+	  ],
+      "headers" : [
+        {
+          "key" : "Cache-Control",
+          "value" : "public, max-age=604800, immutable"
+        }
+      ]
+    }
+  ]
+}
