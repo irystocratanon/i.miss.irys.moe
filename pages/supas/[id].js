@@ -1,3 +1,5 @@
+import performance from '../../server/lib/get-performance.js'
+
 export default function Home(props) {}
 
 Home.getInitialProps = async function ({ req, res, query }) {
@@ -6,18 +8,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         res.end()
     }
 
-    let _performance
-    if (typeof performance !== 'object') {
-        try {
-            _performance = require('perf_hooks')
-            _performance = _performance.performance
-        } catch (e) {
-            _performance = {now: function(){}}
-        }
-    } else {
-        _performance = performance
-    }
-    let reqT0 = _performance.now()
+    let reqT0 = performance.now()
     let reqT1 = Number(reqT0)
 
     if (res) {
@@ -30,7 +21,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
             }
             const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {headers: supaReqHeaders})
-            reqT1 = _performance.now()
+            reqT1 = performance.now()
 
             if (supaReq.status === 304) {
                 res.writeHead(304);
