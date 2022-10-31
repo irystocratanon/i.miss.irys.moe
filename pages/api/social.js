@@ -1,3 +1,4 @@
+import performance from '../../server/lib/get-performance.js'
 const {parseString} = require('xml2js')
 import { extractCommunityPosts } from "yt-scraping-utilities"
 
@@ -55,7 +56,10 @@ const fetchTweets = async function (endpoint, url) {
 
 export async function getSocials() {
     let socials = []
+    let timingInfo = {}
+    let t0, t1
     try {
+        t0 = performance.now()
         let leddit = await fetch('https://old.reddit.com/user/IRySoWise.rss')
         await parseString(await leddit.text(), {trim: true}, function(err,res) {
             if (err) { return; }
@@ -66,10 +70,13 @@ export async function getSocials() {
                 socials.push({type: 'reddit', id: `rdt${item.id[0]}`, date: new Date(item.updated), data: item})
             })
         })
+        t1 = performance.now()
+        timingInfo['rdt'] = t1-t0
     } catch (err) { console.error(err); }
 
     const nitterEndpoints = ['https://nitter.irys.moe', 'https://nitter.net']
 
+    t0 = performance.now()
     for (let endpoint of nitterEndpoints) {
         let tweets
         try {
@@ -77,10 +84,13 @@ export async function getSocials() {
         } catch (err) { console.error(err); }
         if (tweets.length === 0 || !tweets) { continue; }
         tweets.forEach(tweet => { socials.push(tweet); })
+        t1 = performance.now()
+        if (tweets.length > 0) { timingInfo['twtr'] = t1-t0; }
         break   
     }
 
     try {
+        t0 = performance.now()
         let youtubeCommunityPostReq = await fetch(`https://www.youtube.com/channel/${process.env.WATCH_CHANNEL_ID}/community`)
         let youtubeCommunityPosts = extractCommunityPosts(await youtubeCommunityPostReq.text())
         youtubeCommunityPosts.forEach(post => {
@@ -92,12 +102,17 @@ export async function getSocials() {
             post.content = post.content.filter(e => { return (!e) ? false : true })
             socials.push(social)
         })
+        t1 = performance.now()
+        if (youtubeCommunityPosts.length > 0) {
+            timingInfo['ytc'] = t1-t0
+        }
     } catch (err) { console.error(err); }
 
     const ytChannelFeeds = [
         `https://www.youtube.com/feeds/videos.xml?channel_id\=${process.env.WATCH_CHANNEL_ID}`,
         'https://www.youtube.com/feeds/videos.xml?channel_id=UCyWyNomzTjBvuRsqZU1bRCg'
     ]
+    t0 = performance.now()
     for (let feed of ytChannelFeeds) {
         try {
             let youtubeVODsReq = await fetch(feed)
@@ -116,14 +131,17 @@ export async function getSocials() {
                     }})
                 })
             })
+            t1 = performance.now()
+            timingInfo['ytf'] = t1-t0
         } catch (err) { console.error(err); }
     }
 
-    return socials.sort((a,b) => { return Date.parse(a.date) < Date.parse(b.date) || -1 });
+    return {timingInfo, socials: socials.sort((a,b) => { return Date.parse(a.date) < Date.parse(b.date) || -1 }) };
 }
 
 export default async function(req, res) {
-    let socials = await getSocials()
+    let {timingInfo, socials } = await getSocials()
+    res.setHeader("Server-Timing", Object.keys(timingInfo).map(k => { return `${k};dur=${timingInfo[k]}` }).join(', '))
     if (req.method === 'PATCH') {
         let date
         if (req.body.date) {

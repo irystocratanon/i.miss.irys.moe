@@ -24,9 +24,10 @@ function formatSocialItemDuration(d) {
 }
 
 export async function getServerSideProps({ res }) {
-    const social = await getSocials()
+    const {timingInfo, socials } = await getSocials()
+    res.setHeader("Server-Timing", Object.keys(timingInfo).map(k => { return `${k};dur=${timingInfo[k]}` }).join(', '))
     return { props: {
-        social: social.map(e => {
+        social: socials.map(e => {
             e.timestamp = e.date.toISOString()
 
             return {
