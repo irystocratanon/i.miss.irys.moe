@@ -1,20 +1,10 @@
+import performance from '../server/lib/get-performance.js'
 import getReps from "../server/reps_poller"
 export default function Home(props) {}
 
 // https://linguinecode.com/post/how-to-redirect-on-the-server-side-with-next-js
 Home.getInitialProps = async function ({ res }) {
-    let _performance
-    if (typeof performance !== 'object') {
-        try {
-            _performance = require('perf_hooks')
-            _performance = _performance.performance
-        } catch (e) {
-            _performance = {now: function(){}}
-        }
-    } else {
-        _performance = performance
-    }
-    let reqT0 = _performance.now()
+    let reqT0 = performance.now()
     const reps = Array.from(await getReps())
                     .sort((a,b) => a.views - b.views)
     const leastViewsIndex = reps.findIndex(e => { return e.channel === process.env.WATCH_CHANNEL_ID })
@@ -53,7 +43,7 @@ Home.getInitialProps = async function ({ res }) {
         });
         res.end();
     }
-    let reqT1 = _performance.now()
+    let reqT1 = performance.now()
     console.debug(`[reps total request time] ${reqT1-reqT0}`);
     return {};
 }
