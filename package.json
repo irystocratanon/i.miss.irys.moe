@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "minify-supas": "npx jsmin -l 3 -o ./public/supas.min.js ./public/supas.js"
+    "minify-supas": "npx jsmin -l 2 -o ./public/supas.min.js ./public/supas.js"
   },
   "dependencies": {
     "abortcontroller-polyfill": "^1.7.3",
