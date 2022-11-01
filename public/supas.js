@@ -144,3 +144,18 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         }
     }
 }
+// try to keep the cache hot by requesting updates in the background with exponential back-off
+(async function() {
+    const initialDelay = 2000
+    let delay = initialDelay*2
+    const backgroundUpdateCache = async function() {
+        delay = (delay > 60_000) ? Number(initialDelay) : delay
+        let x = await fetch(window.location.href, {method: 'HEAD'});
+        const cache_control = x.headers.get('cache-control');
+        if (cache_control.indexOf('immutable') === -1) {
+            delay*=2
+            return setTimeout(backgroundUpdateCache, delay);
+        }
+    }
+    setTimeout(backgroundUpdateCache, delay);
+})()
