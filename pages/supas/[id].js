@@ -20,6 +20,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (modified_since) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
             }
+            const none_match = req.headers['if-none-match']
+            if (none_match) {
+                supaReqHeaders['If-None-Match'] = none_match
+            }
             const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {headers: supaReqHeaders})
             reqT1 = performance.now()
 
