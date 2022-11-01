@@ -153,6 +153,22 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         let x = await fetch(window.location.href, {method: 'HEAD'});
         const cache_control = x.headers.get('cache-control');
         if (cache_control.indexOf('immutable') === -1) {
+            let server_timing_header = x.headers.get('server-timing')
+            server_timing_header = server_timing_header.split(';')
+            let server_timing
+            for (let i = 0; i < server_timing_header.length; i++) {
+                if (server_timing_header[i] == 'supas') {
+                    if (i < server_timing_header.length) {
+                        server_timing = server_timing_header[i+1]
+                        server_timing = server_timing.split('dur=')
+                        server_timing = (server_timing.length > 1) ? server_timing[1] : null
+                        server_timing = Number(server_timing)
+                        break
+                    }
+                }
+            }
+            // if the request takes longer than 1000ms then we have probably re-generated the page in the background
+            delay = (server_timing && server_timing >= 1_000) ? Number(initialDelay) : delay
             delay*=2
             return setTimeout(backgroundUpdateCache, delay);
         }
