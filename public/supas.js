@@ -150,7 +150,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     let delay = initialDelay*2
     const backgroundUpdateCache = async function() {
         delay = (delay > 60_000) ? Number(initialDelay) : delay
-        let x = await fetch(window.location.href, {method: 'HEAD'});
+        let x = await fetch(window.location.protocol + '//' + window.location.hostname + window.location.pathname, {method: 'HEAD'});
         const cache_control = x.headers.get('cache-control');
         if (cache_control.indexOf('immutable') === -1) {
             let server_timing_header = x.headers.get('server-timing')
