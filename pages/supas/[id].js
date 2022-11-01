@@ -24,25 +24,27 @@ Home.getInitialProps = async function ({ req, res, query }) {
             reqT1 = performance.now()
 
             let etag = supaReq.headers.get('ETag')
-            etag = (etag) ? etag : (+(new Date())).toString()
+            let last_modified = supaReq.headers.get('Last-Modified')
+            last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
+
+            let resHeaders = {}
+            if (etag) { resHeaders["ETag"] = etag }
+            resHeaders["Last-Modified"] = last_modified
 
             if (supaReq.status === 304) {
-                res.writeHead(304, {"ETag": etag});
+                res.writeHead(304, resHeaders)
                 return res.end();
             }
 
             let cache_control = supaReq.headers.get('Cache-Control')
 
-            let last_modified = supaReq.headers.get('Last-Modified')
-            last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
             cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=10, stale-if-error=59, must-revalidate"
-            res.writeHead(supaReq.status, {
-                "Cache-Control": cache_control,
-                "Content-Type": "text/html",
-                "Last-Modified": last_modified,
-                "ETag": etag,
-                "Server-Timing": `supas;dur=${reqT1-reqT0}`
-            });
+
+            resHeaders["Cache-Control"] = cache_control
+            resHeaders["Content-Type"] = "text/html"
+            resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
+
+            res.writeHead(supaReq.status, resHeaders);
             res.end(await supaReq.text());
         } catch (err) {
             console.error(err)
