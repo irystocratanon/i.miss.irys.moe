@@ -23,22 +23,24 @@ Home.getInitialProps = async function ({ req, res, query }) {
             const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {headers: supaReqHeaders})
             reqT1 = performance.now()
 
+            let etag = supaReq.headers.get('ETag')
+            etag = (etag) ? etag : (+(new Date())).toString()
+
             if (supaReq.status === 304) {
-                res.writeHead(304);
+                res.writeHead(304, {"ETag": etag});
                 return res.end();
             }
 
             let cache_control = supaReq.headers.get('Cache-Control')
 
             let last_modified = supaReq.headers.get('Last-Modified')
-            let etag = supaReq.headers.get('ETag')
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
             cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=10, stale-if-error=59, must-revalidate"
             res.writeHead(supaReq.status, {
                 "Cache-Control": cache_control,
                 "Content-Type": "text/html",
                 "Last-Modified": last_modified,
-                "ETag": (etag) ? etag : (+(new Date())).toString(),
+                "ETag": etag,
                 "Server-Timing": `supas;dur=${reqT1-reqT0}`
             });
             res.end(await supaReq.text());
