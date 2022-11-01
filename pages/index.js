@@ -396,10 +396,27 @@ export default function Home(props) {
         }
     }
 
+    let preloadSupas = (validStream && props.streamInfo.link.indexOf('www.youtube.com') > -1) ? `/supas/${props.streamInfo.link.split('?v=').pop()}.html` : null
+    if (!preloadSupas) {
+        if (props.pastStream?.id) {
+            preloadSupas = `/supas/${props.pastStream.id}.html`
+        }
+    }
+
+    const supas_js_pre_version = '0.0'
+    const supas_js_version = '0.0'
+
     return <div className={styles.site}>
         <Head>
             <title>I MISS IRyS</title>
             <link rel="shortcut icon" href={`/${favicon}`} />
+            {preloadSupas &&
+            <>
+            <link rel="prefetch" href={preloadSupas} />
+            <link rel="prefetch" href={`/supas.pre.min.js?v=${supas_js_pre_version}`} />
+            <link rel="prefetch" href={`/supas.min.js?v=${supas_js_version}`} />
+            </>
+            }
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <meta name="theme-color" content="#ffbafb" />
             <meta content="I MISS IRyS" property="og:title" />
