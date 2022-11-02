@@ -24,7 +24,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
             }
-            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {headers: supaReqHeaders})
+            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {method: (req.method == 'HEAD') ? 'HEAD' : 'GET', headers: supaReqHeaders})
             reqT1 = performance.now()
 
             let etag = supaReq.headers.get('ETag')
