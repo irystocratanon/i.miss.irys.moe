@@ -148,11 +148,15 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
 (async function() {
     const initialDelay = 2000
     let delay = initialDelay*2
+    let is_5xx = false
+    let is_4xx = false
     const backgroundUpdateCache = async function() {
-        delay = (delay > 60_000) ? Number(initialDelay) : delay
-        let x = await fetch(window.location.protocol + '//' + window.location.hostname + window.location.pathname, {method: 'HEAD'});
+        delay = (delay > 60_000 && is_5xx === false) ? Number(initialDelay) : delay
+        let x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD'});
+        is_5xx = x.status >= 500
+        is_4xx = x.status >= 400 && x.status < 500
         const cache_control = x.headers.get('cache-control');
-        if (cache_control.indexOf('immutable') === -1) {
+        if (cache_control.indexOf('immutable') === -1 && !is_4xx) {
             let server_timing_header = x.headers.get('server-timing')
             server_timing_header = server_timing_header.split(';')
             let server_timing
@@ -168,7 +172,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                 }
             }
             // if the request takes longer than 1000ms then we have probably re-generated the page in the background
-            delay = (server_timing && server_timing >= 1_000) ? Number(initialDelay) : delay
+            delay = (server_timing && server_timing >= 1_000 && !is_5xx) ? Number(initialDelay) : delay
             delay*=2
             return setTimeout(backgroundUpdateCache, delay);
         }
