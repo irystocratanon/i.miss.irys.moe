@@ -3,15 +3,19 @@ import performance from '../../server/lib/get-performance.js'
 export default function Home(props) {}
 
 Home.getInitialProps = async function ({ req, res, query }) {
-    if (!res || !query || !query?.id || query?.id.endsWith('.html') === false) {
-        res.writeHead(404);
-        res.end()
-    }
 
     let reqT0 = performance.now()
     let reqT1 = Number(reqT0)
 
     if (res) {
+        if (req.method != 'GET' && req.method != 'HEAD') {
+            res.writeHead(400);
+            return res.end()
+        }
+        if (!query || !query?.id || query?.id.endsWith('.html') === false) {
+            res.writeHead(404);
+            return res.end()
+        }
         try {
             let supaReqHeaders = {
                 "Accept-Encoding": "gzip, deflate, br"
@@ -24,7 +28,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
             }
-            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {method: (req.method == 'HEAD') ? 'HEAD' : 'GET', headers: supaReqHeaders})
+            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {method: req.method, headers: supaReqHeaders})
             reqT1 = performance.now()
 
             let etag = supaReq.headers.get('ETag')
