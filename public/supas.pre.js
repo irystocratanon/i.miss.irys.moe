@@ -1,4 +1,5 @@
 (function() {
+    document.title = window.location.hostname + window.location.pathname
 	const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
 	let checkboxState
 	try {

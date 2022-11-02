@@ -150,6 +150,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     let delay = initialDelay*2
     let is_5xx = false
     let is_4xx = false
+    let x_supas_items
     const backgroundUpdateCache = async function() {
         delay = (delay > 60_000 && is_5xx === false) ? Number(initialDelay) : delay
         let x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD'});
@@ -157,6 +158,14 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         is_4xx = x.status >= 400 && x.status < 500
         const cache_control = x.headers.get('cache-control');
         if (cache_control.indexOf('immutable') === -1 && !is_4xx) {
+            x_supas_items = x.headers.get('X-Supas-Items')
+            if (x_supas_items) {
+                let current_items = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                x_supas_items = Number(x_supas_items)
+                if (x_supas_items > current_items) {
+                    document.title = `(${x_supas_items-current_items}) ${window.location.hostname}${window.location.pathname}`
+                }
+            }
             let server_timing_header = x.headers.get('server-timing')
             server_timing_header = server_timing_header.split(';')
             let server_timing

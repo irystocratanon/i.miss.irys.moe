@@ -403,8 +403,8 @@ export default function Home(props) {
         }
     }
 
-    const supas_js_pre_version = '0.0'
-    const supas_js_version = '0.6'
+    const supas_js_pre_version = '0.1'
+    const supas_js_version = '0.7'
 
     return <div className={styles.site}>
         <Head>
