@@ -38,6 +38,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let cache_control = supaReq.headers.get('Cache-Control')
             cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=1, s-maxage=4, stale-if-error=59, stale-while-revalidate=10"
 
+            let supas_items = supaReq.headers.get('X-Supas-Items')
+            if (supas_items) {
+                resHeaders['X-Supas-Items'] = supas_items
+            }
 
             if (supaReq.status === 304) {
                 resHeaders["Cache-Control"] = (cache_control.indexOf('immutable') > -1) ? cache_control : "public, max-age=1, s-maxage=4, stale-if-error=59, stale-while-revalidate=10"
