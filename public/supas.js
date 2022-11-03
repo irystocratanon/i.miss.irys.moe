@@ -27,7 +27,10 @@
 				if (lastElement) {
 					if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
 						lastElement.nextElementSibling.style.backgroundColor = 'yellow'
-						lastElement.style.backgroundColor = 'yellow'
+                        lastElement.style.backgroundColor = 'yellow'
+                        if (scrollToLastElement) {
+                            scrollPosition = lastElement.offsetTop
+                        }
 					}
 				}
 			}
