@@ -152,22 +152,31 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     let is_4xx = false
     let x_supas_items
     const backgroundUpdateCache = async function() {
-        delay = (delay > 60_000 && is_5xx === false) ? Number(initialDelay) : delay
-        let x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD'});
+        let x
+        try {
+            x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD'});
+        } catch {
+            delay*=2
+            return setTimeout(backgroundUpdateCache, delay);
+        }
         is_5xx = x.status >= 500
         is_4xx = x.status >= 400 && x.status < 500
+        delay = (delay > 60_000 && is_5xx === false) ? Number(initialDelay) : delay
         const cache_control = x.headers.get('cache-control');
         if (cache_control.indexOf('immutable') === -1 && !is_4xx) {
             x_supas_items = x.headers.get('X-Supas-Items')
             if (x_supas_items) {
-                let current_items = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                let current_items
+                try {
+                    current_items = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                } catch { current_items = 0 }
                 x_supas_items = Number(x_supas_items)
                 if (x_supas_items > current_items) {
                     document.title = `(${x_supas_items-current_items}) ${window.location.hostname}${window.location.pathname}`
                 }
             }
             let server_timing_header = x.headers.get('server-timing')
-            server_timing_header = server_timing_header.split(';')
+            server_timing_header = (server_timing_header) ? server_timing_header.split(';') : []
             let server_timing
             for (let i = 0; i < server_timing_header.length; i++) {
                 if (server_timing_header[i] == 'supas') {
