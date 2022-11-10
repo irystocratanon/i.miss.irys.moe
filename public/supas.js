@@ -192,9 +192,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                     }
                 }
             }
-            // if the request takes longer than 1000ms then we have probably re-generated the page in the background
-            delay = (server_timing && server_timing >= 1_000 && !is_5xx) ? Number(initialDelay) : delay
-            delay*=2
+            // if the request takes longer than 1000ms or a server error has occurred then keep backing off, else set the delay to initialDelay + some random fuzz
+            delay = (server_timing && server_timing >= 1_000 || is_5xx) ? delay*2 : ((initialDelay*2) + Math.random()*1000)
             return setTimeout(backgroundUpdateCache, delay);
         }
     }
