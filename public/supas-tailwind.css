@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+  table {
+    border-collapse: collapse;
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+  table img {
+    display: inline-block;
+  }
+  td,th {
+    padding: 0.1rem;
+    text-align: left;
+    border: 1px solid #000;
+  }
+  th {
+    text-align: center;
+  }
+  .streamer {
+    background-color: #ffc0cb
+  }
