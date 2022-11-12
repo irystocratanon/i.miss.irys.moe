@@ -36,7 +36,7 @@
 					supacha.style.display = display;
 				})
 				const supachaButton = document.querySelector('.supacha-button[data-supas]')
-				supachaButton.nextSibling.textContent = "SuperChat(" + (Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return window.getComputedStyle(e).display === 'table-row'; }).length) + "/" + supachaButton.dataset["supas"] + ")"
+				supachaButton.nextSibling.textContent = "SuperChat(" + String(Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return window.getComputedStyle(e).display === 'table-row'; }).length).padStart(2, 0) + "/" + String(supachaButton.dataset["supas"]).padStart(2, 0) + ")"
 			}
 			const cssClassName = (el.name || el.className.split('-button')[0]);
 			const display = (el.checked);
