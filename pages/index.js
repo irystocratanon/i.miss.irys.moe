@@ -417,7 +417,7 @@ export default function Home(props) {
             <link rel="prefetch" href={preloadSupas} />
             <link rel="prefetch" href={`/supas.pre.min.js?v=${supas_js_pre_version}`} />
             <link rel="prefetch" href={`/supas.min.js?v=${supas_js_version}`} />
-            <link rel="prefetch" href={`/supas.css?v=${supas_css_version}`} />
+            <link rel="prefetch" href={`/supas.min.css?v=${supas_css_version}`} />
             </>
             }
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
