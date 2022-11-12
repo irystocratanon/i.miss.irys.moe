@@ -7,7 +7,7 @@
     "start": "next start",
     "lint": "next lint",
     "minify-supas": "rm -fv ./public/supas.min.js && npx jsmin -l 2 -o ./public/supas.min.js ./public/supas.js && rm -fv ./public/supas.pre.min.js && npx jsmin -l 2 -o ./public/supas.pre.min.js ./public/supas.pre.js",
-    "supas-css": "tailwindcss -i public/supas-tailwind.css -o public/supas.css"
+    "supas-css": "rsync -av --links --progress --delete ../sqlite-to-html_rust/*.html ./public/templates && tailwindcss -i public/supas-tailwind.css -o public/supas.css"
   },
   "dependencies": {
     "abortcontroller-polyfill": "^1.7.3",
