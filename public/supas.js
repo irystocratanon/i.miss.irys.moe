@@ -159,6 +159,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     let is_5xx = false
     let is_4xx = false
     let x_supas_items
+    const now = Date.now()
+    const nowDate = new Date(now)
     const backgroundUpdateCache = async function() {
         let x
         try {
@@ -172,6 +174,11 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         delay = (delay > 60_000 && is_5xx === false) ? Number(initialDelay) : delay
         const cache_control = x.headers.get('cache-control');
         if (cache_control.indexOf('immutable') === -1 && !is_4xx) {
+            let last_modified = x.headers.get("Last-Modified")
+            last_modified = (last_modified) ? new Date(last_modified) : new Date(now)
+            if (Date.parse(last_modified) - Date.parse(nowDate) >= ((3600*48)*1000)) {
+                return
+            }
             x_supas_items = x.headers.get('X-Supas-Items')
             if (x_supas_items) {
                 let current_items
