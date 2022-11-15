@@ -13,7 +13,7 @@
     "abortcontroller-polyfill": "^1.7.5",
     "date-fns": "^2.27.0",
     "next": ">=12.0.9",
-    "node-html-parser": "^5.1.0",
+    "node-html-parser": "6.1.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "xml2js": "^0.4.23",
