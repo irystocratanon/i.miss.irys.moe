@@ -189,7 +189,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                 } catch { current_items = 0 }
                 x_supas_items = Number(x_supas_items)
                 if (x_supas_items > current_items) {
-                    document.title = `(${x_supas_items-current_items}) ${window.location.hostname}${window.location.pathname}`
+                    // String.fromCharCode is used here because the minification eats the space
+                    document.title = `(${x_supas_items-current_items})${String.fromCharCode(32)}${window.location.hostname}${window.location.pathname}`
                 }
             }
             let server_timing_header = x.headers.get('server-timing')
