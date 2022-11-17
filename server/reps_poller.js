@@ -1,6 +1,7 @@
+import {parseString} from 'xml2js'
+
 export default async function getReps() {
     try {
-        const { parseString } = require('xml2js')
         const playlistURLs = [
             'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw07nf_D8u-g6a3_MdLWVdIc',
             'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2Wlox1cPU2-WGM5VmMYR8m',
