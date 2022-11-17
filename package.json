@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "date-fns": "^2.29.3",
-    "next": "^12.3.3",
+    "next": "^13.0.3",
     "node-html-parser": "6.1.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "xml2js": "^0.4.23",
     "yt-scraping-utilities": "git+https://github.com/irystocratanon/yt-scraping-utilities.git"
   },
