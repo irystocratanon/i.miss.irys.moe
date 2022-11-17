@@ -1,4 +1,4 @@
-const {parseString} = require('xml2js')
+import {parseString} from 'xml2js'
 
 export default async function irysartPoller(opts, callback) {
     let images = []
