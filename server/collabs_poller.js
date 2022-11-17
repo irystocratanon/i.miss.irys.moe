@@ -1,4 +1,3 @@
-import "abortcontroller-polyfill/dist/polyfill-patch-fetch"
 import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
 import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 

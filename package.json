@@ -10,7 +10,6 @@
     "supas-css": "rsync -av --links --progress --delete ../sqlite-to-html_rust/*.html ./public/templates && tailwindcss -i public/supas-tailwind.css -o public/supas.css && tailwindcss -i public/supas-tailwind.css -m -o public/supas.min.css"
   },
   "dependencies": {
-    "abortcontroller-polyfill": "^1.7.5",
     "date-fns": "^2.29.3",
     "next": "^12.3.3",
     "node-html-parser": "6.1.4",

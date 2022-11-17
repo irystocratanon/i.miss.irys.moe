@@ -1,4 +1,3 @@
-import "abortcontroller-polyfill/dist/polyfill-patch-fetch"
 import {checkCache, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
 import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
 import {CancelledStreams} from "./cancelled.js"
