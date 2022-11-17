@@ -1,4 +1,4 @@
-const {parseString} = require('xml2js')
+import {parseString} from 'xml2js'
 
 export default async function schedulePoller(callback) {
     let images = []
@@ -50,7 +50,10 @@ export default async function schedulePoller(callback) {
         const subtractWeek = date => {
             return date-(((3600*24)*7)*1000)
         }
-        if (subtractWeek(currentDate) < currentDate-Date.parse(pubDate)) {
+        const addWeek = date => {
+            return date+(((3600*24)*7)*1000)
+        }
+        if (subtractWeek(currentDate) > addWeek(Date.parse(pubDate))) {
                     console.log(`schedule: ${pubDate} is longer than a week old`)
                     images = []
                     return
