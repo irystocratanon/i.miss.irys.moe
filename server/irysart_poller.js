@@ -13,7 +13,7 @@ export default async function irysartPoller(opts, callback) {
     let rssFeed
     const controller = new AbortController()
     let abortTimeout = setTimeout(() => { return controller.abort() }, 30*1000)
-    fetch('https://nitter.irys.moe/search/rss\?f\=tweets\&q\=%23IRySart\&f-images\=on\&since\=\&until\=\&near\=', {signal: controller.signal}).then(async function(res) {
+    fetch('https://nitter.irys.moe/search/rss?f=tweets&q=%23IRySart', {signal: controller.signal}).then(async function(res) {
         rssFeed = await res.text()
         parseString(rssFeed, {trim: true}, async function(err, result) {
             if (err) {
