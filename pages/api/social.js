@@ -1,5 +1,5 @@
 import performance from '../../server/lib/get-performance.js'
-const {parseString} = require('xml2js')
+import {parseString} from 'xml2js'
 import { extractCommunityPosts } from "yt-scraping-utilities"
 
 const fetchTweets = async function (endpoint, url) {
