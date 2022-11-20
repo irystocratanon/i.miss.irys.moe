@@ -122,9 +122,15 @@
 	const tr = Array.from(document.getElementsByTagName('tr')).filter((e) => { return e.className.length > 0 });
 	tr.forEach(e => {
 		e.onclick = function(el) {
-			el = (el.target.parentNode.children.length === 1) ? el.target.parentNode.children[0].parentElement.previousElementSibling.children[0] : el.target.parentNode.children[0];
+			const findTr = currentEl => {
+				currentEl = (currentEl.tagName.match(/TR|TABLE|BODY|HEAD/)) ? currentEl : findTr(currentEl.parentNode);
+				return (currentEl.previousElementSibling && currentEl.previousElementSibling.dataset.hasOwnProperty('num')) ? currentEl.previousElementSibling : currentEl;
+            };
+            el = findTr(el.target);
+            if (el.tagName != 'TR') { return; }
+			const num = el.dataset['num'];
+			el = el.children[0];
 			el.style.backgroundColor=(el.style.backgroundColor === 'aquamarine') ? 'initial' : 'aquamarine';
-			const num = el.parentNode.dataset['num'];
 			if (el.style.backgroundColor === 'initial') {
 				const index = selected_rows.indexOf(num)
 				if (index !== -1) {

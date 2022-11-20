@@ -804,6 +804,10 @@ th {
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   }
 
+  .sm\:bg-\[initial\] {
+    background-color: initial;
+  }
+
   .sm\:p-0 {
     padding: 0px;
   }
