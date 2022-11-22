@@ -53,11 +53,11 @@ export function extractLivestreamInfo(fromPageContent) {
 
     const videoLink = validateVideoLink(canonical.getAttribute("href"))
     if (!videoLink) {
-        return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null } }
+        return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null, channel: "IRyS Ch. hololive-EN" } }
     } 
 
     const liveTitle = dom.querySelector("meta[name='title']").getAttribute("content")
-    const basicResponse = { error: null, result: { live: STREAM_STATUS.INDETERMINATE, title: liveTitle, videoLink, streamStartTime: null } }
+    const basicResponse = { error: null, result: { live: STREAM_STATUS.INDETERMINATE, title: liveTitle, videoLink, streamStartTime: null, channel: "IRyS Ch. hololive-EN" } }
 
     const scripts = dom.querySelectorAll("script")
     let playerInfo = null
@@ -76,7 +76,7 @@ export function extractLivestreamInfo(fromPageContent) {
 
     try {
         if (basicResponse.result.title.indexOf('【FREE CHAT】') === 0 && basicResponse.result.live !== STREAM_STATUS.LIVE) {
-            return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null } }
+            return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null, channel: "IRyS Ch. hololive-EN" } }
         }
     } catch (e) {
         console.error("livestream_poller::FREE_CHAT")
@@ -95,7 +95,7 @@ export function extractLivestreamInfo(fromPageContent) {
             return e === videoDetails.id
         })
         if (cancelled) {
-            return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null } }
+            return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null, channel: "IRyS Ch. hololive-EN" } }
         }
     }
 
@@ -104,6 +104,8 @@ export function extractLivestreamInfo(fromPageContent) {
     } else if (videoDetails?.isLiveContent && !videoDetails?.isUpcoming) {
         basicResponse.result.live = STREAM_STATUS.LIVE
     }
+
+    basicResponse.result.channel = "IRyS Ch. hololive-EN"
 
     // Check stream frame start time
     // If it's more than one hour out, act as if it was offline
