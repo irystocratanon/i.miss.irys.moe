@@ -16,6 +16,16 @@ Home.getInitialProps = async function ({ req, res, query }) {
             res.writeHead(404);
             return res.end()
         }
+        if (process.env.hasOwnProperty('SUPAS_MAINTENANCE_WINDOW')) {
+            res.writeHead(503, { "Cache-Control": "public, max-age=0, must-revalidate"});
+            return res.end(`<html>
+<head><title>503 Service Unavailable</title></head>
+<body>
+<center><h1>503 Service Unavailable</h1></center>
+<hr><center>maintenance in progress</center>
+</body>
+</html>`);
+        }
         try {
             let supaReqHeaders = {
                 "Accept-Encoding": "gzip, deflate, br"
