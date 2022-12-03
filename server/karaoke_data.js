@@ -75,7 +75,7 @@ let data = {
                 },
                 {
                     timestamp: "1h06m14s",
-                    title: "Nandemonaiya",
+                    title: "Nandemonaiya (なんでもないや)",
                     artist: "RADWIMPS",
                     keywords: "nandemonaiya radwimps"
                 },
@@ -1443,6 +1443,145 @@ let data = {
                 },
             ]
         },
+        {
+            videoId: "ksUKrIahznk",
+            title: "【KARAOKE ENDURANCE】Singing until 900k Subs!",
+            date: new Date("Nov 30, 2022"),
+            songs: [
+                {
+                    timestamp: "11m42s",
+                    title: "Yasashii Suisei (優しい彗星)",
+                    artist: "YOASOBI",
+                    keywords: "yasashii suisei yoasobi"
+                },
+                {
+                    timestamp: "17m54s",
+                    title: "Dry Flower",
+                    artist: "Yuuri",
+                    keywords: "dry flower yuuri"
+                },
+                {
+                    timestamp: "26m8s",
+                    title: "Yuki No Hana (雪の華)",
+                    artist: "Mika Nakashima",
+                    keywords: "yuki no hana mika nakashima"
+                },
+                {
+                    timestamp: "34m58s",
+                    title: "Agehachou (アゲハ蝶)",
+                    artist: "Porno Graffitti",
+                    keywords: "agehachou porno graffiti graffitti"
+                },
+                {
+                    timestamp: "44m1s",
+                    title: "THE DAY",
+                    artist: "Porno Graffiti",
+                    keywords: "the day porno graffitti graffiti"
+                },
+                {
+                    timestamp: "51m18s",
+                    title: "Mezase Pokemon",
+                    artist: "Rica Matsumoto",
+                    keywords: "mezase pokemon rica matsumoto"
+                },
+                {
+                    timestamp: "59m28s",
+                    title: "Rival!",
+                    artist: "Matsumoto Rica",
+                    keywords: "rival matsumoto rica"
+                },
+                {
+                    timestamp: "1h10m09s",
+                    title: "Kawaranai Mono (変わらないもの)",
+                    artist: "Hanako Oku",
+                    keywords: "kawaranai mono hanako oku"
+                },
+                {
+                    timestamp: "1h18m18s",
+                    title: "Shangri-La",
+                    artist: "Angela",
+                    keywords: "shangri la angela"
+                },
+                {
+                    timestamp: "1h26m53s",
+                    title: "Nandemonaiya (なんでもないや)",
+                    artist: "RADWIMPS",
+                    keywords: "nandemonaiya radwimps"
+                },
+                {
+                    timestamp: "1h40m42s",
+                    title: "No Doubt (ノーダウト)",
+                    artist: "Official Hige Dandism",
+                    keywords: "no doubt official hige dandism"
+                },
+                {
+                    timestamp: "1h47m27s",
+                    title: "FIRE GROUND",
+                    artist: "Official Hige Dandism",
+                    keywords: "fire ground official hige dandism"
+                },
+                {
+                    timestamp: "1h55m20s",
+                    title: "LA・LA・LA LOVE SONG",
+                    artist: "Toshinobu Kubota",
+                    keywords: "la love song toshinobou kubota"
+                },
+                {
+                    timestamp: "2h3m18s",
+                    title: "Love Machine",
+                    artist: "",
+                    keywords: "love machine"
+                },
+                {
+                    timestamp: "2h11m26s",
+                    title: "Yona Yona Dance",
+                    artist: "Frederic",
+                    keywords: "yona dance frederic"
+                },
+                {
+                    timestamp: "2h14m",
+                    title: "Oddloop",
+                    artist: "Frederic",
+                    keywords: "oddloop frederic"
+                },
+                {
+                    timestamp: "2h21m12s",
+                    title: "Shin Takarajima (新宝島)",
+                    artist: "Sakanaction",
+                    keywords: "shin takarajima sakanaction"
+                },
+                {
+                    timestamp: "2h27m26s",
+                    title: "Chance!",
+                    artist: "Kirarin Revolution",
+                    keywords: "chance kirarin revolution"
+                },
+                {
+                    timestamp: "2h37m51s",
+                    title: "Gravity (“How’s The Volume?” Ver.)",
+                    artist: "IRyS",
+                    keywords: "gravity irys how hows how's the volume"
+                },
+                {
+                    timestamp: "2h38m53s",
+                    title: "Gravity",
+                    artist: "IRyS",
+                    keywords: "gravity irys"
+                },
+                {
+                    timestamp: "2h45m54s",
+                    title: "BERSERKER",
+                    artist: "IRyS",
+                    keywords: "berserker irys"
+                },
+                {
+                    timestamp: "2h55m13s",
+                    title: "HERE COMES HOPE",
+                    artist: "IRyS",
+                    keywords: "here comes hope irys"
+                }
+            ]
+        }
     ]
 }
 
