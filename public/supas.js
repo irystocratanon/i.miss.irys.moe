@@ -26,12 +26,16 @@
 				scrollPosition = (lastElement && lastElement.length === 1 && scrollToLastElement) ? window.scrollMaxY : scrollPosition
 				if (lastElement) {
 					if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
-						lastElement.nextElementSibling.style.backgroundColor = 'yellow'
+						if (! k.startsWith("supana_")) {
+							lastElement.nextElementSibling.style.backgroundColor = 'yellow'
+						}
                         lastElement.style.backgroundColor = 'yellow'
                         try {
                             // This is ugly. I should find a better way to do this...
-                            Array.from(lastElement.querySelectorAll('span')).forEach(e => { e.parentElement.style.backgroundColor = 'yellow'; e.style.backgroundColor = 'yellow'; });
-                            Array.from(lastElement.nextElementSibling.querySelectorAll('span')).forEach(e => { e.parentElement.style.backgroundColor = 'yellow'; e.style.backgroundColor = 'yellow'; })
+							Array.from(lastElement.querySelectorAll('span')).forEach(e => { e.parentElement.style.backgroundColor = 'yellow'; e.style.backgroundColor = 'yellow'; });
+							if (! k.startsWith("supana_")) {
+								Array.from(lastElement.nextElementSibling.querySelectorAll('span')).forEach(e => { e.parentElement.style.backgroundColor = 'yellow'; e.style.backgroundColor = 'yellow'; })
+							}
                         } catch {}
                         if (scrollToLastElement) {
                             scrollPosition = lastElement.offsetTop
@@ -125,8 +129,8 @@
 			const findTr = currentEl => {
 				currentEl = (currentEl.tagName.match(/TR|TABLE|BODY|HEAD/)) ? currentEl : findTr(currentEl.parentNode);
 				return (currentEl.previousElementSibling && currentEl.previousElementSibling.dataset.hasOwnProperty('num')) ? currentEl.previousElementSibling : currentEl;
-            };
-            el = findTr(el.target);
+			};
+            el = (k.startsWith("supana_")) ? el.target.parentNode : findTr(el.target);
             if (el.tagName != 'TR') { return; }
 			const num = el.dataset['num'];
 			el = el.children[0];
