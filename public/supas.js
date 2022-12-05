@@ -46,7 +46,12 @@
 			if (!scrollPosition) {
 				scrollPosition = (scrollToLastElement && lastElement) ? (lastElement.offsetTop) : localStorage.getItem('scrollPosition[' + k + ']')
 			}
-			window.onload = function() {
+            window.onload = function() {
+                // quirk for PaleMoon which doesn't seem to support content: url("data:image/png;base64,...") properly on img elements
+                const applyWorkaround = navigator.userAgent.contains("PaleMoon/");
+                if (applyWorkaround) {
+                    Array.from(document.querySelectorAll('img')).filter(e => { return e.className.startsWith('_'); }).forEach(img => { const imgSelector = img.classList[0]; let cssRule; for (let i = 0; i < document.styleSheets.length; i++) { let rules = Array.from(document.styleSheets[i].rules).find(rule => { return rule.selectorText == `img.${imgSelector}`; }); if (rules) { cssRule = rules; break;} } img.src=cssRule.style.content.substr(5,cssRule.style.content.length-7)})
+                }
 				let interval
 				let breakLoops = 1
 				setTimeout(function() {
@@ -100,7 +105,6 @@
 			el[0].children[0].style.backgroundColor = 'aquamarine'
 			window.scrollTo(window.scrollX, el[0].offsetTop)
 			el[0].scrollIntoView();
-			window.myElement = el[0]
 			window.onload = function() {
 				let interval
 				let breakLoops = 1
