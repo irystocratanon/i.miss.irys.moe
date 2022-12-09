@@ -1,10 +1,11 @@
+"use strict";
 (function() {
 	let selected_rows
     const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
 
     const palemoonWorkaround = () => {
         // quirk for PaleMoon which doesn't seem to support content: url("data:image/png;base64,...") properly on img elements
-        const applyWorkaround = navigator.userAgent.contains("PaleMoon/");
+        const applyWorkaround = String(navigator?.userAgent || '').indexOf("PaleMoon/") > -1;
         if (applyWorkaround) {
             Array.from(document.querySelectorAll('img')).filter(e => { return e.className.startsWith('_'); }).forEach(img => { const imgSelector = img.classList[0]; let cssRule; for (let i = 0; i < document.styleSheets.length; i++) { let rules = Array.from(document.styleSheets[i].rules).find(rule => { return rule.selectorText == `img.${imgSelector}`; }); if (rules) { cssRule = rules; break;} } img.src=cssRule.style.content.substr(5,cssRule.style.content.length-7)})
         }
