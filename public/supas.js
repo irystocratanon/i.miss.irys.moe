@@ -11,6 +11,18 @@
         }
     };
 
+    const systemEmojis = () => {
+        Array.from(document.querySelectorAll("img")).filter(e => { return [...e.alt].length === 1 }).forEach(img => { img.outerHTML = `<span class="${img.className}" style="font-size: 26px;font-family: Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;">${img.alt}</span>`; })
+    };
+
+    let useSystemEmoji = false;
+    try {
+		useSystemEmoji = Boolean(+localStorage.getItem('use_system_emoji[' + k + ']'));
+    } catch {}
+    if (useSystemEmoji) {
+        systemEmojis();
+    }
+
 	try {
 		selected_rows = localStorage.getItem('selected_rows[' + k + ']')
 		selected_rows = selected_rows.split(',').filter(e => { return e.length > 0; })
