@@ -78,7 +78,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Content-Type"] = "text/html"
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
-            if (content_length) {
+            if (content_length && req.method === 'GET') {
                 // TODO: FIX THIS
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
