@@ -117,8 +117,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let i = 0;
                     while (true) {
                         reqT1 = performance.now();
-                        console.log(reqT1-reqT0);
-                        console.log(`processing row ${i}`);
+                        if (reqT1-reqT0 >= 9000) {
+                            break;
+                        }
                         if (i > rows.length) {
                             break;
                         }
