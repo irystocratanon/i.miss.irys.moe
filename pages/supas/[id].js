@@ -7,6 +7,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
     let reqT0 = performance.now()
     let reqT1 = Number(reqT0)
+    let cursor = 0
 
     if (res) {
         if (req.method != 'GET' && req.method != 'HEAD') {
@@ -16,6 +17,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
         if (!query || !query?.id || query?.id.endsWith('.html') === false) {
             res.writeHead(404);
             return res.end()
+        }
+        if (query?.cursor) {
+            cursor = Number(query.cursor)
+            cursor = (Number.isNaN(cursor)) ? 0 : cursor
         }
         if (process.env.hasOwnProperty('SUPAS_MAINTENANCE_WINDOW')) {
             res.writeHead(503, { "Cache-Control": "public, max-age=0, must-revalidate"});
@@ -82,15 +87,18 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 if (Math.round(content_length / (1024*1024)) >= 5) {
                     const textContent = await supaReq.text();
                     let html = parse(textContent);
-                    let body = `<!doctype html>
+
+                    let body = ''
+                    if (cursor === 0) {
+                        body += `<!doctype html>
 <html>`;
-                    // head
-                    body += html.childNodes[1].childNodes[1].toString();
-                    body += `<body class="m-0 sm:m-2">
+                        // head
+                        body += html.childNodes[1].childNodes[1].toString();
+                        body += `<body class="m-0 sm:m-2">
 <br/>`;
-                    body += html.childNodes[1].childNodes[3].querySelector('table').toString();
-                    body += html.childNodes[1].childNodes[3].querySelector('#control').toString();
-                    body += `
+                        body += html.childNodes[1].childNodes[3].querySelector('table').toString();
+                        body += html.childNodes[1].childNodes[3].querySelector('#control').toString();
+                        body += `
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
 <div class="overflow-x-auto">
 <table class="main-table table-auto w-full" border="1">
@@ -106,22 +114,32 @@ Home.getInitialProps = async function ({ req, res, query }) {
 </tr>
 <tr><th class="text-right">円建て</th></tr>`
 
-                    // blocking style tags unfortunately need to come first to make sure we stay in size budget
-                    let style = html.childNodes[1].childNodes[3].querySelectorAll('style');
-                    for (let i = 0; i < style.length; i++) {
-                        body += style[i].toString();
+                        // blocking style tags unfortunately need to come first to make sure we stay in size budget
+                        let style = html.childNodes[1].childNodes[3].querySelectorAll('style');
+                        for (let i = 0; i < style.length; i++) {
+                            body += style[i].toString();
+                        }
                     }
 
                     let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
+                    let loopRecords = true;
 
-                    let i = 0;
-                    while (true) {
+                    if (! rows[cursor]) {
+                        loopRecords = false;
+                    }
+
+                    let i = cursor;
+                    while (loopRecords) {
                         reqT1 = performance.now();
                         if (reqT1-reqT0 >= 9000) {
                             break;
                         }
                         if (i > rows.length) {
                             break;
+                        }
+                        if (! rows[i]) {
+                            i+=1;
+                            continue;
                         }
                         let row = rows[i].toString();
                         row += rows[i].nextElementSibling.toString();
@@ -135,9 +153,31 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
                     // TODO: Need to make additional client side requests to fetch the rest
 
-                    body += `</tbody></table></div></div>`;
-                    res.writeHead(206, resHeaders);
-                    return res.end(`${body}</body></html>`);
+                    if (cursor === 0) {
+                        body += `</tbody></table></div></div>`;
+                    }
+                    res.writeHead((loopRecords) ? 206 : 204, resHeaders);
+                    return res.end((cursor === 0) ? `${body}</body><script type="application/javascript">
+(async function() {
+    async function requestRecords() {
+        const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + document.querySelectorAll("tr[data-num]").length;
+        for (let i = 0; i < 10; i++) {
+            let req = await fetch(uriString);
+            console.dir(req, {depth: null});
+            if (req.status > 200 && req.status < 400) {
+                if (req.status != 204) {
+                    let body = await req.text();
+                    let tbody = document.getElementsByTagName('tbody')[1];
+                    tbody.innerHTML += body;
+                    await requestRecords();
+                }
+            break;
+            }
+        }
+    }
+    await requestRecords();
+})();
+</script></html>` : body);
                 }
             }
 
