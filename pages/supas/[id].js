@@ -49,6 +49,26 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (etag) { resHeaders["ETag"] = etag }
             resHeaders["Last-Modified"] = last_modified
 
+            let content_length = supaReq.headers.get("X-Content-Length");
+            if (content_length) {
+                //resHeaders['Content-Length'] = content_length;
+                // TODO: FIX THIS
+                // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
+                // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
+                // fixing this will likely mean I'll need to re-write the server to stream the body in batches
+                if (Math.round(content_length / (1024*1024)) >= 5) {
+                    res.writeHead(413, resHeaders);
+                    return res.end(`<html>
+<head><title>413 Payload Too Large</title></head>
+<body>
+<center><h1>413 Payload Too Large</h1></center>
+<hr><center><a href="https://vercel.com/docs/concepts/limits/overview#serverless-function-payload-size-limit">https://vercel.com/docs/concepts/limits/overview#serverless-function-payload-size-limit</a></center>
+</body>
+</html>`);
+                    return res.end();
+                }
+            }
+
             let cache_control = supaReq.headers.get('Cache-Control')
             cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=1, s-maxage=4, stale-if-error=59, stale-while-revalidate=10"
 
