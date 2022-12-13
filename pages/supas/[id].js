@@ -156,6 +156,13 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     if (cursor === 0) {
                         body += `</tbody></table></div></div>`;
                     }
+
+                    let script = html.childNodes[1].childNodes[3].querySelectorAll('script');
+                    script = (script.length > 0) ? script.pop() : {getAttribute: function() {
+                        return '/supas.min.js';
+                    }};
+                    script = script.getAttribute('src');
+
                     res.writeHead((loopRecords) ? 206 : 204, resHeaders);
                     return res.end((cursor === 0) ? `${body}</body><script type="application/javascript">
 (async function() {
@@ -172,6 +179,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let tbody = document.getElementsByTagName('tbody')[1];
                     tbody.innerHTML += body;
                     await requestRecords();
+                } else {
+                    let script = document.createElement("script");
+                    script.src = "${script}";
+                    document.head.appendChild(script);
                 }
             break;
             }
