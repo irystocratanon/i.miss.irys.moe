@@ -1,3 +1,4 @@
+import { parse } from "node-html-parser"
 import performance from '../../server/lib/get-performance.js'
 
 export default function Home(props) {}
@@ -49,25 +50,8 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (etag) { resHeaders["ETag"] = etag }
             resHeaders["Last-Modified"] = last_modified
 
+            // size of uncompressed content
             let content_length = supaReq.headers.get("X-Content-Length");
-            if (content_length) {
-                //resHeaders['Content-Length'] = content_length;
-                // TODO: FIX THIS
-                // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
-                // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
-                // fixing this will likely mean I'll need to re-write the server to stream the body in batches
-                if (Math.round(content_length / (1024*1024)) >= 5) {
-                    res.writeHead(413, resHeaders);
-                    return res.end(`<html>
-<head><title>413 Payload Too Large</title></head>
-<body>
-<center><h1>413 Payload Too Large</h1></center>
-<hr><center><a href="https://vercel.com/docs/concepts/limits/overview#serverless-function-payload-size-limit">https://vercel.com/docs/concepts/limits/overview#serverless-function-payload-size-limit</a></center>
-</body>
-</html>`);
-                    return res.end();
-                }
-            }
 
             let cache_control = supaReq.headers.get('Cache-Control')
             cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=1, s-maxage=4, stale-if-error=59, stale-while-revalidate=10"
@@ -88,6 +72,73 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
             resHeaders["Content-Type"] = "text/html"
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
+
+            if (content_length) {
+                // TODO: FIX THIS
+                // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
+                // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
+                // fixing this means we need to stream the body in batches
+                // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
+                if (Math.round(content_length / (1024*1024)) >= 5) {
+                    const textContent = await supaReq.text();
+                    let html = parse(textContent);
+                    let body = `<!doctype html>
+<html>`;
+                    // head
+                    body += html.childNodes[1].childNodes[1].toString();
+                    body += `<body class="m-0 sm:m-2">
+<br/>`;
+                    body += html.childNodes[1].childNodes[3].querySelector('table').toString();
+                    body += html.childNodes[1].childNodes[3].querySelector('#control').toString();
+                    body += `
+<div class="bg-white min-w-[129vw] sm:min-w-[0]">
+<div class="overflow-x-auto">
+<table class="main-table table-auto w-full" border="1">
+<tbody>
+<tr>
+<th rowspan="2" class="w-[1em]">No</th>
+<th rowspan="2" class="w-[1em]">時間<br><span class="text-sm"><noscript>JST</noscript><script>document.write(Intl.DateTimeFormat().resolvedOptions().timeZone)</script></span></th>
+<th class="text-left w-[1em]">元金額</th>
+<th class="invisible hidden sm:visible sm:table-cell w-[0.1%]" rowspan="2">色</th>
+<th class="invisible hidden sm:visible sm:table-cell w-[0.5em]" rowspan="2">icon</th>
+<th class="w-[1em]" rowspan="2">チャンネル名</th>
+<th class="text-left min-w-[75%]" rowspan="2">チャット</th>
+</tr>
+<tr><th class="text-right">円建て</th></tr>`
+
+                    // blocking style tags unfortunately need to come first to make sure we stay in size budget
+                    let style = html.childNodes[1].childNodes[3].querySelectorAll('style');
+                    for (let i = 0; i < style.length; i++) {
+                        body += style[i].toString();
+                    }
+
+                    let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
+
+                    let i = 0;
+                    while (true) {
+                        reqT1 = performance.now();
+                        console.log(reqT1-reqT0);
+                        console.log(`processing row ${i}`);
+                        if (i > rows.length) {
+                            break;
+                        }
+                        let row = rows[i].toString();
+                        row += rows[i].nextElementSibling.toString();
+                        if (Buffer.byteLength(body + row, 'utf8') < 4_750_000) {
+                            body += row;
+                        } else {
+                            break;
+                        }
+                        i+=1;
+                    }
+
+                    // TODO: Need to make additional client side requests to fetch the rest
+
+                    body += `</tbody></table></div></div>`;
+                    res.writeHead(206, resHeaders);
+                    return res.end(`${body}</body></html>`);
+                }
+            }
 
             res.writeHead((supaReq.status === 206) ? 200 : supaReq.status, resHeaders);
             res.end(await supaReq.text());
