@@ -182,6 +182,12 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 } else {
                     let script = document.createElement("script");
                     script.src = "${script}";
+                    // manually trigger window.onload if readyState is already complete
+                    if (document.readyState === 'complete') {
+                        script.onload = function() {
+                            window.onload();
+                        }
+                    }
                     document.head.appendChild(script);
                 }
             break;
