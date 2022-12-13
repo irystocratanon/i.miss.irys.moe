@@ -128,7 +128,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         loopRecords = false;
                     }
 
-                    let i = cursor;
+                    let i = (cursor == -1) ? 0 : cursor;
                     while (loopRecords) {
                         reqT1 = performance.now();
                         if (reqT1-reqT0 >= 9000) {
@@ -160,7 +160,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     return res.end((cursor === 0) ? `${body}</body><script type="application/javascript">
 (async function() {
     async function requestRecords() {
-        const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + document.querySelectorAll("tr[data-num]").length;
+        let cursorLength = document.querySelectorAll("tr[data-num]").length;
+        cursorLength = (cursorLength === 0) ? -1 : cursorLength;
+        const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorLength;
         for (let i = 0; i < 10; i++) {
             let req = await fetch(uriString);
             console.dir(req, {depth: null});
