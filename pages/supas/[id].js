@@ -136,10 +136,15 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         loopRecords = false;
                     }
 
+                    // use a lower max response time for the first request
+                    // lighthouse gives a Green Speed Index score for request <=3400ms
+                    // (https://developer.chrome.com/docs/lighthouse/performance/speed-index/)
+                    const max_response_time = (cursor < 1) ? 3000 : 9000;
+
                     let i = (cursor == -1) ? 0 : cursor;
                     while (loopRecords) {
                         reqT1 = performance.now();
-                        if (reqT1-reqT0 >= 9000) {
+                        if (reqT1-reqT0 >= max_response_time) {
                             break;
                         }
                         if (i > rows.length) {
