@@ -52,7 +52,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
 
             let resHeaders = {}
-            if (etag) { resHeaders["ETag"] = etag }
+            if (etag && cursor === 0) { resHeaders["ETag"] = etag }
             resHeaders["Last-Modified"] = last_modified
 
             // size of uncompressed content
@@ -79,6 +79,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if (content_length && req.method === 'GET') {
+                if (cache_control.indexOf("s-maxage") > -1) {
+                    cache_control = "public, max-age=59";
+                }
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
@@ -163,7 +166,14 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     }};
                     script = script.getAttribute('src');
 
-                    res.writeHead((loopRecords) ? 206 : 204, resHeaders);
+                    let resStatus = (loopRecords) ? 206 : 204;
+                    if (resStatus == 204) {
+                        resHeaders["Cache-Control"] = "public, max-age=0, must-revalidate";
+                    } else {
+                        resHeaders["Cache-Control"] = cache_control;
+                    }
+
+                    res.writeHead(resStatus, resHeaders);
                     return res.end((cursor === 0) ? `${body}</body><script type="application/javascript">
 (async function() {
     const showTable = () => {
