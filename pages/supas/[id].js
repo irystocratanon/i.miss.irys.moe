@@ -79,6 +79,8 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if (content_length && req.method === 'GET') {
+                let content_type = req.headers["accept"];
+                content_type = (content_type) ? content_type : 'text/supas';
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
@@ -96,7 +98,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
 
                     let body = ''
-                    if (cursor === 0) {
+                    if (cursor === 0 || content_type != 'text/supas') {
                         body += `<!doctype html>
 <html>`;
                         // head
@@ -108,7 +110,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         body += `
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
 <div class="overflow-x-auto">
-<progress id="main-table-progress" class="w-full" max="${rows.length}" value="1"></progress>
+<progress id="main-table-progress" class="w-full" max="${rows.length}" value="${(cursor < 1) ? 1 : cursor}"></progress>
 <table class="main-table table-auto w-full" border="1">
 <script>document.currentScript.parentElement.style.visibility = 'collapse';Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = true; })</script>
 <tbody>
@@ -167,7 +169,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         i+=1;
                     }
 
-                    if (cursor === 0) {
+                    if (cursor === 0 || content_type != 'text/supas') {
                         body += `</tbody></table></div></div>`;
                     }
 
@@ -185,7 +187,19 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     }
 
                     res.writeHead(resStatus, resHeaders);
-                    return res.end((cursor === 0) ? `${body}</body><script type="application/javascript">
+                    return res.end((cursor === 0 || content_type != 'text/supas') ? `${body}<noscript>
+<div class="inline-flex">
+  <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
+    <a href="/supas/${query.id}">First</a>
+  </button>
+  <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
+    <a href="/supas/${query.id}?cursor=${i}">Next</a>
+  </button>
+  <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
+    <a href="/supas/${query.id}?cursor=${(rows.length > 0) ? rows.length-1 : -1}">Last</a>
+  </button>
+</div>
+</noscript></body><script type="application/javascript">
 (async function() {
     const showTable = () => {
         Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; });
@@ -198,7 +212,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorLength;
         for (let i = 0; i < 10; i++) {
             document.getElementById('main-table-progress').value=cursorLength;
-            let req = await fetch(uriString);
+            let req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
             console.dir(req, {depth: null});
             if (req.status > 200 && req.status < 400) {
                 if (req.status != 204) {
