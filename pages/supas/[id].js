@@ -85,7 +85,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
-                if (Math.round(content_length / (1024*1024)) >= 5) {
+                if (cursor > 0 || Math.round(content_length / (1024*1024)) >= 5) {
                     // drop the ETag since it no longer makes sense
                     delete resHeaders["ETag"];
 
