@@ -87,6 +87,8 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     const textContent = await supaReq.text();
                     let html = parse(textContent);
 
+                    let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
+
                     let body = ''
                     if (cursor === 0) {
                         body += `<!doctype html>
@@ -100,6 +102,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         body += `
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
 <div class="overflow-x-auto">
+<progress id="main-table-progress" class="w-full" max="${rows.length}" value="1"></progress>
 <table class="main-table table-auto w-full" border="1">
 <script>document.currentScript.parentElement.style.visibility = 'collapse';</script>
 <tbody>
@@ -121,7 +124,6 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         }
                     }
 
-                    let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
                     let loopRecords = true;
 
                     if (! rows[cursor]) {
@@ -166,12 +168,14 @@ Home.getInitialProps = async function ({ req, res, query }) {
 (async function() {
     const showTable = () => {
         Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; });
+        document.getElementById('main-table-progress').style.display = 'none';
     };
     async function requestRecords() {
         let cursorLength = document.querySelectorAll("tr[data-num]").length;
         cursorLength = (cursorLength === 0) ? -1 : cursorLength;
         const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorLength;
         for (let i = 0; i < 10; i++) {
+            document.getElementById('main-table-progress').value=cursorLength;
             let req = await fetch(uriString);
             console.dir(req, {depth: null});
             if (req.status > 200 && req.status < 400) {
