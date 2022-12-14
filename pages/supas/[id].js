@@ -79,7 +79,6 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if (content_length && req.method === 'GET') {
-                // TODO: FIX THIS
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
@@ -102,6 +101,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
 <div class="overflow-x-auto">
 <table class="main-table table-auto w-full" border="1">
+<script>document.currentScript.parentElement.style.visibility = 'collapse';</script>
 <tbody>
 <tr>
 <th rowspan="2" class="w-[1em]">No</th>
@@ -151,8 +151,6 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         i+=1;
                     }
 
-                    // TODO: Need to make additional client side requests to fetch the rest
-
                     if (cursor === 0) {
                         body += `</tbody></table></div></div>`;
                     }
@@ -166,6 +164,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     res.writeHead((loopRecords) ? 206 : 204, resHeaders);
                     return res.end((cursor === 0) ? `${body}</body><script type="application/javascript">
 (async function() {
+    const showTable = () => {
+        Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; });
+    };
     async function requestRecords() {
         let cursorLength = document.querySelectorAll("tr[data-num]").length;
         cursorLength = (cursorLength === 0) ? -1 : cursorLength;
@@ -185,9 +186,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     // manually trigger window.onload if readyState is already complete
                     if (document.readyState === 'complete') {
                         script.onload = function() {
+                            showTable();
                             window.onload();
                         }
-                    }
+                    } else { showTable(); }
                     document.head.appendChild(script);
                 }
             break;
@@ -195,6 +197,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         }
     }
     await requestRecords();
+    showTable();
 })();
 </script></html>` : body);
                 }
