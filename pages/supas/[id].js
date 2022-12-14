@@ -207,11 +207,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
         Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = false; })
     };
     async function requestRecords() {
-        let cursorLength = document.querySelectorAll("tr[data-num]").length;
-        cursorLength = (cursorLength === 0) ? -1 : cursorLength;
-        const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorLength;
+        const cursorLength = document.querySelectorAll("tr[data-num]").length;
+        const cursorNext = (cursorLength === 0) ? -1 : Array.from(document.querySelectorAll("tr[data-num]")).pop().dataset["num"];
+        const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorNext;
         for (let i = 0; i < 10; i++) {
-            document.getElementById('main-table-progress').value=cursorLength;
+            document.getElementById('main-table-progress').value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
             let req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
             console.dir(req, {depth: null});
             if (req.status > 200 && req.status < 400) {
