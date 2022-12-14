@@ -79,14 +79,17 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if (content_length && req.method === 'GET') {
-                if (cache_control.indexOf("s-maxage") > -1) {
-                    cache_control = "public, max-age=59";
-                }
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
                 if (Math.round(content_length / (1024*1024)) >= 5) {
+                    // drop the ETag since it no longer makes sense
+                    delete resHeaders["ETag"];
+
+                    if (cache_control.indexOf("s-maxage") > -1) {
+                        cache_control = "public, max-age=604800, immutable";
+                    }
                     const textContent = await supaReq.text();
                     let html = parse(textContent);
 
