@@ -104,7 +104,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 <div class="overflow-x-auto">
 <progress id="main-table-progress" class="w-full" max="${rows.length}" value="1"></progress>
 <table class="main-table table-auto w-full" border="1">
-<script>document.currentScript.parentElement.style.visibility = 'collapse';</script>
+<script>document.currentScript.parentElement.style.visibility = 'collapse';Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = true; })</script>
 <tbody>
 <tr>
 <th rowspan="2" class="w-[1em]">No</th>
@@ -169,6 +169,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
     const showTable = () => {
         Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; });
         document.getElementById('main-table-progress').style.display = 'none';
+        Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = false; })
     };
     async function requestRecords() {
         let cursorLength = document.querySelectorAll("tr[data-num]").length;
