@@ -145,7 +145,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     while (loopRecords) {
                         reqT1 = performance.now();
                         if (reqT1-reqT0 >= max_response_time) {
-                            break;
+                            // don't break if we haven't processed a single row yet
+                            if (max_response_time > 3000 || body.indexOf('data-num') > -1) {
+                                break;
+                            }
                         }
                         if (i > rows.length) {
                             break;
