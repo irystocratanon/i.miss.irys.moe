@@ -89,7 +89,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Content-Type"] = "text/html"
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
-            if (content_length && req.method === 'GET') {
+            if ((content_length || query?.cursor) && req.method === 'GET') {
                 let content_type = req.headers["accept"];
                 content_type = (content_type) ? content_type : 'text/supas';
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
@@ -231,12 +231,12 @@ Home.getInitialProps = async function ({ req, res, query }) {
             try {
                 req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
             } catch (e) { console.error(e); continue; }
-            console.dir(req, {depth: null});
             if (req.status > 200 && req.status < 400) {
                 if (req.status != 204) {
                     let body = await req.text();
                     let tbody = document.getElementsByTagName('tbody')[1];
                     tbody.innerHTML += body;
+                    Array.from(document.querySelectorAll("tr[data-num]")).filter(e => { return e.dataset["num"] > cursorNext; }).map(e => { return e.querySelector('td[title]'); }).forEach(e => { let span = e.querySelector('span'); let d = new Date(e.title); let year=((new Date()).getFullYear()!=d.getFullYear())?'numeric':undefined;let timestamp = (d=="Invalid Date")?'':\`\${d.toLocaleDateString([...navigator.languages, 'en'], {day: 'numeric', month: 'numeric', year})}<br>\${d.toLocaleTimeString()}\`; span.innerHTML = timestamp; });
                     await requestRecords();
                 } else {
                     let script = document.createElement("script");
