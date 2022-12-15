@@ -44,7 +44,16 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
             }
-            const supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {method: req.method, headers: supaReqHeaders})
+            let supaReq
+            for (let i = 0; i < 3; i++) {
+                try {
+                    supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {method: req.method, headers: supaReqHeaders});
+                    break;
+                } catch (e) { console.error(e); console.trace(e); }
+            }
+            if (!supaReq) {
+                throw new Error("Fetch error");
+            }
             reqT1 = performance.now()
 
             let etag = supaReq.headers.get('ETag')
