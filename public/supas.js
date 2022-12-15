@@ -2,6 +2,48 @@
 (function() {
 	let selected_rows
     const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
+    let cursor;
+    const queryString = window.location.search.split('=');
+    let cursorIndex = queryString.findIndex(e => { return e.match(/\??cursor/) || e.endsWith("&cursor"); });
+    if (cursorIndex > -1) {
+        try {
+            cursor = queryString[cursorIndex+1];
+        } catch {}
+    }
+    let oldCursor
+    try {
+        oldCursor = localStorage.getItem('cursor[' + k + ']')
+    } catch {}
+
+    const invalidate_scroll = () => {
+        try {
+	    	localStorage.removeItem('scrollPosition[' + k + ']')
+	    } catch {}
+	    try {
+	    	localStorage.removeItem('lastElement[' + k + ']')
+	    } catch {}
+	    try {
+	    	localStorage.removeItem('scrollToLastElement[' + k + ']')
+	    } catch {}
+    };
+
+    const setCursor = () => {
+        if (cursor) {
+            try {
+                localStorage.setItem('cursor[' + k + ']', cursor);
+            } catch {}
+        } else {
+            try {
+                localStorage.removeItem('cursor[' + k + ']');
+            } catch {}
+        }
+    };
+
+    if ((cursor && oldCursor && cursor != oldCursor) || oldCursor && !cursor) {
+        console.info(`cursor: ${cursor} oldCursor: ${oldCursor}`);
+        invalidate_scroll();
+        setCursor();
+    }
 
     const palemoonWorkaround = () => {
         // quirk for PaleMoon which doesn't seem to support content: url("data:image/png;base64,...") properly on img elements
@@ -98,18 +140,11 @@
 				}, 0)
 			}
 		} catch (e) { console.error(e); }
-	}
-	try {
-		localStorage.removeItem('scrollPosition[' + k + ']')
-	} catch {}
-	try {
-		localStorage.removeItem('lastElement[' + k + ']')
-	} catch {}
-	try {
-		localStorage.removeItem('scrollToLastElement[' + k + ']')
-	} catch {}
+    }
+    invalidate_scroll();
 	addEventListener('beforeunload', (event) => {
-		try {
+        try {
+            setCursor();
 			localStorage.setItem('scrollPosition[' + k + ']', window.scrollY)
 			localStorage.setItem('lastElement[' + k + ']', Array.from(document.querySelectorAll('tr[data-num]')).pop().dataset['num'])
 			localStorage.setItem('scrollToLastElement[' + k + ']', (window.scrollMaxY === Math.round(window.scrollY)) ? "1" : "0")
