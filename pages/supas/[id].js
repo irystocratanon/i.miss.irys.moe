@@ -89,7 +89,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     // drop the ETag since it no longer makes sense
                     delete resHeaders["ETag"];
 
-                    if (cache_control.indexOf("s-maxage") > -1) {
+                    if (cache_control.indexOf("s-maxage") > -1 && content_type === 'text/supas') {
                         cache_control = "public, max-age=604800, immutable";
                     }
                     const textContent = await supaReq.text();
