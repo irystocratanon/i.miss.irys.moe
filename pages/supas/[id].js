@@ -120,10 +120,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         body += html.childNodes[1].childNodes[3].querySelector('#control').toString();
                         body += `
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
+<progress id="main-table-progress" class="w-full overflow-hidden" max="${rows.length}" value="${(cursor < 1) ? 1 : cursor}"></progress>
 <div class="overflow-x-auto">
-<progress id="main-table-progress" class="w-full" max="${rows.length}" value="${(cursor < 1) ? 1 : cursor}"></progress>
 <table class="main-table table-auto w-full" border="1">
-<script>document.currentScript.parentElement.style.visibility = 'collapse';Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = true; })</script>
+<script>document.currentScript.parentElement.style.visibility = 'collapse';document.currentScript.parentElement.parentElement.style["overflow-x"]="hidden";Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = true; })</script>
 <tbody>
 <tr>
 <th rowspan="2" class="w-[1em]">No</th>
@@ -212,17 +212,21 @@ Home.getInitialProps = async function ({ req, res, query }) {
 </div>
 </noscript></body><script type="application/javascript">
 (async function() {
+    const progressElement = document.getElementById('main-table-progress');
     const showTable = () => {
-        Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; });
-        document.getElementById('main-table-progress').style.display = 'none';
+        Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; table.parentElement.style["overflow-x"]='auto'; });
+        progressElement.style.display = 'none';
         Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = false; })
     };
+    let interval = setInterval(() => {
+        progressElement.value += 1;
+    }, 300);
     async function requestRecords() {
         const cursorLength = document.querySelectorAll("tr[data-num]").length;
         const cursorNext = (cursorLength === 0) ? -1 : Array.from(document.querySelectorAll("tr[data-num]")).pop().dataset["num"];
         const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorNext;
         for (let i = 0; i < 10; i++) {
-            document.getElementById('main-table-progress').value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
+            progressElement.value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
             let req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
             console.dir(req, {depth: null});
             if (req.status > 200 && req.status < 400) {
@@ -248,6 +252,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         }
     }
     await requestRecords();
+    clearInterval(interval);
     showTable();
 })();
 </script></html>` : body);
