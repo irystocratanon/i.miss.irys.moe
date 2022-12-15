@@ -227,7 +227,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
         const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorNext;
         for (let i = 0; i < 10; i++) {
             progressElement.value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
-            let req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
+            let req
+            try {
+                req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
+            } catch (e) { console.error(e); continue; }
             console.dir(req, {depth: null});
             if (req.status > 200 && req.status < 400) {
                 if (req.status != 204) {
