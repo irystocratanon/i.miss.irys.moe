@@ -238,7 +238,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
                     let resStatus = (loopRecords) ? 206 : 204;
                     if (resStatus == 204 || content_type.indexOf("text/html") > -1) {
-                        resHeaders["Cache-Control"] = "public, max-age=0, must-revalidate";
+                        resHeaders["Cache-Control"] = (sort == "desc") ? cache_control : "public, max-age=0, must-revalidate";
                         resHeaders["ETag"] = etag;
                     } else {
                         resHeaders["Cache-Control"] = cache_control;
