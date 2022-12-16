@@ -9,6 +9,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
     let reqT1 = Number(reqT0)
     let cursor = 0
     let limit = 0
+    let sort = 'asc';
 
     if (res) {
         if (req.method != 'GET' && req.method != 'HEAD') {
@@ -28,6 +29,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
         if (query?.limit) {
             limit = new Number(query.limit);
             limit = Number.isNaN(limit) ? 0 : limit;
+        }
+        if (query?.sort && query?.sort == 'desc') {
+            sort = 'desc';
         }
         if (process.env.hasOwnProperty('SUPAS_MAINTENANCE_WINDOW')) {
             res.writeHead(503, { "Cache-Control": "public, max-age=0, must-revalidate"});
@@ -113,12 +117,12 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Content-Type"] = "text/html"
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
-            if ((content_length || query?.cursor || limit > 0) && req.method === 'GET') {
+            if ((content_length || query?.cursor || query?.limit || query?.sort) && req.method === 'GET') {
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
-                if (cursor > 0 || limit > 0 || Math.round(content_length / (1024*1024)) >= 5) {
+                if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || query?.sort || Math.round(content_length / (1024*1024)) >= 5) {
                     if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
                         resHeaders["ETag"] = hashed_cursor;
                     }
@@ -130,6 +134,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let html = parse(textContent);
 
                     let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
+                    rows = (limit < -1 || sort == 'desc') ? rows.reverse() : rows;
+
+                    if (limit < 0) {
+                        limit = -limit;
+                    }
 
                     let body = ''
                     if (cursor === 0 || content_type != 'text/supas') {
@@ -178,6 +187,13 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     const max_response_time = (cursor < 1) ? 1700 : 9000;
 
                     let i = (cursor == -1) ? 0 : cursor;
+                    if (sort == 'desc' && i > 0) {
+                        i = (cursor == 1) ? 0 : rows.findIndex(e => {
+                            if (!e._attrs.hasOwnProperty('data-num')) { return false; }
+                            return +e._attrs["data-num"] === cursor -1;
+                        });
+                        loopRecords = (cursor > 1 && i !== -1)
+                    }
                     let processedRecords = -1;
                     while (loopRecords) {
                         reqT1 = performance.now();
@@ -249,7 +265,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         progressElement.style.display = 'none';
         Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = false; })
     };
-    if (window.location.search.match(/(\\?|\\&)limit=[0-9]+/)) {
+    if (window.location.search.match(/(\\?|\\&)limit=-?[0-9]+/)) {
         showTable();
         return;
     }
@@ -279,11 +295,13 @@ Home.getInitialProps = async function ({ req, res, query }) {
         const cursorLength = document.querySelectorAll("tr[data-num]").length;
         const cursorNext = (cursorLength === 0) ? -1 : Array.from(document.querySelectorAll("tr[data-num]")).pop().dataset["num"];
         const uriString = '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? ':' + window.location.port : '') + window.location.pathname + '?cursor=' + cursorNext;
+        let sort = window.location.search.match(/(\\?|\\&)sort=(asc|desc)/);
+        sort = (sort) ? '&sort=' + sort.pop() : '';
         for (let i = 0; i < 10; i++) {
             progressElement.value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
             let req
             try {
-                req = await fetch(uriString, {headers: {"Accept": "text/supas"}});
+                req = await fetch(\`\${uriString}\${sort}\`, {headers: {"Accept": "text/supas"}});
             } catch (e) { console.error(e); continue; }
             if (req.status > 200 && req.status < 400) {
                 if (req.status != 204) {
