@@ -47,10 +47,15 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let content_type = req.headers["accept"];
             content_type = (content_type) ? content_type : (query?.cursor) ? 'text/supas' : 'text/html';
 
+            if (cursor > 0 && content_type.indexOf('text/html') > -1) {
+                // human user's do not expect zero-based indexing
+                cursor-=1;
+            }
+
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
                 if (hashed_cursor && none_match == hashed_cursor && content_type === 'text/supas') {
-                    res.writeHead(304, {"Cache-Control": "public, max-age=3600, must-revalidate"});
+                    res.writeHead(304, {"Cache-Control": "public, max-age=3600, must-revalidate", "Vary": "Accept, Accept-Encoding"});
                     return res.end();
                 }
             }
@@ -89,7 +94,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
             cache_control = (supaReq.status === 206 || supas_items === "0") ? "public, max-age=0, must-revalidate" : cache_control
 
-            if (cursor > 0 && query?.cursor) {
+            if (query?.cursor) {
                 resHeaders["Vary"] = "Accept";
             }
 
