@@ -216,7 +216,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
     const showTable = () => {
         Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; table.parentElement.style["overflow-x"]='auto'; });
         progressElement.style.display = 'none';
-        Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = false; })
+        Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = false; })
     };
     let interval = setInterval(() => {
         progressElement.value += 1;
