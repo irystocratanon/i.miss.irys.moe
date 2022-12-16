@@ -40,8 +40,12 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (modified_since) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
             }
-            const none_match = req.headers['if-none-match']
+            let none_match = req.headers['if-none-match']
             if (none_match) {
+                let match_cursor = none_match.match(/-[0-9]+$/);
+                if (match_cursor) {
+                    none_match = none_match.substr(0, match_cursor.index);
+                }
                 supaReqHeaders['If-None-Match'] = none_match
             }
             let supaReq
@@ -63,7 +67,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             last_modified = (last_modified) ? last_modified : (new Date(Date.now()).toUTCString())
 
             let resHeaders = {}
-            if (etag && cursor === 0) { resHeaders["ETag"] = etag }
+            if (etag) { resHeaders["ETag"] = etag }
             resHeaders["Last-Modified"] = last_modified
 
             // size of uncompressed content
@@ -97,8 +101,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
                 if (cursor > 0 || Math.round(content_length / (1024*1024)) >= 5) {
-                    // drop the ETag since it no longer makes sense
-                    delete resHeaders["ETag"];
+                    resHeaders["ETag"]+=(cursor > 0) ? `-${cursor}` : '';
 
                     if (cache_control.indexOf("s-maxage") > -1 && content_type === 'text/supas') {
                         cache_control = "public, max-age=604800, immutable";
