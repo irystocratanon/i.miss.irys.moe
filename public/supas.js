@@ -253,7 +253,11 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             if (x_supas_items) {
                 let current_items
                 try {
-                    current_items = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                    if (window.location.search.match(/(\?|\*)sort=desc?/)) {
+                        current_items = Number(document.querySelector('[data-num]').dataset['num'])
+                    } else {
+                        current_items = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                    }
                 } catch { current_items = 0 }
                 x_supas_items = Number(x_supas_items)
                 if (x_supas_items > current_items) {
