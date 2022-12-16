@@ -40,7 +40,13 @@
                     })
 					localStorage.setItem('buttons[' + k + ']', JSON.stringify(checkboxState))
                 }
-				Array.from(document.getElementsByClassName(keyName)).forEach((supacha, i, arr) => {
+                let items = document.getElementsByClassName(keyName);
+                if (items.length < 1) {
+                    self.disabled = false;
+                    toggleControls(false);
+                    return;
+                }
+				Array.from(items).forEach((supacha, i, arr) => {
                     supacha.style.display = display;
                     if (i === arr.length-1) {
                         self.disabled = false;
