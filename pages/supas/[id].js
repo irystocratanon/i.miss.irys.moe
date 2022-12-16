@@ -278,7 +278,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         if (mutation.type === 'childList') {
           if (mutation?.addedNodes?.length > 0) {
             mutation.addedNodes.forEach(node => {
-                if (!node.dataset["num"]) { return; }
+                if (! node || !node.dataset || !node.dataset["num"]) { return; }
                 Array.from(node.querySelectorAll('td[title]')).forEach(e => { let span = e.querySelector('span'); let d = new Date(e.title); let year=((new Date()).getFullYear()!=d.getFullYear())?'numeric':undefined;let timestamp = (d=="Invalid Date")?'':\`\${d.toLocaleDateString([...navigator.languages, 'en'], {day: 'numeric', month: 'numeric', year})}<br>\${d.toLocaleTimeString()}\`; span.innerHTML = timestamp; });
             });
           }
