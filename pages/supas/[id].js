@@ -301,7 +301,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
             progressElement.value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
             let req
             try {
-                req = await fetch(\`\${uriString}\${sort}\`, {headers: {"Accept": "text/supas"}});
+                if (cursorNext == 1 && sort.endsWith("=desc")) {
+                    req = {status: 204};
+                } else {
+                    req = await fetch(\`\${uriString}\${sort}\`, {headers: {"Accept": "text/supas"}});
+                }
             } catch (e) { console.error(e); continue; }
             if (req.status > 200 && req.status < 400) {
                 if (req.status != 204) {
