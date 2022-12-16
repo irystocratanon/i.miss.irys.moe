@@ -43,9 +43,13 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
             }
             let none_match = req.headers['if-none-match']
+
+            let content_type = req.headers["accept"];
+            content_type = (content_type) ? content_type : (query?.cursor) ? 'text/supas' : 'text/html';
+
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
-                if (hashed_cursor && none_match == hashed_cursor) {
+                if (hashed_cursor && none_match == hashed_cursor && content_type === 'text/supas') {
                     res.writeHead(304, {"Cache-Control": "public, max-age=3600, must-revalidate"});
                     return res.end();
                 }
@@ -85,6 +89,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
             cache_control = (supaReq.status === 206 || supas_items === "0") ? "public, max-age=0, must-revalidate" : cache_control
 
+            if (cursor > 0 && query?.cursor) {
+                resHeaders["Vary"] = "Accept";
+            }
+
             resHeaders["Cache-Control"] = cache_control
 
             if (supaReq.status === 304) {
@@ -96,8 +104,6 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if ((content_length || query?.cursor) && req.method === 'GET') {
-                let content_type = req.headers["accept"];
-                content_type = (content_type) ? content_type : 'text/supas';
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
@@ -198,7 +204,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     script = script.getAttribute('src');
 
                     let resStatus = (loopRecords) ? 206 : 204;
-                    if (resStatus == 204) {
+                    if (resStatus == 204 || content_type.indexOf("text/html") > -1) {
                         resHeaders["Cache-Control"] = "public, max-age=0, must-revalidate";
                         resHeaders["ETag"] = etag;
                     } else {
