@@ -168,11 +168,23 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     const max_response_time = (cursor < 1) ? 1700 : 9000;
 
                     let i = (cursor == -1) ? 0 : cursor;
+                    let limit = 0;
+                    if (query?.limit) {
+                        limit = new Number(query.limit);
+                        limit = Number.isNaN(limit) ? 0 : limit;
+                    }
+                    let processedRecords = -1;
                     while (loopRecords) {
                         reqT1 = performance.now();
+                        processedRecords+=1;
+                        if (limit > 0) {
+                            if (processedRecords == limit) {
+                                break;
+                            }
+                        }
                         if (reqT1-reqT0 >= max_response_time) {
                             // don't break if we haven't processed a single row yet
-                            if (max_response_time > 1700 || body.indexOf('data-num') > -1) {
+                            if (processedRecords > 0 && (max_response_time > 1700 || body.indexOf('data-num') > -1)) {
                                 break;
                             }
                         }
@@ -232,6 +244,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
         progressElement.style.display = 'none';
         Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = false; })
     };
+    if (window.location.search.match(/(\\?|\\&)limit=[0-9]+/)) {
+        showTable();
+        return;
+    }
     const targetNode = document.querySelector('table.main-table');
     // Options for the observer (which mutations to observe)
     const config = { attributes: false, childList: true, subtree: true };
