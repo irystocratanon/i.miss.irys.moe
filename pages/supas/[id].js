@@ -218,6 +218,25 @@ Home.getInitialProps = async function ({ req, res, query }) {
         progressElement.style.display = 'none';
         Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = false; })
     };
+    const targetNode = document.querySelector('table.main-table');
+    // Options for the observer (which mutations to observe)
+    const config = { attributes: false, childList: true, subtree: true };
+    // Callback function to execute when mutations are observed
+    const callback = (mutationList, observer) => {
+      for (const mutation of mutationList) {
+        if (mutation.type === 'childList') {
+          if (mutation?.addedNodes?.length > 0) {
+            mutation.addedNodes.forEach(node => {
+                if (!node.dataset["num"]) { return; }
+                Array.from(node.querySelectorAll('td[title]')).forEach(e => { let span = e.querySelector('span'); let d = new Date(e.title); let year=((new Date()).getFullYear()!=d.getFullYear())?'numeric':undefined;let timestamp = (d=="Invalid Date")?'':\`\${d.toLocaleDateString([...navigator.languages, 'en'], {day: 'numeric', month: 'numeric', year})}<br>\${d.toLocaleTimeString()}\`; span.innerHTML = timestamp; });
+            });
+          }
+        }
+      }
+    };
+    const observer = new MutationObserver(callback);
+    // Start observing the target node for configured mutations
+    observer.observe(targetNode, config);
     let interval = setInterval(() => {
         progressElement.value += 1;
     }, 300);
@@ -235,8 +254,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 if (req.status != 204) {
                     let body = await req.text();
                     let tbody = document.getElementsByTagName('tbody')[1];
-                    tbody.innerHTML += body;
-                    Array.from(document.querySelectorAll("tr[data-num]")).filter(e => { return e.dataset["num"] > cursorNext; }).map(e => { return e.querySelector('td[title]'); }).forEach(e => { let span = e.querySelector('span'); let d = new Date(e.title); let year=((new Date()).getFullYear()!=d.getFullYear())?'numeric':undefined;let timestamp = (d=="Invalid Date")?'':\`\${d.toLocaleDateString([...navigator.languages, 'en'], {day: 'numeric', month: 'numeric', year})}<br>\${d.toLocaleTimeString()}\`; span.innerHTML = timestamp; });
+                    let table = document.createElement('table');
+                    table.innerHTML = body;
+                    for (const tr of table.querySelectorAll("tr")) {
+                        tbody.appendChild(tr);
+                    }
                     await requestRecords();
                 } else {
                     let script = document.createElement("script");
@@ -255,6 +277,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         }
     }
     await requestRecords();
+    observer.disconnect();
     clearInterval(interval);
     showTable();
 })();
