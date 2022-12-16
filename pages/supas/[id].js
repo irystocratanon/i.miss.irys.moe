@@ -8,6 +8,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
     let reqT0 = performance.now()
     let reqT1 = Number(reqT0)
     let cursor = 0
+    let limit = 0
 
     if (res) {
         if (req.method != 'GET' && req.method != 'HEAD') {
@@ -23,6 +24,10 @@ Home.getInitialProps = async function ({ req, res, query }) {
             cursor = Number(query.cursor)
             cursor = (Number.isNaN(cursor)) ? 0 : cursor
             hashed_cursor = `${query.id.substr(0, query.id.length-5)}-${cursor}`;
+        }
+        if (query?.limit) {
+            limit = new Number(query.limit);
+            limit = Number.isNaN(limit) ? 0 : limit;
         }
         if (process.env.hasOwnProperty('SUPAS_MAINTENANCE_WINDOW')) {
             res.writeHead(503, { "Cache-Control": "public, max-age=0, must-revalidate"});
@@ -108,12 +113,12 @@ Home.getInitialProps = async function ({ req, res, query }) {
             resHeaders["Content-Type"] = "text/html"
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
-            if ((content_length || query?.cursor) && req.method === 'GET') {
+            if ((content_length || query?.cursor || limit > 0) && req.method === 'GET') {
                 // Vercel limits single requests to 5MB payloads and some streams with a LOT of superchats can result in a payload larger than this e.g
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
-                if (cursor > 0 || Math.round(content_length / (1024*1024)) >= 5) {
+                if (cursor > 0 || limit > 0 || Math.round(content_length / (1024*1024)) >= 5) {
                     if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
                         resHeaders["ETag"] = hashed_cursor;
                     }
@@ -173,11 +178,6 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     const max_response_time = (cursor < 1) ? 1700 : 9000;
 
                     let i = (cursor == -1) ? 0 : cursor;
-                    let limit = 0;
-                    if (query?.limit) {
-                        limit = new Number(query.limit);
-                        limit = Number.isNaN(limit) ? 0 : limit;
-                    }
                     let processedRecords = -1;
                     while (loopRecords) {
                         reqT1 = performance.now();
