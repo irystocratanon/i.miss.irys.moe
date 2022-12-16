@@ -18,9 +18,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
             res.writeHead(404);
             return res.end()
         }
+        let hashed_cursor
         if (query?.cursor) {
             cursor = Number(query.cursor)
             cursor = (Number.isNaN(cursor)) ? 0 : cursor
+            hashed_cursor = `${query.id.substr(0, query.id.length-5)}-${cursor}`;
         }
         if (process.env.hasOwnProperty('SUPAS_MAINTENANCE_WINDOW')) {
             res.writeHead(503, { "Cache-Control": "public, max-age=0, must-revalidate"});
@@ -42,11 +44,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
             }
             let none_match = req.headers['if-none-match']
             if (none_match) {
-                let match_cursor = none_match.match(/-[0-9]+$/);
-                if (match_cursor) {
-                    none_match = none_match.substr(0, match_cursor.index);
-                }
                 supaReqHeaders['If-None-Match'] = none_match
+                if (hashed_cursor && none_match == hashed_cursor) {
+                    res.writeHead(304, {"Cache-Control": "public, max-age=3600, must-revalidate"});
+                    return res.end();
+                }
             }
             let supaReq
             for (let i = 0; i < 3; i++) {
@@ -101,7 +103,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
                 if (cursor > 0 || Math.round(content_length / (1024*1024)) >= 5) {
-                    resHeaders["ETag"]+=(cursor > 0) ? `-${cursor}` : '';
+                    if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
+                        resHeaders["ETag"] = hashed_cursor;
+                    }
 
                     if (cache_control.indexOf("s-maxage") > -1 && content_type === 'text/supas') {
                         cache_control = "public, max-age=604800, immutable";
@@ -196,6 +200,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let resStatus = (loopRecords) ? 206 : 204;
                     if (resStatus == 204) {
                         resHeaders["Cache-Control"] = "public, max-age=0, must-revalidate";
+                        resHeaders["ETag"] = etag;
                     } else {
                         resHeaders["Cache-Control"] = cache_control;
                     }
@@ -259,8 +264,13 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let tbody = document.getElementsByTagName('tbody')[1];
                     let table = document.createElement('table');
                     table.innerHTML = body;
-                    for (const tr of table.querySelectorAll("tr")) {
+                    for (const tr of table.querySelectorAll("tr[data-num]")) {
+                        if (document.querySelector(\`tr[data-num="\${tr.dataset.num}"]\`)) { continue; }
+                        let sibling = tr?.nextElementSibling;
                         tbody.appendChild(tr);
+                        if (sibling) {
+                            tbody.appendChild(sibling);
+                        }
                     }
                     await requestRecords();
                 } else {
