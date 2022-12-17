@@ -1,7 +1,35 @@
 "use strict";
 (function() {
     document.title = window.location.hostname + window.location.pathname
-	const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
+    const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
+    const housekeeping = () => {
+        let now = Date.now();
+        let housekeepingLastPerformed
+        let perform_duties = false;
+        const ONE_WEEK = ((1_000 * 3_600) * 24) * 7
+        try {
+            housekeepingLastPerformed = localStorage.getItem("supas_maid");
+            housekeepingLastPerformed = new Date(+housekeepingLastPerformed);
+            perform_duties = (housekeepingLastPerformed == "Invalid Date") ? true : perform_duties
+            housekeepingLastPerformed = Date.parse(housekeepingLastPerformed)
+            if (!perform_duties && !Number.isNaN(housekeepingLastPerformed)) {
+                perform_duties = (now >= (housekeepingLastPerformed + (ONE_WEEK))) ? true : perform_duties
+            }
+        } catch (e) { console.error(e); perform_duties = true; }
+        console.log('perform_duties: ', perform_duties);
+        if (!perform_duties) { const next_date = new Date((+housekeepingLastPerformed)+ONE_WEEK); console.log(`maid is performing next on ${next_date}`); return; }
+        Object.keys(localStorage).map(e => { return e.match(/\w+\[(?<k>(.*))\]/); }).map(e => e && e.groups.k).filter((e,i,s) => e && e != k && s.indexOf(e) === i).forEach(key => {
+            Object.keys(localStorage).filter(e => e.endsWith(`[${key}]`)).forEach(entry => {
+                try {
+                    localStorage.removeItem(entry);
+                } catch {}
+            });
+        });
+        try {
+            localStorage.setItem("supas_maid", now);
+        } catch {}
+    };
+    housekeeping();
 	let checkboxState
 	try {
 		checkboxState = JSON.parse(localStorage.getItem('buttons[' + k + ']'))
