@@ -21,7 +21,7 @@
         oldSort = (oldSort == "desc") ? oldSort : "asc"
     } catch { oldSort = "asc"; }
 
-    let newSort = (window.location.search.indexOf('sort=desc') > -1) ? "desc" : "asc"
+    const newSort = (window.location.search.indexOf('sort=desc') > -1) ? "desc" : "asc"
 
     const invalidate_scroll = () => {
         try {
@@ -164,7 +164,8 @@
 			console.error(e);
 		}
 	});
-	for (let i = 0; i < selected_rows.length; i++) {
+    for (let i = 0; i < selected_rows.length; i++) {
+        if (oldSort != newSort) { break; }
 		try {
 			let el = document.querySelectorAll('tr[data-num="' + selected_rows[i] + '"]')
 			el[0].children[0].style.backgroundColor = 'aquamarine'
