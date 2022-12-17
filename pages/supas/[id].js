@@ -150,6 +150,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 <br/>`;
                         body += html.childNodes[1].childNodes[3].querySelector('table').toString();
                         body += html.childNodes[1].childNodes[3].querySelector('#control').toString();
+                        let sortIndicator = (sort == "desc") ? " rotate-180" : ""
                         body += `
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
 <progress id="main-table-progress" class="w-full overflow-hidden" max="${rows.length}" value="${(cursor < 1) ? 1 : cursor}"></progress>
@@ -158,7 +159,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 <script>document.currentScript.parentElement.style.visibility = 'collapse';document.currentScript.parentElement.parentElement.style["overflow-x"]="hidden";Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = true; })</script>
 <tbody>
 <tr>
-<th rowspan="2" class="w-[1em]">No</th>
+<th rowspan="2" class="w-[1em]"><button onclick="(function(self) { let sort = window.location.search.match(/(\\?|\\&)sort=(asc|desc)/); if (sort) { sort = sort.pop(); let newURL = window.location.href; const newSort = (sort == 'desc') ? 'asc' : 'desc'; newURL = newURL.replace(\`sort=\${sort}\`, \`sort=\${newSort}\`); let newClass='inline-block '; newClass += (newSort == 'asc') ? 'rotate-0' : 'rotate-180'; self.querySelector('span').classList=newClass; window.history.pushState({path: newURL}, '', newURL); let newTableNodes = []; newTableNodes.push(document.querySelector('.main-table tr:nth-child(n+1)')); newTableNodes.push(document.querySelector('.main-table tr:nth-child(n+2)')); newTableNodes.push(...document.querySelectorAll('.main-table style')); Array.from(document.querySelectorAll('.main-table tr[data-num]')).sort((a,b) => { const x = +a.dataset['num']; const y = +b.dataset['num']; return ((sort == 'desc') ? x > y : x < y) || -1; }).forEach(e => { newTableNodes.push(e); newTableNodes.push(e.nextElementSibling); }); let newTbody = document.createElement('tbody'); newTableNodes.forEach(node => { newTbody.appendChild(node)}); document.querySelector('.main-table tbody').innerHTML = newTbody.innerHTML; } })(this)">No<br><span class="inline-block${sortIndicator}">🯊</span></button></th>
 <th rowspan="2" class="w-[1em]">時間<br><span class="text-sm"><noscript>JST</noscript><script>document.write(Intl.DateTimeFormat().resolvedOptions().timeZone)</script></span></th>
 <th class="text-left w-[1em]">元金額</th>
 <th class="invisible hidden sm:visible sm:table-cell w-[0.1%]" rowspan="2">色</th>

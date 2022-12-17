@@ -405,7 +405,7 @@ export default function Home(props) {
 
     const supas_js_pre_version = '0.5'
     const supas_js_version = '2'
-    const supas_css_version = '0.8'
+    const supas_css_version = '0.9'
 
 
     return <div className={styles.site}>
