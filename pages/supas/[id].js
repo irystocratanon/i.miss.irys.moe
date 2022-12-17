@@ -122,7 +122,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
-                if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || query?.sort || Math.round(content_length / (1024*1024)) >= 5) {
+                if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || (query?.sort && sort == "desc") || Math.round(content_length / (1024*1024)) >= 5) {
                     if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
                         resHeaders["ETag"] = hashed_cursor;
                     }
