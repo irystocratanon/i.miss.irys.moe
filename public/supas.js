@@ -15,6 +15,14 @@
         oldCursor = localStorage.getItem('cursor[' + k + ']')
     } catch {}
 
+    let oldSort
+    try {
+        oldSort = localStorage.getItem('cursor[' + k + ']')
+        oldSort = (oldSort == "desc") ? oldSort : "asc"
+    } catch { oldSort = "asc"; }
+
+    let newSort = (window.location.search.indexOf('sort=desc') > -1) ? "desc" : "asc"
+
     const invalidate_scroll = () => {
         try {
 	    	localStorage.removeItem('scrollPosition[' + k + ']')
@@ -26,6 +34,8 @@
 	    	localStorage.removeItem('scrollToLastElement[' + k + ']')
 	    } catch {}
     };
+
+    if (oldSort != newSort) { invalidate_scroll(); }
 
     const setCursor = () => {
         if (cursor) {
@@ -144,9 +154,11 @@
     invalidate_scroll();
 	addEventListener('beforeunload', (event) => {
         try {
+            let descSort = window.location.search.indexOf('sort=desc') > -1;
             setCursor();
+			localStorage.setItem('sort[' + k + ']', (descSort) ? "desc" : "asc")
 			localStorage.setItem('scrollPosition[' + k + ']', window.scrollY)
-			localStorage.setItem('lastElement[' + k + ']', Array.from(document.querySelectorAll('tr[data-num]')).pop().dataset['num'])
+			localStorage.setItem('lastElement[' + k + ']', (descSort) ? document.querySelector('tr[data-num]').dataset["num"] : Array.from(document.querySelectorAll('tr[data-num]')).pop().dataset['num'])
 			localStorage.setItem('scrollToLastElement[' + k + ']', (window.scrollMaxY === Math.round(window.scrollY)) ? "1" : "0")
 		} catch(e) {
 			console.error(e);
