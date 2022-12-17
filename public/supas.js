@@ -17,7 +17,7 @@
 
     let oldSort
     try {
-        oldSort = localStorage.getItem('cursor[' + k + ']')
+        oldSort = localStorage.getItem('sort[' + k + ']')
         oldSort = (oldSort == "desc") ? oldSort : "asc"
     } catch { oldSort = "asc"; }
 
