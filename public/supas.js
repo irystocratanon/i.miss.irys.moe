@@ -203,6 +203,8 @@
         };
         el = (k.startsWith("supana_")) ? el.target.parentNode : findTr(el.target);
         if (el.tagName != 'TR') { return; }
+        // ignore table headings in first row
+        if (el == document.querySelector("table.main-table tbody tr") || (!k.startsWith("supana_") && el == document.querySelector("table.main-table tbody tr:nth-child(2)"))) { return; }
         const num = el.dataset['num'];
         el = el.children[0];
         el.style.backgroundColor=(el.style.backgroundColor === 'aquamarine') ? 'initial' : 'aquamarine';
