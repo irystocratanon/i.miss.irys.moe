@@ -404,7 +404,7 @@ export default function Home(props) {
     }
 
     const supas_js_pre_version = '0.5'
-    const supas_js_version = '2.4'
+    const supas_js_version = '2.5'
     const supas_css_version = '1'
 
 

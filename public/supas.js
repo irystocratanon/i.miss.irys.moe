@@ -176,7 +176,8 @@
 				let interval
 				let breakLoops = 1
 				setTimeout(function() {
-					console.log('onload (selected_rows) firing...')
+                    console.log('onload (selected_rows) firing...')
+                    console.log('oldSort: ', oldSort, 'newSort: ', newSort);
 					interval = setInterval(function() {
 						breakLoops+=1
 						window.scrollTo(window.scrollX, el[0].offsetTop)
