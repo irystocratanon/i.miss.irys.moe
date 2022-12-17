@@ -193,28 +193,47 @@
 			}
 		} catch { delete selected_rows[i]; }
 	}
-	const tr = Array.from(document.getElementsByTagName('tr')).filter((e) => { return e.className.length > 0 });
+    const tr = Array.from(document.getElementsByTagName('tr')).filter((e) => { return e.className.length > 0 });
+    const highlightRows = function(el) {
+        const findTr = currentEl => {
+            currentEl = (currentEl.tagName.match(/TR|TABLE|BODY|HEAD/)) ? currentEl : findTr(currentEl.parentNode);
+            return (currentEl.previousElementSibling && currentEl.previousElementSibling.dataset.hasOwnProperty('num')) ? currentEl.previousElementSibling : currentEl;
+        };
+        el = (k.startsWith("supana_")) ? el.target.parentNode : findTr(el.target);
+        if (el.tagName != 'TR') { return; }
+        const num = el.dataset['num'];
+        el = el.children[0];
+        el.style.backgroundColor=(el.style.backgroundColor === 'aquamarine') ? 'initial' : 'aquamarine';
+        if (el.style.backgroundColor === 'initial') {
+            const index = selected_rows.indexOf(num)
+            if (index !== -1) {
+                delete selected_rows[index]
+            }
+        } else {
+            selected_rows.push(num)
+        }
+        localStorage.setItem('selected_rows[' + k + ']', selected_rows.toString())
+    }
+    const targetNode = document.querySelector('table.main-table');
+    // Options for the observer (which mutations to observe)
+    const config = { attributes: false, childList: true, subtree: true };
+    // Callback function to execute when mutations are observed
+    const callback = (mutationList, observer) => {
+      for (const mutation of mutationList) {
+        if (mutation.type === 'childList') {
+          if (mutation?.addedNodes?.length > 0) {
+              mutation.addedNodes.forEach(node => {
+                  node.onclick = highlightRows
+            });
+          }
+        }
+      }
+    };
+    const observer = new MutationObserver(callback);
+    // Start observing the target node for configured mutations
+    observer.observe(targetNode, config);
 	tr.forEach(e => {
-		e.onclick = function(el) {
-			const findTr = currentEl => {
-				currentEl = (currentEl.tagName.match(/TR|TABLE|BODY|HEAD/)) ? currentEl : findTr(currentEl.parentNode);
-				return (currentEl.previousElementSibling && currentEl.previousElementSibling.dataset.hasOwnProperty('num')) ? currentEl.previousElementSibling : currentEl;
-			};
-            el = (k.startsWith("supana_")) ? el.target.parentNode : findTr(el.target);
-            if (el.tagName != 'TR') { return; }
-			const num = el.dataset['num'];
-			el = el.children[0];
-			el.style.backgroundColor=(el.style.backgroundColor === 'aquamarine') ? 'initial' : 'aquamarine';
-			if (el.style.backgroundColor === 'initial') {
-				const index = selected_rows.indexOf(num)
-				if (index !== -1) {
-					delete selected_rows[index]
-				}
-			} else {
-				selected_rows.push(num)
-			}
-			localStorage.setItem('selected_rows[' + k + ']', selected_rows.toString())
-		}
+		e.onclick = highlightRows
     });
     if (!k.startsWith("supana_")) {
 	    const supachaButton = document.querySelector('.supacha-button[data-supas]')
