@@ -18,9 +18,10 @@
         } catch (e) { console.error(e); perform_duties = true; }
         console.log('perform_duties: ', perform_duties);
         if (!perform_duties) { const next_date = new Date((+housekeepingLastPerformed)+ONE_WEEK); console.log(`maid is performing next on ${next_date}`); return; }
-        Object.keys(localStorage).map(e => { return e.match(/\w+\[(?<k>(.*))\]/); }).map(e => e && e.groups.k).filter((e,i,s) => e && e != k && s.indexOf(e) === i).forEach(key => {
+        Object.keys(localStorage).map(e => { e = e.match(/\w+\[(.*)\]$/); return e && e.pop() || null; }).filter((e,i,s) => e && e != k && s.indexOf(e) === i).forEach(key => {
             Object.keys(localStorage).filter(e => e.endsWith(`[${key}]`)).forEach(entry => {
                 try {
+                    console.log(`cleaning entry ${entry}`);
                     localStorage.removeItem(entry);
                 } catch {}
             });
