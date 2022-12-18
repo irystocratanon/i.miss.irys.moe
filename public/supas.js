@@ -159,7 +159,10 @@
 			localStorage.setItem('sort[' + k + ']', (descSort) ? "desc" : "asc")
 			localStorage.setItem('scrollPosition[' + k + ']', window.scrollY)
 			localStorage.setItem('lastElement[' + k + ']', (descSort) ? document.querySelector('tr[data-num]').dataset["num"] : Array.from(document.querySelectorAll('tr[data-num]')).pop().dataset['num'])
-			localStorage.setItem('scrollToLastElement[' + k + ']', (window.scrollMaxY === Math.round(window.scrollY)) ? "1" : "0")
+            localStorage.setItem('scrollToLastElement[' + k + ']', (window.scrollMaxY === Math.round(window.scrollY)) ? "1" : "0");
+            if (selected_rows && selected_rows.length > 0) {
+                localStorage.setItem('selected_rows[' + k + ']', selected_rows.toString())
+            }
 		} catch(e) {
 			console.error(e);
 		}
