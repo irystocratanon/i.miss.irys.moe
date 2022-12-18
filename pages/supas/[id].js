@@ -63,7 +63,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
-                if (hashed_cursor && none_match == hashed_cursor && content_type === 'text/supas') {
+                if (hashed_cursor && (none_match == `${hashed_cursor}${(sort == "desc") ? "/desc" : ""}`) && content_type === 'text/supas') {
                     res.writeHead(304, {"Cache-Control": "public, max-age=3600, must-revalidate", "Vary": "Accept, Accept-Encoding"});
                     return res.end();
                 }
@@ -71,7 +71,8 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let supaReq
             for (let i = 0; i < 3; i++) {
                 try {
-                    supaReq = await fetch(`${process.env.SUPAS_ENDPOINT}/${query.id}`, {method: req.method, headers: supaReqHeaders});
+                    const endpoint = (Math.floor(Math.random()*10%2)) ? process.env.SUPAS_ENDPOINT_A : process.env.SUPAS_ENDPOINT_B
+                    supaReq = await fetch(`${endpoint}/${query.id}`, {method: req.method, headers: supaReqHeaders});
                     if (supaReq.status < 400) {
                         break;
                     }
@@ -124,7 +125,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
                 if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || (query?.sort && sort == "desc") || Math.round(content_length / (1024*1024)) >= 5) {
                     if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
-                        resHeaders["ETag"] = hashed_cursor;
+                        resHeaders["ETag"] = `${hashed_cursor}${(sort == "desc") ? "/desc": ""}`;
                     }
 
                     if (cache_control.indexOf("s-maxage") > -1 && content_type === 'text/supas') {
@@ -246,7 +247,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     }};
                     script = script.getAttribute('src');
 
-                    let resStatus = (loopRecords) ? 206 : 204;
+                    let resStatus = (loopRecords) ? 200 : 204;
                     if (resStatus == 204 || content_type.indexOf("text/html") > -1) {
                         resHeaders["Cache-Control"] = (sort == "desc") ? cache_control : "public, max-age=0, must-revalidate";
                         resHeaders["ETag"] = etag;
@@ -317,7 +318,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     req = await fetch(\`\${uriString}\${sort}\`, {headers: {"Accept": "text/supas"}});
                 }
             } catch (e) { console.error(e); continue; }
-            if (req.status > 200 && req.status < 400) {
+            if (req.status >= 200 && req.status < 400) {
                 if (req.status != 204) {
                     let body = await req.text();
                     let tbody = document.getElementsByTagName('tbody')[1];
