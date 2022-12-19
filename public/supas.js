@@ -215,6 +215,7 @@
 	}
     const tr = Array.from(document.getElementsByTagName('tr')).filter((e) => { return e.className.length > 0 });
     const highlightRows = function(el) {
+        if (el && el.srcElement?.tagName == "A" || el.currentTarget?.tagName == "A") { return; }
         const findTr = currentEl => {
             currentEl = (currentEl.tagName.match(/TR|TABLE|BODY|HEAD/)) ? currentEl : findTr(currentEl.parentNode);
             return (currentEl.previousElementSibling && currentEl.previousElementSibling.dataset.hasOwnProperty('num')) ? currentEl.previousElementSibling : currentEl;
