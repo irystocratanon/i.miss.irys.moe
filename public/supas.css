@@ -809,14 +809,22 @@ th {
   color: rgb(147 51 234 );
 }
 
-.hover\:bg-gray-400:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+@media (hover: hover) and (pointer: fine) {
+  .hover\:bg-gray-400:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+  }
 }
 
 .active\:text-red-600:active {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .group-hover\:inline {
+    display: inline;
+  }
 }
 
 @media (min-width: 640px) {
@@ -867,5 +875,11 @@ th {
 
   .sm\:p-0 {
     padding: 0px;
+  }
+}
+
+@media (hover:hover) {
+  .\[\@media\(hover\:hover\)\]\:hidden {
+    display: none;
   }
 }
