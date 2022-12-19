@@ -261,16 +261,19 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     }
 
                     res.writeHead(resStatus, resHeaders);
+                    let query_params = ''
+                    query_params += (query?.sort) ? `&sort=${query.sort}` : ''
+                    query_params += (query?.limit) ? `&limit=${query.limit}` : ''
                     return res.end((cursor === 0 || content_type != 'text/supas') ? `${body}<noscript>
 <div class="inline-flex">
   <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
-    <a href="/supas/${query.id}">First</a>
+    <a href="/supas/${query.id}${query_params.replace('&', '?')}">First</a>
   </button>
   <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
-    <a href="/supas/${query.id}?cursor=${i}">Next</a>
+    <a href="/supas/${query.id}?cursor=${(processedRecords==1) ? i+1 : i}${query_params}">Next</a>
   </button>
   <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
-    <a href="/supas/${query.id}?cursor=${(rows.length > 0) ? rows.length-1 : -1}">Last</a>
+    <a href="/supas/${query.id}?cursor=${(rows.length > 0) ? rows.length-1 : -1}${query_params}">Last</a>
   </button>
 </div>
 </noscript></body><script type="application/javascript">
