@@ -21,7 +21,8 @@
         oldSort = (oldSort == "desc") ? oldSort : "asc"
     } catch { oldSort = "asc"; }
 
-    const newSort = (window.location.search.indexOf('sort=desc') > -1) ? "desc" : "asc"
+    const sort_is_descending = () => { return !!window.location.search.match(/(\?|\&)sort=desc\&?/) };
+    const newSort = (sort_is_descending()) ? "desc" : "asc"
 
     const invalidate_scroll = () => {
         try {
@@ -154,7 +155,7 @@
     invalidate_scroll();
 	addEventListener('beforeunload', (event) => {
         try {
-            let descSort = window.location.search.indexOf('sort=desc') > -1;
+            const descSort = sort_is_descending();
             setCursor();
 			localStorage.setItem('sort[' + k + ']', (descSort) ? "desc" : "asc")
 			localStorage.setItem('scrollPosition[' + k + ']', window.scrollY)
@@ -269,6 +270,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     let x_supas_items
     const now = Date.now()
     const nowDate = new Date(now)
+
     const backgroundUpdateCache = async function() {
         let x
         try {
@@ -291,11 +293,9 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             if (x_supas_items) {
                 let current_items
                 try {
-                    if (window.location.search.match(/(\?|\*)sort=desc?/)) {
-                        current_items = Number(document.querySelector('[data-num]').dataset['num'])
-                    } else {
-                        current_items = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
-                    }
+                    const first = Number(document.querySelector('[data-num]').dataset['num'])
+                    const last = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                    current_items = (first > last) ? first : last
                 } catch { current_items = 0 }
                 x_supas_items = Number(x_supas_items)
                 if (x_supas_items > current_items) {
