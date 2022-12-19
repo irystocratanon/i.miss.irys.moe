@@ -286,6 +286,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     const nowDate = new Date(now)
 
     const limit = !!window.location.search.match(/(\??|\&)limit=[0-9]+\&?/);
+    const cursor = !!window.location.search.match(/(\??|\&)cursor=[0-9]+\&?/);
+    const sort_is_descending = !!window.location.search.match(/(\?|\&)sort=desc\&?/);
 
     const backgroundUpdateCache = async function() {
         let x
@@ -338,7 +340,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             return setTimeout(backgroundUpdateCache, delay);
         }
     }
-    if (!limit) {
+    if (!limit && !(cursor && sort_is_descending)) {
         setTimeout(backgroundUpdateCache, delay);
     }
 })()
