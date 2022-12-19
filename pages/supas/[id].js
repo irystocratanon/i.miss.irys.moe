@@ -279,7 +279,20 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
         progressElement.style.display = 'none';
         Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = false; })
     };
+    const appendScript = () => {
+        let script = document.createElement("script");
+        script.src = "${script}";
+        // manually trigger window.onload if readyState is already complete
+        if (document.readyState === 'complete') {
+            script.onload = function() {
+                showTable();
+                window.onload();
+            }
+        } else { showTable(); }
+        document.head.appendChild(script);
+    };
     if (window.location.search.match(/(\\?|\\&)limit=-?[0-9]+/)) {
+        appendScript();
         showTable();
         return;
     }
@@ -337,16 +350,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     }
                     await requestRecords();
                 } else {
-                    let script = document.createElement("script");
-                    script.src = "${script}";
-                    // manually trigger window.onload if readyState is already complete
-                    if (document.readyState === 'complete') {
-                        script.onload = function() {
-                            showTable();
-                            window.onload();
-                        }
-                    } else { showTable(); }
-                    document.head.appendChild(script);
+                    appendScript();
                 }
             break;
             }
