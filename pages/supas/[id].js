@@ -54,7 +54,9 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let none_match = req.headers['if-none-match']
 
             let content_type = req.headers["accept"];
-            content_type = (content_type) ? content_type : (query?.cursor) ? 'text/supas' : 'text/html';
+            const user_requests_html = content_type?.indexOf("text/html");
+            const user_requests_supas = content_type?.indexOf("text/supas");
+            content_type = (query?.api || content_type && user_requests_supas > -1 && user_requests_html > user_requests_supas) ? 'text/supas' : 'text/html';
 
             if (cursor > 0 && content_type.indexOf('text/html') > -1) {
                 // human user's do not expect zero-based indexing
@@ -115,7 +117,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 return res.end();
             }
 
-            resHeaders["Content-Type"] = (content_type.indexOf("text/supas") > -1) ? "text/supas" : "text/html"
+            resHeaders["Content-Type"] = content_type
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if ((content_length || query?.cursor || query?.limit || query?.sort) && req.method === 'GET') {
@@ -331,7 +333,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                 if (cursorNext == 1 && sort.endsWith("=desc")) {
                     req = {status: 204};
                 } else {
-                    req = await fetch(\`\${uriString}\${sort}\`, {headers: {"Accept": "text/supas"}});
+                    req = await fetch(\`\${uriString}\${sort}&api=true\`, {headers: {"Accept": "text/supas"}});
                 }
             } catch (e) { console.error(e); continue; }
             if (req.status >= 200 && req.status < 400) {
