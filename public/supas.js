@@ -285,6 +285,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     const now = Date.now()
     const nowDate = new Date(now)
 
+    const limit = !!window.location.search.match(/(\??|\&)limit=[0-9]+\&?/);
+
     const backgroundUpdateCache = async function() {
         let x
         try {
@@ -336,5 +338,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             return setTimeout(backgroundUpdateCache, delay);
         }
     }
-    setTimeout(backgroundUpdateCache, delay);
+    if (!limit) {
+        setTimeout(backgroundUpdateCache, delay);
+    }
 })()
