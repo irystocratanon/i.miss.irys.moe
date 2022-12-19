@@ -92,12 +92,16 @@
 		try {
 			lastElement = localStorage.getItem('lastElement[' + k + ']')
 			lastElement = +lastElement
-			lastElement += 1
+            lastElement = (sort_is_descending()) ? lastElement : lastElement + 1
 		} catch {}
 		try {
-			if (lastElement) {
-				const firstElement = Array.from(document.querySelectorAll('tr[data-num]')).find(e => { return window.getComputedStyle(e).display === 'table-row'; })
-				lastElement = Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return e.dataset['num'] >= lastElement }).find(e => { return window.getComputedStyle(e).display === 'table-row'; })
+            if (lastElement) {
+                console.log('lastElement', lastElement);
+                const table_rows = Array.from(document.querySelectorAll('tr[data-num]'));
+                const firstElement = table_rows.find(e => { return window.getComputedStyle(e).display === 'table-row'; })
+                console.log('firstElement', firstElement);
+                lastElement = ((sort_is_descending) ? table_rows.reverse() : table_rows).filter(e => { return e.dataset['num'] >= lastElement }).find(e => { return window.getComputedStyle(e).display === 'table-row'; })
+                console.log('lastElement', lastElement);
 				scrollPosition = (lastElement && lastElement.length === 1 && scrollToLastElement) ? window.scrollMaxY : scrollPosition
 				if (lastElement) {
 					if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
