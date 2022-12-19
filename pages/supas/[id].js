@@ -115,7 +115,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 return res.end();
             }
 
-            resHeaders["Content-Type"] = "text/html"
+            resHeaders["Content-Type"] = (content_type.indexOf("text/supas") > -1) ? "text/supas" : "text/html"
             resHeaders["Server-Timing"] = `supas;dur=${reqT1-reqT0}`
 
             if ((content_length || query?.cursor || query?.limit || query?.sort) && req.method === 'GET') {
@@ -194,6 +194,9 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     // lighthouse gives a Green Speed Index score for request <=3400ms
                     // (https://developer.chrome.com/docs/lighthouse/performance/speed-index/)
                     const max_response_time = (cursor < 1) ? 1700 : 9000;
+
+                    limit = (query?.cursor == 1 && sort == "desc") ? 1 : limit
+                    cursor = (query?.cursor && sort == "desc" && content_type.indexOf('text/html') > -1) ? cursor + 2 : cursor
 
                     let i = (cursor == -1) ? 0 : cursor;
                     if (sort == 'desc' && i > 0) {
