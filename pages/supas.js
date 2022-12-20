@@ -32,7 +32,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         let query_string = "";
                         query_string += (query?.sort && query.sort.match(/^(asc|desc)$/)) ? `&sort=${query.sort}` : ""
                         query_string += (query?.cursor && query.cursor.match(/^[0-9]+$/)) ? `&cursor=${query.cursor}` : ""
-                        query_string += (query?.limit && query.limit.match(/^[0-9]+$/)) ? `&limit=${query.limit}` : ""
+                        query_string += (query?.limit && query.limit.match(/^-?[0-9]+$/)) ? `&limit=${query.limit}` : ""
                         query_string = query_string.replace("&", "?")
                         res.writeHead(302, {
                             Location: `/supas/${id}.html${query_string}`
