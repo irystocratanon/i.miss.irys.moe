@@ -47,6 +47,11 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let supaReqHeaders = {
                 "Accept-Encoding": "gzip, deflate, br"
             }
+            // signal to the server to request pre-generated sorted HTML since doing this in a serverless function is expensive
+            // if the HTML is bigger than 5MB we will still sort in the serverless function
+            if (sort == "desc") {
+                supaReqHeaders["x-sort"] = "desc";
+            }
             const modified_since = req.headers['if-modified-since']
             if (modified_since) {
                 supaReqHeaders['If-Modified-Since'] = modified_since
@@ -125,7 +130,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // https://i.miss.irys.moe/supas/n6yep2gl1HY.html
                 // fixing this means we need to stream the body in batches
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
-                if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || (query?.sort && sort == "desc") || Math.round(content_length / (1024*1024)) >= 5) {
+                if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || Math.round(content_length / (1024*1024)) >= 5) {
                     if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
                         resHeaders["ETag"] = `${hashed_cursor}${(sort == "desc") ? "/desc": ""}`;
                     }
@@ -137,7 +142,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     let html = parse(textContent);
 
                     let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
-                    rows = (limit < -1 || sort == 'desc') ? rows.reverse() : rows;
+                    rows = (limit < 0 && sort != 'desc') ? rows.reverse() : rows;
 
                     if (limit < 0) {
                         limit = -limit;
