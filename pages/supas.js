@@ -1,7 +1,7 @@
 import performance from '../server/lib/get-performance.js'
 export default function Home(props) {}
 
-Home.getInitialProps = async function ({ res }) {
+Home.getInitialProps = async function ({ req, res, query }) {
     let reqT0 = performance.now()
 
     // it's a bit shit that I can't seem to import node: modules here
@@ -29,8 +29,13 @@ Home.getInitialProps = async function ({ res }) {
                             default:
                                 // deliberately left blank
                         }
+                        let query_string = "";
+                        query_string += (query?.sort && query.sort.match(/^(asc|desc)$/)) ? `&sort=${query.sort}` : ""
+                        query_string += (query?.cursor && query.cursor.match(/^[0-9]+$/)) ? `&cursor=${query.cursor}` : ""
+                        query_string += (query?.limit && query.limit.match(/^[0-9]+$/)) ? `&limit=${query.limit}` : ""
+                        query_string = query_string.replace("&", "?")
                         res.writeHead(302, {
-                            Location: `/supas/${id}.html`
+                            Location: `/supas/${id}.html${query_string}`
                         });
                         return res.end();
                     } catch (e) { console.error(e); }
