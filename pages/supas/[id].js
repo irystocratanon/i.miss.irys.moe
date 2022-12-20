@@ -47,10 +47,18 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let supaReqHeaders = {
                 "Accept-Encoding": "gzip, deflate, br"
             }
+            const referer = req.headers['referer']
             // signal to the server to request pre-generated sorted HTML since doing this in a serverless function is expensive
             // if the HTML is bigger than 5MB we will still sort in the serverless function
             if (sort == "desc") {
                 supaReqHeaders["x-sort"] = "desc";
+            } else {
+                if (referer && req.method == "HEAD") {
+                    const test_referer = new RegExp(`^http(s)?:\/\/${process.env.PUBLIC_HOSTNAME}(:[0-9]+)?\/supas/\\w+.html\\??.*[^sort](\\??|\\&)sort=desc(\\&|\$)`, "g")
+                    if (referer.match(test_referer)) {
+                        supaReqHeaders["x-sort"] = "desc";
+                    }
+                }
             }
             const modified_since = req.headers['if-modified-since']
             if (modified_since) {
