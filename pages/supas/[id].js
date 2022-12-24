@@ -169,7 +169,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                             body += html.querySelector('table').toString();
                             body += html.querySelector('#control').toString();
                         } else {
-                            body += html.querySelectorAll('table')[0].toString();
+                            body += html.querySelector('table').toString();
                         }
                         let sortIndicator = "rotate-90" 
                         sortIndicator = (sort == "desc") ? "-" + sortIndicator : sortIndicator
