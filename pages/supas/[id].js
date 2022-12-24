@@ -149,7 +149,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     const textContent = await supaReq.text();
                     let html = parse(textContent);
 
-                    let rows = html.childNodes[1].childNodes[3].querySelectorAll('tr[data-num]');
+                    let rows = html.querySelectorAll('tr[data-num]');
                     rows = (limit < 0 && sort != 'desc') ? rows.reverse() : rows;
 
                     if (limit < 0) {
@@ -162,14 +162,14 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         body += `<!doctype html>
 <html>`;
                         // head
-                        body += html.childNodes[1].childNodes[1].toString();
+                        body += html.querySelector('head').toString();
                         body += `<body class="m-0 sm:m-2">
 <br/>`;
                         if (!isSupana) {
-                            body += html.childNodes[1].childNodes[3].querySelector('table').toString();
-                            body += html.childNodes[1].childNodes[3].querySelector('#control').toString();
+                            body += html.querySelector('table').toString();
+                            body += html.querySelector('#control').toString();
                         } else {
-                            body += html.childNodes[1].childNodes[3].querySelector('table').toString();
+                            body += html.querySelectorAll('table')[0].toString();
                         }
                         let sortIndicator = "rotate-90" 
                         sortIndicator = (sort == "desc") ? "-" + sortIndicator : sortIndicator
@@ -193,7 +193,7 @@ ${(!isSupana) ? '<th ' + rowSpan + 'class="invisible hidden sm:visible sm:table-
 ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
 
                         // blocking style tags unfortunately need to come first to make sure we stay in size budget
-                        let style = html.childNodes[1].childNodes[3].querySelectorAll('style');
+                        let style = html.querySelectorAll('style');
                         for (let i = 0; i < style.length; i++) {
                             body += style[i].toString();
                         }
@@ -259,7 +259,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                         body += `</tbody></table></div></div>`;
                     }
 
-                    let script = html.childNodes[1].childNodes[3].querySelectorAll('script');
+                    let script = html.querySelectorAll('script');
                     script = (script.length > 0) ? script.pop() : {getAttribute: function() {
                         return '/supas.min.js';
                     }};
