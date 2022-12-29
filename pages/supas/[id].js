@@ -378,6 +378,11 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
     observer.disconnect();
     clearInterval(interval);
     showTable();
+    if (window.__i_miss_irys_supas && window.__i_miss_irys_supas.startTime) {
+        window.__i_miss_irys_supas.endTime = window.__i_miss_irys_supas.now();
+        const {startTime,endTime} = window.__i_miss_irys_supas;
+        console.info(\`Supas: finished in \${endTime-startTime}\`);
+    }
 })();
 </script></html>` : body);
                 }

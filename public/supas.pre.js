@@ -1,4 +1,13 @@
 "use strict";
+window.__i_miss_irys_supas = (function() {
+    let self = {
+        now: function() {
+            return (window.performance && typeof window.performance === 'object' && typeof window.performance.now === 'function') ? performance.now() : Date.now()
+        }
+    }
+    self.startTime = self.now();
+    return self;
+})();
 (function() {
     document.title = window.location.hostname + window.location.pathname
     const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
