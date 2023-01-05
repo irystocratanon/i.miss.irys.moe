@@ -25,7 +25,7 @@ export async function getServerSideProps({ res }) {
               }
               return rep;
           })
-          .sort((a, b) => a.milestone.delta - b.milestone.delta);
+        .sort((a, b) => a.milestone.delta - b.milestone.delta);
 
     return {props: {
         vids: reps, 
@@ -75,7 +75,7 @@ export default function Milestones(props) {
             </section>
 
             <section className={styles.mid}>
-                <h3>IRyS Channel Milestones</h3>
+                <h3>Channel Milestones</h3>
                 <table width="100%">
                     <tbody>
                         {nonTopics.slice(0, 3).map((r) => (

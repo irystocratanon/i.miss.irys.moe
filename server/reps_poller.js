@@ -1,4 +1,5 @@
 import {parseString} from 'xml2js'
+import {extractPlayerInfo} from 'yt-scraping-utilities'
 
 export default async function getReps() {
     try {
@@ -12,8 +13,28 @@ export default async function getReps() {
             'https://www.youtube.com/watch?v=w0sSTxFSAlQ' /* ||:Caesura of Despair - First EP Preview video */
         ]
 
+        const manualReps = [
+            'https://www.youtube.com/watch?v=7M5yHLKwdng', /* 【Cover/歌ってみた】oath sign【ときのそら/IRyS】 */
+            'https://www.youtube.com/watch?v=4w3zoAbxkbo', /*  【Cover/歌ってみた】威風堂々【ときのそら/AZKi/星街すいせい/Mori Calliope/IRyS】 */
+        ]
+
         let reps = [];
         let ids = {};
+
+        for (let i = 0; i < manualReps.length; i++) {
+            try {
+                const req = await fetch(manualReps[i]);
+                let info = extractPlayerInfo(await req.text());
+                info.topic = false;
+                info.views = info.viewers
+                info.url = `https://www.youtube.com/watch?v=${info.videoId}`
+                info.thumbnail = {
+                    url: `https://i3.ytimg.com/vi/${info.videoId}/hqdefault.jpg`
+                }
+                reps.push(JSON.parse(JSON.stringify(info)));
+                ids[String(info.url)]=true;
+            } catch {}
+        }
 
         for(const url of playlistURLs) {
             let xmlRes = await fetch(url)
