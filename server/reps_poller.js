@@ -13,9 +13,14 @@ export default async function getReps() {
             'https://www.youtube.com/watch?v=w0sSTxFSAlQ' /* ||:Caesura of Despair - First EP Preview video */
         ]
 
+        const manualTopicReps = [
+            'https://www.youtube.com/watch?v=rAO-w9stKAU', /* Star Flower - Story Time */
+        ]
+
         const manualReps = [
             'https://www.youtube.com/watch?v=7M5yHLKwdng', /* 【Cover/歌ってみた】oath sign【ときのそら/IRyS】 */
             'https://www.youtube.com/watch?v=4w3zoAbxkbo', /*  【Cover/歌ってみた】威風堂々【ときのそら/AZKi/星街すいせい/Mori Calliope/IRyS】 */
+            ...manualTopicReps
         ]
 
         let reps = [];
@@ -25,7 +30,7 @@ export default async function getReps() {
             try {
                 const req = await fetch(manualReps[i]);
                 let info = extractPlayerInfo(await req.text());
-                info.topic = false;
+                info.topic = manualTopicReps.indexOf(manualReps[i]) != -1;
                 info.views = info.viewers
                 info.url = `https://www.youtube.com/watch?v=${info.videoId}`
                 info.thumbnail = {
