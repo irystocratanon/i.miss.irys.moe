@@ -27,20 +27,17 @@ export default async function getReps() {
         let reps = [];
         let ids = {};
 
-        for (let i = 0; i < manualReps.length; i++) {
-            try {
-                const req = await fetch(manualReps[i]);
-                let info = extractPlayerInfo(await req.text());
-                info.topic = manualTopicReps.indexOf(manualReps[i]) != -1;
-                info.views = info.viewers
-                info.url = `https://www.youtube.com/watch?v=${info.videoId}`
-                info.thumbnail = {
-                    url: `https://i3.ytimg.com/vi/${info.videoId}/hqdefault.jpg`
-                }
-                reps.push(JSON.parse(JSON.stringify(info)));
-                ids[String(info.url)]=true;
-            } catch {}
-        }
+        await Promise.all(manualReps.map(url => fetch(url))).then(e => e.forEach(async function(req, i) {
+            let info = extractPlayerInfo(await req.text());
+            info.topic = manualTopicReps.indexOf(manualReps[i]) != -1;
+            info.views = info.viewers
+            info.url = `https://www.youtube.com/watch?v=${info.videoId}`
+            info.thumbnail = {
+                url: `https://i3.ytimg.com/vi/${info.videoId}/hqdefault.jpg`
+            }
+            reps.push(JSON.parse(JSON.stringify(info)));
+            ids[String(info.url)]=true;
+        }));
 
         for(const url of playlistURLs) {
             let xmlRes = await fetch(url)
