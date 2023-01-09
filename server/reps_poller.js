@@ -18,6 +18,7 @@ export default async function getReps() {
         ]
 
         const manualReps = [
+            'https://www.youtube.com/watch?v=FPzV-3vLRd8', /* 【歌ってみた】Snow halation【がうる・ぐら、ワトソン・アメリア、小鳥遊キアラ、IRyS】 */
             'https://www.youtube.com/watch?v=7M5yHLKwdng', /* 【Cover/歌ってみた】oath sign【ときのそら/IRyS】 */
             'https://www.youtube.com/watch?v=4w3zoAbxkbo', /* 【Cover/歌ってみた】威風堂々【ときのそら/AZKi/星街すいせい/Mori Calliope/IRyS】 */
             'https://www.youtube.com/watch?v=YzS26Ao3vt8', /* 【ANIMATION MV】A Million Miles Away - BELLE || HAKOS BAELZ COVER  */
