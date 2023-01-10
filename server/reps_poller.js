@@ -30,11 +30,7 @@ export default async function getReps() {
         let reps = [];
         let ids = {};
 
-        let manualRepsPromises = [];
-
-        for (const url of manualReps) {
-            manualRepsPromises.push(fetch(url));
-        }
+        const manualRepsPromises = manualReps.map(url => fetch(url));
 
         for (const _req of manualRepsPromises) {
             const req = await _req
