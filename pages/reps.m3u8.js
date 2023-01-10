@@ -17,7 +17,8 @@ ${reps[i].url}`
     }
 
     res.writeHead(200, {
-        "Content-Type": "application/vnd.apple.mpegurl"
+        "Content-Type": "application/vnd.apple.mpegurl",
+        "Cache-Control": "s-maxage=1, stale-while-revalidate"
     });
     res.end(m3u8);
 
