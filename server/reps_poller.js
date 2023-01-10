@@ -30,7 +30,15 @@ export default async function getReps() {
         let reps = [];
         let ids = {};
 
-        await Promise.all(manualReps.map(url => fetch(url))).then(e => e.forEach(async function(req, i) {
+        let manualRepsPromises = [];
+
+        for (const url of manualReps) {
+            manualRepsPromises.push(fetch(url));
+        }
+
+        for (const _req of manualRepsPromises) {
+            const req = await _req
+            const i = manualReps.indexOf(req.url);
             let info = extractPlayerInfo(await req.text());
             info.topic = manualTopicReps.indexOf(manualReps[i]) != -1;
             info.views = info.viewers
@@ -40,7 +48,7 @@ export default async function getReps() {
             }
             reps.push(JSON.parse(JSON.stringify(info)));
             ids[String(info.url)]=true;
-        }));
+        }
 
         for(const url of playlistURLs) {
             let xmlRes = await fetch(url)
