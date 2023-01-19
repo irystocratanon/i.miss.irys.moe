@@ -1,6 +1,6 @@
 import Head from "next/head"
 import Link from "next/link"
-import React, { useEffect } from 'react'
+import React from 'react'
 import styles from '../styles/Karaoke.module.css'
 import KaraokeData from "../server/karaoke_data"
 
