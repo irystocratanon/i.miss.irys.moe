@@ -7,13 +7,28 @@
     @apply lg:w-3/4 mt-10 lg:mt-7 lg:mb-5 mx-auto lg:rounded-lg bg-white;
 }
 
-.top img {
-    max-width: 100%;
-    @apply pb-1 inline-block mx-auto;
+.top iframe {
+    @apply aspect-video pb-1 mx-auto;
+    min-width: 480px;
+    min-height: 240px;
+}
+
+@media (min-width: 640px) {
+    .top iframe {
+        min-height: 360px;
+        max-width: 480px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .top iframe {
+        min-width: 720px;
+        max-width: 720px;
+    }
 }
 
 .top h3 {
-    @apply text-3xl font-bold leading-normal py-5 px-20
+    @apply text-3xl font-bold leading-normal py-2 px-20
 }
 
 .mid h3, .bottom h3 {
@@ -31,7 +46,7 @@
 }
 @media (min-width: 481px) {
     .top {
-        padding: 10px 80px 0 80px;
+        padding: 0 80px 0 80px;
     }
 }
 .top span, .mid span, .bottom span {

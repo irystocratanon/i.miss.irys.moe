@@ -62,14 +62,14 @@ export default function Milestones(props) {
 
             {!top.milestone.million && <section className={styles.top}>
                 <h3>Next Millionaire</h3>
-                <div><a href={topMillionaire.url}><img src={topMillionaire.thumbnail.url}></img></a></div>
+                <div><iframe className={"px-1 aspect-video"} src={topMillionaire.url.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
                 <a href={topMillionaire.url}>{topMillionaire.title}</a>
                 <div> is <NumberFormat value={topMillionaire.milestone.millionDelta}></NumberFormat> views away from <NumberFormat className={styles.million} value={topMillionaire.milestone.millionMilestone}></NumberFormat>!!</div>
             </section>}
 
             <section className={styles.top}>
                 <h3>Next Milestone</h3>
-                <div><a href={top.url}><img src={top.thumbnail.url}></img></a></div>
+                <div><iframe className={"pr-1 aspect-video"} src={top.url.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
                 <a href={top.url}>{top.title}</a>
                 <div> is <NumberFormat value={top.milestone.delta}></NumberFormat> views away from <NumberFormat className={top.milestone.million ? styles.million : ''} value={top.milestone.milestone}></NumberFormat>!!</div>
             </section>
