@@ -8,8 +8,8 @@
 }
 
 .top iframe {
-    @apply aspect-video pb-1 mx-auto;
-    min-width: 480px;
+    @apply rounded-lg aspect-video pb-1 mx-auto;
+    max-width: 440px;
     min-height: 240px;
 }
 
