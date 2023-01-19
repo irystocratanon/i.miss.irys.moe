@@ -9,7 +9,7 @@
 
 .top iframe {
     @apply rounded-lg aspect-video pb-1 mx-auto;
-    max-width: 440px;
+    max-width: 400px;
     min-height: 240px;
 }
 
