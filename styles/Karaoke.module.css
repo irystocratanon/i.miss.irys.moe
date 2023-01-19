@@ -22,12 +22,10 @@
     max-width: 600px;
 }
 .titlerow {
-    font-weight: bold;
-    background-color: #ffffff;
+    @apply font-bold bg-white;
 }
 .deadlink {
-    text-decoration: line-through;
-    color: #999
+    @apply text-gray-400 line-through;
 }
 
 .site table {
@@ -46,4 +44,12 @@
 }
 .site tr:nth-child(odd) {
     background-color: #fafafa;
+}
+
+.site h3 {
+    @apply text-lg font-bold leading-normal py-2
+}
+
+.search input {
+    @apply p-1 rounded
 }

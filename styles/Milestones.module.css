@@ -3,8 +3,25 @@
     font-size: x-large;
 }
 
+.milestones {
+    @apply lg:w-3/4 mt-10 lg:mt-7 lg:mb-5 mx-auto lg:rounded-lg bg-white;
+}
+
 .top img {
     max-width: 100%;
+    @apply pb-1 inline-block mx-auto;
+}
+
+.top h3 {
+    @apply text-3xl font-bold leading-normal py-5 px-20
+}
+
+.mid h3, .bottom h3 {
+    @apply font-bold;
+}
+
+.top a, .mid a, .bottom a {
+    @apply no-underline;
 }
 
 @media (max-width: 480px) {
@@ -29,18 +46,14 @@
 }
 
 .mid {
-    padding: 20px 80px 0 80px;
-    font-size: large;
-    text-align: center;
+    @apply text-lg text-center pt-5 pr-20 pb-0 pl-20;
 }
 .bottom {
-    padding: 20px 80px 40px 80px;
-    font-size: large;
-    text-align: center;
+    @apply text-lg text-center pt-5 pr-20 pb-10 pl-20;
 }
 .numcol {
-    text-align: right;
+    @apply text-right;
 }
 .titlecol {
-    text-align: left;
+    @apply text-left;
 }

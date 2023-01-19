@@ -52,7 +52,7 @@ export default function Milestones(props) {
         <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Link href="/">I miss her&hellip;</Link>
                 &nbsp;|&nbsp;
-                <Link href="/milestones">Milestones</Link>
+                <Link className="font-bold no-underline" href="/milestones">Milestones</Link>
                 &nbsp;|&nbsp;
                 <Link href="/karaoke">Karaoke</Link>
                 &nbsp;|&nbsp;
@@ -74,6 +74,7 @@ export default function Milestones(props) {
                 <div> is <NumberFormat value={top.milestone.delta}></NumberFormat> views away from <NumberFormat className={top.milestone.million ? styles.million : ''} value={top.milestone.milestone}></NumberFormat>!!</div>
             </section>
 
+            <section className={styles.milestones}>
             <section className={styles.mid}>
                 <h3>Channel Milestones</h3>
                 <table width="100%">
@@ -100,6 +101,7 @@ export default function Milestones(props) {
                     </tbody>
                 </table>
             </section>
+        </section>
         </div>
     </div>
 

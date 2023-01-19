@@ -19,8 +19,10 @@
     "yt-scraping-utilities": "git+https://github.com/irystocratanon/yt-scraping-utilities.git"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.13",
     "eslint": "^8.27.0",
     "eslint-config-next": "13.0.3",
+    "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4"
   }
 }

@@ -177,7 +177,7 @@ export default function SocialsApp(props) {
                 &nbsp;|&nbsp;
                 <Link href="/karaoke">Karaoke</Link>
                 &nbsp;|&nbsp;
-                <Link href="/social">IRySocial</Link>
+                <Link className="font-bold no-underline" href="/social">IRySocial</Link>
             </section>
             <section className={styles.socialContainer}>
             {newStateDOM}

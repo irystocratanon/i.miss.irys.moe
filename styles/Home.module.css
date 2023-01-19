@@ -8,6 +8,7 @@
 .site img {
     max-width: 480px;
     width: 100%;
+    @apply pb-1 inline-block mx-auto;
 }
 
 .site iframe {

@@ -1,6 +1,6 @@
 import Head from "next/head"
 import Link from "next/link"
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from '../styles/Karaoke.module.css'
 import KaraokeData from "../server/karaoke_data"
 
@@ -37,6 +37,14 @@ export default class KaraokeApp extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+  }
+
+  componentDidMount() {
+    if (!window?.location || !document?.forms) { return; }
+    const {hash} = window.location;
+    if (!hash.match(/#[0-9][0-9][0-9][0-9]+-[0-9][0-9]-[0-9][0-9]$/)) {
+      document.forms[0].querySelector('input[type=text]').focus();
+    }
   }
 
   render() {
@@ -82,7 +90,7 @@ export default class KaraokeApp extends React.Component {
             &nbsp;|&nbsp;
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
-            <Link href="/karaoke">Karaoke</Link>
+            <Link className="font-bold no-underline" href="/karaoke">Karaoke</Link>
             &nbsp;|&nbsp;
             <Link href="/social">IRySocial</Link>
 
@@ -91,7 +99,7 @@ export default class KaraokeApp extends React.Component {
             <section className={styles.search}>
             <h3>Find Archived Karaoke Song</h3>
             <form onSubmit={this.handleSubmit}>        
-                <input placeholder="Search..." type="text" value={this.state.searchText} onChange={this.handleChange} />
+                <input placeholder="Search..." type="text" value={this.state.searchText} onChange={this.handleChange} autoFocus={true} />
             </form>
 
                 <table width="100%">
