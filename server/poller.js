@@ -25,7 +25,10 @@ export default async function getResult() {
         if (spaceData && spaceData?.data) {
             const spaceIndex = spaceData.data.findIndex(e => e.state === "live");
             if (spaceIndex != -1) {
-                const twitterUserInfoReq = await fetch(`https://api.twitter.com/1.1/users/lookup.json?user_id=${twitter_user_id}`, {headers: {Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`}})
+                let twitterUserInfoReq
+                try {
+                    twitterUserInfoReq = await fetch(`https://api.twitter.com/1.1/users/lookup.json?user_id=${twitter_user_id}`, {headers: {Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`}})
+                } catch {}
                 let twitterUserInfo = null
                 try {
                     if (twitterUserInfoReq.status === 200) { twitterUserInfo = await twitterUserInfoReq.json(); }
