@@ -56,6 +56,8 @@ export async function getServerSideProps({ req, res, query }) {
         streamInfo: {
             link: result.videoLink,
             title: result.title,
+            twitter_profile_image: result.twitter_profile_image||null,
+            twitter_screen_name: result.twitter_screen_name||null,
             startTime: result.streamStartTime?.getTime() || null,
             currentTime: (new Date()).getTime()
         }
@@ -78,9 +80,15 @@ function createEmbedDescription(status, streamInfo) {
             return `Starting Soon: ${streamInfo.title}`
         case STREAM_STATUS.JUST_ENDED:
             return `Just Ended: ${streamInfo.title}`
+        case STREAM_STATUS.OFFLINE:
+            return `Previous Stream: ${streamInfo.title}`
         default:
             return `Next Stream: ${streamInfo.title}`
     }
+}
+
+function isSpace(url) {
+    return (!url) ? false : !!url.match(/^https?:\/\/twitter.com\/i\/spaces\//)
 }
 
 function StreamInfo(props) {
@@ -89,12 +97,18 @@ function StreamInfo(props) {
         switch (props.status) {
             case STREAM_STATUS.LIVE:
                 text = <b className={styles.red}>LIVE: </b>
+                if (isSpace(props.info.link)) {
+                    text = [text, <><span className={styles.twitterIcon}><svg xmlns="http://www.w3.org/2000/svg" className={styles.twitterIcon} viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></span></>, props.info.twitter_screen_name && <>&nbsp;{props.info.twitter_screen_name}<br/></> || ""]
+                }
                 break
             case STREAM_STATUS.STARTING_SOON:
                 text = "Starting Soon: "
                 break
             case STREAM_STATUS.JUST_ENDED:
                 text = "Just Ended: "
+                break
+            case STREAM_STATUS.OFFLINE:
+                text = "Previous Stream: "
                 break
             default:
                 text = "Next Stream: "
@@ -447,7 +461,7 @@ export default function Home(props) {
             {(!validStream || props.status !== STREAM_STATUS.LIVE) &&
             <img ref={currentImage} src={`${(image.startsWith("//")) ? 'https:' : props.absolutePrefix + "/"}${image}`} alt="wah" onClick={() => setImage(selectRandomImage(imageSet, image))} />
             }
-            <div id="imageSetPreload" style={{display: 'none', visibility: 'hidden'}}>
+            <div id="imageSetPreload" aria-hidden="true" style={{display: 'none', visibility: 'hidden'}}>
                 {imageSetPreload}
             </div>
             {validStream && props.status === STREAM_STATUS.LIVE && props.streamInfo.link.indexOf('www.youtube.com') > -1 && 
@@ -456,6 +470,8 @@ export default function Home(props) {
             {validStream && props.status === STREAM_STATUS.LIVE && props.streamInfo.link.indexOf('www.youtube.com') > -1 && 
             <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${props.streamInfo.link.split('?v=').pop()}.html`}>Supas</a>]</p>
             }
+
+            {isSpace(props.streamInfo.link) && props.streamInfo?.twitter_profile_image && <><a target='_blank' rel='noreferrer' href={props.streamInfo.link}><img src={props.streamInfo.twitter_profile_image} /></a></>}
 
             {bottomInfo}
             <CountdownTimer status={props.status} intervalDuration={intervalDuration} nextStream={props.streamInfo} pastStream={props.pastStream} />

@@ -9,6 +9,41 @@ import { unlink } from "fs"
 import { performance } from "perf_hooks"
 
 export default async function getResult() {
+    if (process.env.TWITTER_BEARER_TOKEN) {
+        const twitter_user_id = "1363705980261855232";
+        const dummySpaceData = {"data":[{"id":"1ypKddoAvNYKW","state":"live","title":"ふぁーすとていくでました"}],"meta":{"result_count":1}}
+        let spaceReq
+        try {
+            spaceReq = await fetch(`https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${twitter_user_id}&space.fields=title`, {headers: {Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`}})
+        } catch {}
+        let realSpaceData
+        try {
+            realSpaceData = await spaceReq.json()
+        } catch {}
+        //const spaceData = dummySpaceData
+        const spaceData = realSpaceData
+        if (spaceData && spaceData?.data) {
+            const spaceIndex = spaceData.data.findIndex(e => e.state === "live");
+            if (spaceIndex != -1) {
+                const twitterUserInfoReq = await fetch(`https://api.twitter.com/1.1/users/lookup.json?user_id=${twitter_user_id}`, {headers: {Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`}})
+                let twitterUserInfo = null
+                try {
+                    if (twitterUserInfoReq.status === 200) { twitterUserInfo = await twitterUserInfoReq.json(); }
+                } catch {}
+                const space = spaceData.data[spaceIndex];
+                let result = {
+                    error: null,
+                    result: {"live": 4, title: space.title, videoLink: `https://twitter.com/i/spaces/${space.id}`},
+                    pastStream: null
+                }
+                if (twitterUserInfo && twitterUserInfo.length > 0 && twitterUserInfo[0]?.profile_image_url_https) {
+                    result.result.twitter_profile_image = twitterUserInfo[0].profile_image_url_https.replace("_normal", "");
+                    result.result.twitter_screen_name = twitterUserInfo[0].name
+                }
+                return result
+            }
+        }
+    }
     let t0 = performance.now()
     let t1
     const rmCache = async function(f) {

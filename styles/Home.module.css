@@ -26,3 +26,10 @@
 .red {
     color: #f00;
 }
+
+.twitterIcon {
+    width: 1em;
+    height: 1em;
+    fill: #1d9bf0;
+    display: inline;
+}
