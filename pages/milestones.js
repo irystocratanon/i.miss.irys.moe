@@ -46,6 +46,9 @@ export default function Milestones(props) {
     let [topMillionaireState, setTopMillionaireState] = useState(JSON.parse(JSON.stringify(topMillionaire)))
     let [topState, setTopState] = useState(JSON.parse(JSON.stringify(top)))
 
+    let [topicState, setTopicState] = useState(JSON.parse(JSON.stringify(topics)))
+    let [nonTopicState, setNonTopicState] = useState(JSON.parse(JSON.stringify(nonTopics)))
+
     let [interval, setIntervalState] = useState(null)
     if (interval === null) {
         const updateMilestoneState = async function() {
@@ -62,6 +65,9 @@ export default function Milestones(props) {
                 const _top = milestones.reps[0]
                 const _closestMillionaire = milestones.closestMillionaire
 
+                const _topics = milestones.reps.filter(v => v.topic)
+                const _nonTopics =  milestones.reps.filter(v => !v.topic)
+
                 if (newTopState) {
                     if (_top.videoId === topStateVideoId) {
                         setTopState(JSON.parse(JSON.stringify(_top)))
@@ -73,6 +79,33 @@ export default function Milestones(props) {
                     if (_closestMillionaire && _closestMillionaire.videoId && _closestMillionaire.videoId === topMillionaireId) {
                         setTopMillionaireState(JSON.parse(JSON.stringify(_closestMillionaire)))
                         updatedState = true;
+                    }
+                }
+                let topicsChanged = false; 
+                if (_topics.length >= topicState.length && _topics.length >= 3) {
+                    for (let i = 0; i < 3; i++) {
+                        if (topicState[i].videoId !== _topics[i].videoId) {
+                            topicsChanged = true;
+                            break;
+                        }
+                    }
+                    if (!topicsChanged) {
+                        setTopicState(JSON.parse(JSON.stringify(_topics)))
+                        updatedState = true
+                    }
+                }
+
+                let nonTopicsChanged = false; 
+                if (_nonTopics.length >= nonTopicState.length && _nonTopics.length >= 3) {
+                    for (let i = 0; i < 3; i++) {
+                        if (nonTopicState[i].videoId !== _nonTopics[i].videoId) {
+                            nonTopicsChanged = true;
+                            break;
+                        }
+                    }
+                    if (!nonTopicsChanged) {
+                        setNonTopicState(JSON.parse(JSON.stringify(_nonTopics)))
+                        updatedState = true
                     }
                 }
             } catch {}
@@ -123,7 +156,7 @@ export default function Milestones(props) {
                 <h3>Channel Milestones</h3>
                 <table width="100%">
                     <tbody>
-                        {nonTopics.slice(0, 3).map((r) => (
+                        {nonTopicState.slice(0, 3).map((r) => (
                         <tr key={r.url}>
                             <td className={styles.titlecol}><a href={r.url}>{r.title}</a></td>
                             <td className={styles.numcol}><NumberFormat value={r.milestone.delta}/> away from <NumberFormat value={r.milestone.milestone}/>!!</td>
@@ -136,7 +169,7 @@ export default function Milestones(props) {
                 <h3>Topic Channel Milestones</h3>
                 <table width="100%">
                     <tbody>
-                        {topics.slice(0, 3).map((r) => (
+                        {topicState.slice(0, 3).map((r) => (
                         <tr key={r.url}>
                             <td className={styles.titlecol}><a href={r.url}>{r.title}</a></td>
                             <td className={styles.numcol}><NumberFormat value={r.milestone.delta}/> away from <NumberFormat value={r.milestone.milestone}/>!!</td>
