@@ -1,6 +1,7 @@
 import Head from "next/head"
 import Link from "next/link"
 import React from 'react'
+import { useEffect, useState } from "react"
 import styles from '../styles/Milestones.module.css'
 import { milestoneDelta } from "../server/milestone"
 import getReps from "../server/reps_poller"
@@ -11,21 +12,24 @@ class NumberFormat extends React.Component {
     }
 }
 
-export async function getServerSideProps({ res }) {
-    
+function formatReps(_reps) {
     var closestMillion = 1_000_000;
     var closestMillionaire = null;
-    const reps = Array.from(await getReps())
-          .map(rep => {
-              if (typeof rep !== 'object') { return; }
-              rep.milestone = milestoneDelta(rep.views || 0);
-              if(rep.milestone.millionDelta < closestMillion) {
+    const reps = Array.from(_reps)
+        .map(rep => {
+            if (typeof rep !== 'object') { return; }
+            rep.milestone = milestoneDelta(rep.views || 0);
+            if(rep.milestone.millionDelta < closestMillion) {
                 closestMillion = rep.milestone.millionDelta
                 closestMillionaire = rep;
-              }
-              return rep;
-          })
-        .sort((a, b) => a.milestone.delta - b.milestone.delta);
+            }
+            return rep;
+        }).sort((a, b) => a.milestone.delta - b.milestone.delta)
+    return {closestMillionaire, reps}
+}
+
+export async function getServerSideProps({ res }) {
+    const {closestMillionaire, reps} = formatReps(await getReps())
 
     return {props: {
         vids: reps, 
@@ -34,10 +38,50 @@ export async function getServerSideProps({ res }) {
         topics: reps.filter(v => v.topic),
         nonTopics: reps.filter(v => !v.topic)
      }};
-  }
+}
 
 export default function Milestones(props) {
     let { vids, top, topics, nonTopics, topMillionaire } = props;
+    
+    let [topMillionaireState, setTopMillionaireState] = useState(JSON.parse(JSON.stringify(topMillionaire)))
+    let [topState, setTopState] = useState(JSON.parse(JSON.stringify(top)))
+
+    let [interval, setIntervalState] = useState(null)
+    if (interval === null) {
+        const updateMilestoneState = async function() {
+            const topStateVideoId = topState?.videoId
+            const topMillionaireId = topMillionaireState?.videoId
+            let updatedState = false;
+            try {
+                const req = await fetch('/milestones.json');
+                const reps = await req.json()
+                const newTopState = (topStateVideoId) ? reps.find(e => e.videoId === topStateVideoId) : null
+                const newTopMillionaireStateState = (topStateVideoId) ? reps.find(e => e.videoId === topStateVideoId) : null
+                
+                const milestones = formatReps(reps);
+                const _top = milestones.reps[0]
+                const _closestMillionaire = milestones.closestMillionaire
+
+                if (newTopState) {
+                    if (_top.videoId === topStateVideoId) {
+                        setTopState(JSON.parse(JSON.stringify(_top)))
+                        updatedState = true;
+                    }
+                }
+
+                if (newTopMillionaireStateState) {
+                    if (_closestMillionaire && _closestMillionaire.videoId && _closestMillionaire.videoId === topMillionaireId) {
+                        setTopMillionaireState(JSON.parse(JSON.stringify(_closestMillionaire)))
+                        updatedState = true;
+                    }
+                }
+            } catch {}
+            if (updatedState) {
+                setIntervalState(setTimeout(updateMilestoneState, (4000 + Math.random()*10000%1100) + (Math.random()*100000%15000)))
+            }
+        }
+        setIntervalState(setTimeout(updateMilestoneState, (4000 + Math.random()*10000%1100) + (Math.random()*100000%15000)))
+    }
 
     return <div className={styles.site}>
         <Head>
@@ -60,18 +104,18 @@ export default function Milestones(props) {
         </section>
         <div>
 
-            {!top.milestone.million && <section className={styles.top}>
+            {!topState.milestone.million && <section id={topMillionaireState.videoId} className={styles.top}>
                 <h3>Next Millionaire</h3>
-                <div><iframe className={"px-1 aspect-video"} src={topMillionaire.url.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
-                <a href={topMillionaire.url}>{topMillionaire.title}</a>
-                <div> is <NumberFormat value={topMillionaire.milestone.millionDelta}></NumberFormat> views away from <NumberFormat className={styles.million} value={topMillionaire.milestone.millionMilestone}></NumberFormat>!!</div>
+                <div><iframe className={"px-1 aspect-video"} src={topMillionaireState.url.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
+                <a href={topMillionaireState.url}>{topMillionaireState.title}</a>
+                <div> is <NumberFormat value={topMillionaireState.milestone.millionDelta}></NumberFormat> views away from <NumberFormat className={styles.million} value={topMillionaireState.milestone.millionMilestone}></NumberFormat>!!</div>
             </section>}
 
-            <section className={styles.top}>
+            <section id={topState.videoId} className={styles.top}>
                 <h3>Next Milestone</h3>
-                <div><iframe className={"pr-1 aspect-video"} src={top.url.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
-                <a href={top.url}>{top.title}</a>
-                <div> is <NumberFormat value={top.milestone.delta}></NumberFormat> views away from <NumberFormat className={top.milestone.million ? styles.million : ''} value={top.milestone.milestone}></NumberFormat>!!</div>
+                <div><iframe className={"pr-1 aspect-video"} src={topState.url.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
+                <a href={topState.url}>{topState.title}</a>
+                <div> is <NumberFormat value={topState.milestone.delta}></NumberFormat> views away from <NumberFormat className={topState.milestone.million ? styles.million : ''} value={topState.milestone.milestone}></NumberFormat>!!</div>
             </section>
 
             <section className={styles.milestones}>

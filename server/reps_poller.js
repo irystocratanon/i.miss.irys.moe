@@ -63,6 +63,10 @@ export default async function getReps() {
                     let views = (e['media:group'][0]['media:community'][0]['media:statistics'][0]['$'].views)
                     let channel = e['yt:channelId'][0]
                     let title = e['media:group'][0]['media:title'][0]
+                    let videoId = e['yt:videoId']
+                    try {
+                        videoId = (videoId) ? videoId[0] : link.match(/\?v=(.*)/)[1]
+                    } catch { videoId = null; }
                     let thumbnail = e['media:group'][0]['media:thumbnail'][0]['$']
                     let channelUrl = "https://www.youtube.com/channel/" + channel;
                     
@@ -78,7 +82,8 @@ export default async function getReps() {
 
                     ids[String(link)] = true;
 
-                    reps.push({ 
+                    reps.push({
+                        videoId,
                         url: String(link), 
                         views, 
                         channel, 
