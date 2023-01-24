@@ -23,7 +23,7 @@ class ViewsNumberFormat extends React.Component {
         if (this.state.value <= nextProps.value) {
             return
         }
-        //console.log('this.props.value: ', this.props.value, 'this.state.value', this.state.value, 'nextProps.value: ', nextProps.value);
+        console.log('this.props.value: ', this.props.value, 'this.state.value', this.state.value, 'nextProps.value: ', nextProps.value);
         this.animating = true;
         this.viewsElementRef.current.className=' animate__animated animate__flipOutX';
         this.setState({value: this.props.value, nextValue: nextProps.value})
@@ -96,9 +96,6 @@ export default function Milestones(props) {
     let [interval, setIntervalState] = useState(null)
     if (interval === null) {
         const updateMilestoneState = async function() {
-            try {
-                if (window) { window.forceUpdateMilestoneState = updateMilestoneState; }
-            } catch {}
             const topStateVideoId = topState?.videoId
             const topMillionaireId = topMillionaireState?.videoId
             let updatedState = false;
