@@ -23,6 +23,10 @@ export default async function irysartPoller(opts, callback) {
                 return e.description.join('').indexOf('<img src="') > -1
             })
             await items.forEach(item => {
+                // Spam HATE
+                if (item.description.indexOf('bilibilicomics.com') > -1) {
+                    return
+                }
                 let urls = item.description.join('').match(/\<img src=".*" \/\>/g)
                 for (let i = 0; i < urls.length; i++) {
                     let url = urls[i]
