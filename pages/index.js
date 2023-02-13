@@ -132,7 +132,7 @@ export default function Home(props) {
     const currentImage = useRef()
     let [favicon, setFavicon] = useState()
     let [liveReload, setLiveReload] = useState()
-    let [irysart, setIrysart] = useState()
+    let [irysart, setIrysart] = useState(null)
     let [irysartSet, setIrysartSet] = useState()
     const [scheduleImg, setScheduleImg] = useState()
     const scheduleRef = useRef()
@@ -158,10 +158,12 @@ export default function Home(props) {
         }
     }
 
-    if (irysart === undefined) {
+    if (irysart === null) {
         try {
             const __irysart = localStorage.getItem('irysart')
-            setIrysart((props.status === STREAM_STATUS.LIVE) ? false : Boolean(Number(__irysart)))
+            setIrysart(
+                (__irysart === null) ? true : ((props.status === STREAM_STATUS.LIVE) ? false : Boolean(Number(__irysart)))
+            )
         } catch (e) {}
     }
 
@@ -454,7 +456,7 @@ export default function Home(props) {
         </section>
         <div style={{display: "block", position: "absolute", top: 10, right: 10}}>
             <input id="schedule" type="checkbox" ref={scheduleRef} onChange={() => {}} onClick={() => scheduleHook(true)} /><label htmlFor="schedule">Schedule&nbsp;</label>
-            <input id="irysart" type="checkbox" checked={irysart} ref={irysartRef} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>
+            <input id="irysart" type="checkbox" checked={(irysart === null) ? true : irysart} ref={irysartRef} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>
         </div>
         <div className={className}>
             <h1>{caption}</h1>
