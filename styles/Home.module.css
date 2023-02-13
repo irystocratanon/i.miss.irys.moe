@@ -33,3 +33,7 @@
     fill: #1d9bf0;
     display: inline;
 }
+
+.flip_x {
+    @apply scale-x-[-1];
+}

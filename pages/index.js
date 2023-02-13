@@ -362,6 +362,7 @@ export default function Home(props) {
             let percent = (updateInterval-1)/initialUpdateInterval
             percent = (isNaN(percent)) ? 1 : percent
             liveReloadProgress.style.width = `${percent*100}%`
+            liveReloadProgress.nextElementSibling.style.left = `${(percent*100)-5}%`;
             if (updateInterval !== targetRefreshTime) {
                 return
             }
@@ -485,6 +486,7 @@ export default function Home(props) {
         </div>
         <div id="livereloadProgressCtr" style={{position: "fixed", bottom: 0, left: 0, width: `${((liveReloadRef && liveReloadRef.current) ? liveReloadRef.current.checked : true) ? "100%" : "0%"}`}}>
             <div style={{background: "#a91354", width: "100%", height: "0.25em"}}>&nbsp;</div>
+            <img className={styles.flip_x} style={{position: 'fixed', bottom: "0", left: "99%", height: "2.5em", width: "2.5em"}} src="/chibi.webp" />
         </div>
     </div>
 }
