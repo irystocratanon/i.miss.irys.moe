@@ -77,9 +77,9 @@ export default function SocialsApp(props) {
                     {y.data.content.map(e => { return (e.url) ? <><a href={e.url}>{e.text}</a></> : <>{e.text}</>;})}
                     {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={`${y.data.id}${i}0`} />,<iframe key={`${y.data.id}${i}1`} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
                     {y.data.choices instanceof Array && y.data.choices.length > 0 && y.data.attachmentType === 'POLL' &&
-                    <ul>
-                        {y.data.choices.map((choice,i) => (<li key={`${y.data.id}${i}2`}>{choice}</li>))}
-                    </ul>}
+                    <ol>
+                        {y.data.choices.map((choice,i) => (<li class="list-disc ml-4" key={`${y.data.id}${i}2`}>{choice.text}</li>))}
+                    </ol>}
                     {y.data.images instanceof Array && y.data.images.length > 0 && y.data.attachmentType === 'IMAGE' && y.data.images.map((img,i) => (
                     <span key={`${y.data.id}${i}3`}>
                         <br />
