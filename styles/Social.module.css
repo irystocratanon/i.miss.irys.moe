@@ -78,3 +78,6 @@
     cursor: url('/cursors/uayktw.cur'), pointer;
 }
 
+.radio_list {
+    @apply list-disc ml-4;
+}
