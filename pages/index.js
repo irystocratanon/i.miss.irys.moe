@@ -30,6 +30,13 @@ export async function getServerSideProps({ req, res, query }) {
 
     const {error,result,pastStream} = await getResult()
 
+    let has_supana = false;
+    try {
+        let supana_req = await fetch(`${process.env.PUBLIC_HOST}/supana`, {method: 'HEAD'});
+        let supana = Number(supana_req.headers.get("x-supas-items"));
+        has_supana = supana > 0;
+    } catch {}
+
     if ((process.env.VERCEL_ENV || process.env.NODE_ENV || 'development') === 'production') {
         res.setHeader("Cache-Control", "max-age=0, s-maxage=90, stale-while-revalidate=180")
     }
@@ -51,6 +58,7 @@ export async function getServerSideProps({ req, res, query }) {
         initialImage,
         channelLink,
         status: result.live,
+        has_supana,
         isError: false,
         pastStream: pastStream||null,
         streamInfo: {
@@ -127,6 +135,7 @@ function StreamInfo(props) {
 }
 
 export default function Home(props) {
+    const {has_supana} = props;
     let className, caption = "", imageSet, bottomInfo
     const [image, setImage] = useState(props.initialImage)
     const currentImage = useRef()
@@ -469,8 +478,9 @@ export default function Home(props) {
             <iframe width="940" height="529" src={props.streamInfo.link.replace(/\/watch\?v\=/, '/embed/')} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             }
             {validStream && props.status === STREAM_STATUS.LIVE && props.streamInfo.link.indexOf('www.youtube.com') > -1 && 
-            <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${props.streamInfo.link.split('?v=').pop()}.html`}>Supas</a>]</p>
+            <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${props.streamInfo.link.split('?v=').pop()}.html`}>Supas</a>]{has_supana && <>&nbsp;[<a target='_blank' rel='noreferrer' href={`/supas/supana_${props.streamInfo.link.split('?v=').pop()}.html`}>Supana</a>]</>}</p>
             }
+
 
             {isSpace(props.streamInfo.link) && props.streamInfo?.twitter_profile_image && <><a target='_blank' rel='noreferrer' href={props.streamInfo.link}><img src={props.streamInfo.twitter_profile_image} /></a></>}
 
