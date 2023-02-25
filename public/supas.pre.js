@@ -91,8 +91,10 @@ window.__i_miss_irys_supas = (function() {
                         toggleControls(false);
                     }
 				})
-				const supachaButton = document.querySelector('.supacha-button[data-supas]')
-                supachaButton.nextSibling.textContent = "SuperChat(" + String(Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return window.getComputedStyle(e).display === 'table-row'; }).length).padStart(2, 0) + "/" + String(supachaButton.dataset["supas"]).padStart(2, 0) + ")"
+                const supachaButton = document.querySelector('.supacha-button[data-supas]')
+                if (supachaButton) {
+                    supachaButton.nextSibling.textContent = "SuperChat(" + String(Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return window.getComputedStyle(e).display === 'table-row'; }).length).padStart(2, 0) + "/" + String(supachaButton.dataset["supas"]).padStart(2, 0) + ")"
+                }
 			}
 			const cssClassName = (el.name || el.className.split('-button')[0]);
 			const display = (el.checked);
