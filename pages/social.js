@@ -75,7 +75,7 @@ export default function SocialsApp(props) {
                     <small style={{color: 'dimgray'}}>{y.date}</small>
                 <blockquote>
                     {y.data.content.map(e => { return (e.url) ? <><a href={e.url}>{e.text}</a></> : <>{e.text}</>;})}
-                    {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={`${y.data.id}${i}0`} />,<iframe key={`${y.data.id}${i}1`} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
+                    {y.data.video instanceof Object && y.data.attachmentType === 'VIDEO' && [<br key={`${y.data.id}${i}0`} />,<iframe loading="lazy" key={`${y.data.id}${i}1`} width="940" height="529" src={`https://www.youtube.com/embed/${y.data.video.id}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>]}
                     {y.data.choices instanceof Array && y.data.choices.length > 0 && y.data.attachmentType === 'POLL' &&
                     <ol>
                         {y.data.choices.map((choice,i) => (<li className={styles.radio_list} key={`${y.data.id}${i}2`}>{choice.text}</li>))}
