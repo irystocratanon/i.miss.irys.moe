@@ -128,17 +128,26 @@ export default function SocialsApp(props) {
                         })
                     }
                     let date = new Date(stateEl.timestamp)
-                    let fetchReq = await fetch(`/api/social`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            date: date.toISOString(),
-                            id: ids.join('|')
-                        })
-                    })
+                    let fetchReq
+                    const fetchEndpoint = `${process.env.PUBLIC_HOST || ''}/api/social`
+                    for (let i = 0; i < 3; i++) {
+                        try {
+                            fetchReq = await fetch(fetchEndpoint, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    date: date.toISOString(),
+                                    id: ids.join('|')
+                                })
+                            })
+                            if (fetchReq.status < 400) { break; }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
                     if (fetchReq.status !== 200) { return; }
                     let json = await fetchReq.json()
                     if (json instanceof Array && json.length > 0) {
