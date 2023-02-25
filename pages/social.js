@@ -58,6 +58,7 @@ export default function SocialsApp(props) {
         const formatLeddit = l => {
             const hasLink = (l.data.content[0]['_'].indexOf('submitted by &#32; <a href="https://old.reddit.com/user/IRySoWise"> /u/IRySoWise </a>') > -1)
             const permalink = l.data.link[0]['$'].href
+            l.data.content[0]['_'] = l.data.content[0]['_'].replaceAll("<img src=\"", "<img loading=\"lazy\" src=\"");
             return (
                 <div className={styles.reddit} style={{margin: '0.5em', overflowWrap: (hasLink) ? 'initial' : 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{l.date}</small>
@@ -83,7 +84,7 @@ export default function SocialsApp(props) {
                     {y.data.images instanceof Array && y.data.images.length > 0 && y.data.attachmentType === 'IMAGE' && y.data.images.map((img,i) => (
                     <span key={`${y.data.id}${i}3`}>
                         <br />
-                        <img src={img} />
+                        <img loading="lazy" src={img} />
                     </span>
                     ))}
                 </blockquote>
