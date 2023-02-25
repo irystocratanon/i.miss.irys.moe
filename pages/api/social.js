@@ -54,7 +54,7 @@ const fetchTweets = async function (endpoint, url) {
     }
 }
 
-export async function getSocials() {
+export async function getSocials(full = false) {
     let socials = []
     let timingInfo = {}
     let t0, t1
@@ -112,8 +112,35 @@ export async function getSocials() {
         `https://www.youtube.com/feeds/videos.xml?channel_id\=${process.env.WATCH_CHANNEL_ID}`,
         'https://www.youtube.com/feeds/videos.xml?channel_id=UCyWyNomzTjBvuRsqZU1bRCg'
     ]
+    const ytFullChannelFeeds = [
+        ...ytChannelFeeds,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw1ndn-tA_AvQHTD_xxzO7BK' /* Little Witch Nobeta */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw1F6VuIwRnrTxPu45KYYLTf' /* Dead Space */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw0wAcCr6G-jz3xklM6OXLkp' /* RUST */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw1DrDt1EuuTvMAqZbYtCJh6' /* resident evil: 2 */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw0emLtlrRu3-haygg7zFpeJ' /* chad cast */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw3-VUTzhypiLXfYlBDTvIXp' /* Elden Ring */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw3jFLIShKd2YJ-Ab9DbLSkC' /* GTAV */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw1CH1CpCYBjO9Lv7qO7oq7I' /* Terraria */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw14hXnFrdmeXyuqZcuPtaTZ' /* A Way Out */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw0oEkDSjFAgWk1Ga6WM7p_x' /* Pokemon Brilliant Diamond */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2ffl76qN325MIzsV-8MYUp' /* Resident Evil Village */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2iAk9CzpWQBFev4v8S8ciK' /* Dead By Daylight */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw0wrQ008bhxzZ-QtXeicjQN' /* Mario Kart */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw1gw4poWZxzK8WjFn6QTUuH' /* It Takes Two */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw31d7XfdyjR6pkjzekTrHwR' /* Ring Fit Adventure */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw3rVUHyzziCVh20WOZe5GXD' /* Members Only Streams */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2G1IP99YgZEoSoENoilqhw' /* The Henry Stickmin Collection */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw14H1Itizzt8f7VJcJuY_QZ' /* COLLAB!! */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw0a9b5hDrHGga9XFgsZYYqr' /* Singing Stream */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw3VUULE4nhhI30ocgfT2Ccz' /* Minecraft */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw2Wlox1cPU2-WGM5VmMYR8m' /* Cover songs! */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw0Id3qdyaJuQ0xeMB_3edRT' /* APEX */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw3PszbLMFPjdPbbmP1niyZQ' /* One Hand Clapping */,
+        'https://www.youtube.com/feeds/videos.xml?playlist_id=PLpBqtLy3mHw07nf_D8u-g6a3_MdLWVdIc' /* Music! */
+    ];
     t0 = performance.now()
-    for (let feed of ytChannelFeeds) {
+    for (let feed of (full) ? ytFullChannelFeeds : ytChannelFeeds) {
         try {
             let youtubeVODsReq = await fetch(feed)
             parseString(await youtubeVODsReq.text(), function(err, res) {
@@ -123,6 +150,9 @@ export async function getSocials() {
                     let id = vod['yt:videoId'][0]
                     let _id = id
                     _id = (id.video && id.video.id) ? id.video.id : id
+                    if (socials.findIndex(e => { return e.id === `yt${_id}`; }) != -1) {
+                        return
+                    }
                     socials.push({type: 'youtube', id: `yt${_id}`, date: new Date(vod.published[0]), data: {
                         attachmentType: 'VIDEO',
                         video: {id: id},
