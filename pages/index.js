@@ -485,7 +485,7 @@ export default function Home(props) {
             {isSpace(props.streamInfo.link) && props.streamInfo?.twitter_profile_image && <><a target='_blank' rel='noreferrer' href={props.streamInfo.link}><img src={props.streamInfo.twitter_profile_image} /></a></>}
 
             {bottomInfo}
-            <CountdownTimer status={props.status} intervalDuration={intervalDuration} nextStream={props.streamInfo} pastStream={props.pastStream} />
+            <CountdownTimer status={props.status} intervalDuration={intervalDuration} has_supana={props.has_supana} nextStream={props.streamInfo} pastStream={props.pastStream} />
 
             <footer>
                 <a href={props.channelLink}>IRyS Ch. hololive-EN</a> <br />

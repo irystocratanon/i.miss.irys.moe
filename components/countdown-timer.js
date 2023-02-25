@@ -8,6 +8,7 @@ export class CountdownTimer extends Component {
         this.state = {
             label: '',
             status: props.status,
+            has_supana: props.has_supana,
             nextStream: props.nextStream,
             pastStream: props.pastStream,
             intervalDuration: props.intervalDuration
@@ -67,7 +68,7 @@ export class CountdownTimer extends Component {
         return <>
             {this.state.label}
             <p>{!this.state.nextStream?.startTime ? <span>(time since <a href={videoLink}>{this.state.pastStream.title.trimLeft()}</a>)</span> : null}</p>
-            {supasLink ? <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${supasLink}.html`}>Supas</a>]</p> : <></>}
+            {supasLink ? <p style={{textAlign: 'center'}}>[<a target='_blank' rel='noreferrer' href={`/supas/${supasLink}.html`}>Supas</a>]{this.state.has_supana && <>&nbsp;[<a target='_blank' rel='noreferrer' href={`/supas/supana_${supasLink}.html`}>Supana</a>]</>}</p> : <></>}
             </>
     }
 }
