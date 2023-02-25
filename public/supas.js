@@ -278,6 +278,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
 }
 // try to keep the cache hot by requesting updates in the background with exponential back-off
 (async function() {
+    const progressEl = document.querySelector('progress')
     const initialDelay = 2000
     let delay = initialDelay*2
     let is_5xx = false
@@ -310,6 +311,9 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             }
             x_supas_items = x.headers.get('X-Supas-Items')
             if (x_supas_items) {
+                if (progressEl) {
+                    progressEl.max=x_supas_items;
+                }
                 let current_items
                 try {
                     const first = Number(document.querySelector('[data-num]').dataset['num'])
