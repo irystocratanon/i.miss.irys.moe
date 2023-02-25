@@ -360,6 +360,9 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     table.innerHTML = body;
                     for (const tr of table.querySelectorAll("tr[data-num]")) {
                         if (document.querySelector(\`tr[data-num="\${tr.dataset.num}"]\`)) { continue; }
+                        if (progressElement.max < tr.dataset.num) {
+                            progressElement.max = tr.dataset.num;
+                        }
                         let sibling = tr?.nextElementSibling;
                         tbody.appendChild(tr);
                         if (sibling) {
