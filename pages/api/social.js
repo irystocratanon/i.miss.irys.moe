@@ -170,7 +170,7 @@ export async function getSocials(full = false) {
                     let has_supas = false
                     let has_supana = false
                     const supas_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/${vod['yt:videoId'][0]}.html`
-                    const supana_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/${vod['yt:videoId'][0]}.html`
+                    const supana_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/supana_${vod['yt:videoId'][0]}.html`
                     for (let i = 0; i < 3; i++) {
                         try {
                             const req = await fetch(supas_endpoint, {method: 'HEAD'});
