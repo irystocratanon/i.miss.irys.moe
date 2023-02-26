@@ -160,16 +160,46 @@ export async function getSocials(full = false) {
             parseString(await youtubeVODsReq.text(), function(err, res) {
                 if (err) { return; }
                 if (! res instanceof Object || !res.feed || !res.feed.entry || ! res.feed.entry instanceof Array || res.feed.entry.length <=0 ) { return; }
-                res.feed.entry.forEach(vod => {
+                res.feed.entry.forEach(async function (vod) {
                     let id = vod['yt:videoId'][0]
                     let _id = id
                     _id = (id.video && id.video.id) ? id.video.id : id
-                    if (socials.findIndex(e => { return e.id === `yt${_id}`; }) != -1) {
+                    if (socials.findIndex(e => { return e.id === _id || e.id === `yt${_id}`; }) != -1) {
                         return
+                    }
+                    let has_supas = false
+                    let has_supana = false
+                    const supas_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/${vod['yt:videoId'][0]}.html`
+                    const supana_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/${vod['yt:videoId'][0]}.html`
+                    for (let i = 0; i < 3; i++) {
+                        try {
+                            const req = await fetch(supas_endpoint, {method: 'HEAD'});
+                            const n = (req.status >= 400) ? 0 : Number(req.headers.get('x-supas-items'))
+                            has_supas = n > 0
+                            if (req.status < 300) {
+                                break
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                    for (let i = 0; i < 3; i++) {
+                        try {
+                            const req = await fetch(supana_endpoint, {method: 'HEAD'});
+                            const n = (req.status >= 400) ? 0 : Number(req.headers.get('x-supas-items'))
+                            has_supana = n > 0
+                            if (req.status < 300) {
+                                break
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
                     }
                     socials.push({type: 'youtube', id: `yt${_id}`, date: new Date(vod.published[0]), data: {
                         attachmentType: 'VIDEO',
                         video: {id: id},
+                        has_supas: (has_supas) ? true : false,
+                        has_supana: (has_supana) ? true : false,
                         href: `https://www.youtube.com/watch?v=${vod['yt:videoId'][0]}`,
                         content: [{text: vod.title}]
                     }})

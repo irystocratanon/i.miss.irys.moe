@@ -71,6 +71,8 @@ export default function SocialsApp(props) {
         }
 
         const formatYouTubeCommunity = (y, i) => {
+            const has_supas = y.data?.has_supas || false
+            const has_supana = y.data?.has_supana || false
             return (
                 <div style={{margin: '0.5em', overflowWrap: 'anywhere'}}>
                     <small style={{color: 'dimgray'}}>{y.date}</small>
@@ -89,6 +91,10 @@ export default function SocialsApp(props) {
                     ))}
                 </blockquote>
                 <small><a href={`${y.data.href}`}>{`${y.data.href}`}</a></small>
+                {has_supas && <br />}
+                {!has_supas && has_supana && <br />}
+                {has_supas && y.data.video instanceof Object && typeof y.data.video?.id === 'string' && <>[<a target='_blank' rel='noreferrer' href={`${process.env.PUBLIC_HOST || ''}/supas/${y.data.video.id}.html`}>Supas</a>]</>}
+                {has_supana && y.data.video instanceof Object && typeof y.data.video?.id === 'string' && <>&nbsp;[<a target='_blank' rel='noreferrer' href={`${process.env.PUBLIC_HOST || ''}/supas/supana_${y.data.video.id}.html`}>Supana</a>]</>}
                 </div>
             )
         }
