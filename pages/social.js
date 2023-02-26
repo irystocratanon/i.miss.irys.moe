@@ -27,7 +27,7 @@ export async function getServerSideProps({ res }) {
     const {timingInfo, socials } = await getSocials(true)
     res.setHeader("Server-Timing", Object.keys(timingInfo).map(k => { return `${k};dur=${timingInfo[k]}` }).join(', '))
     return { props: {
-        social: socials.map(e => {
+        social: socials.filter((item, pos) => { return socials.indexOf(item) === pos}).map(e => {
             e.timestamp = e.date.toISOString()
 
             return {
@@ -165,6 +165,7 @@ export default function SocialsApp(props) {
                             return e
                         })
                         let _newState = Array.from([...json, ...newState])
+                        _newState = _newState.filter((item, pos) => { return _newState.indexOf(item) === pos})
                         setNewState(_newState)
                         newState = _newState
                         setNewStateDOM(Array.from(_newState).map((s, i) => (
@@ -197,7 +198,7 @@ export default function SocialsApp(props) {
             </section>
             <section className={styles.socialContainer}>
             {newStateDOM}
-            {social.map((s, i) => (
+            {social.filter((e,i) => { return i === social.findIndex(f => f.id === e.id)}).map((s, i) => (
                 <div key={s.id} className={styles.socialItem}>{formatSocial(s, i)}</div>
             ))}
             </section>

@@ -164,7 +164,7 @@ export async function getSocials(full = false) {
                     let id = vod['yt:videoId'][0]
                     let _id = id
                     _id = (id.video && id.video.id) ? id.video.id : id
-                    if (socials.findIndex(e => { return e.id === _id || e.id === `yt${_id}`; }) != -1) {
+                    if (socials.findIndex(e => { return e.id === id || e.id === `yt${_id}`; }) != -1) {
                         return
                     }
                     let has_supas = false
