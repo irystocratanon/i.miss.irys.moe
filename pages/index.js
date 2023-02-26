@@ -116,8 +116,10 @@ function StreamInfo(props) {
                 text = "Just Ended: "
                 break
             case STREAM_STATUS.OFFLINE:
-                text = "Previous Stream: "
-                break
+                if (props?.info?.currentTime > props?.info?.startTime) {
+                    text = "Previous Stream: "
+                    break
+                }
             default:
                 text = "Next Stream: "
                 break
