@@ -25,7 +25,7 @@ function formatSocialItemDuration(d) {
 
 export async function getServerSideProps({ res }) {
     const {timingInfo, socials } = await getSocials(true)
-    res.setHeader("Cache-Control", "public, max-age=60, s-maxage=20, stale-if-error=59, stale-while-revalidate=10")
+    res.setHeader("Cache-Control", "max-age=60, s-maxage=20, stale-if-error=59, stale-while-revalidate=10")
     res.setHeader("Server-Timing", Object.keys(timingInfo).map(k => { return `${k};dur=${timingInfo[k]}` }).join(', '))
     return { props: {
         social: socials.filter((item, pos) => { return socials.indexOf(item) === pos}).map(e => {

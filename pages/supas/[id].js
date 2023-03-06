@@ -34,7 +34,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             sort = 'desc';
         }
         if (process.env.hasOwnProperty('SUPAS_MAINTENANCE_WINDOW')) {
-            res.writeHead(503, { "Cache-Control": "public, max-age=0, must-revalidate"});
+            res.writeHead(503, { "Cache-Control": "max-age=0, must-revalidate"});
             return res.end(`<html>
 <head><title>503 Service Unavailable</title></head>
 <body>
@@ -79,7 +79,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
                 if (hashed_cursor && (none_match == `${hashed_cursor}${(sort == "desc") ? "/desc" : ""}`) && content_type === 'text/supas') {
-                    res.writeHead(304, {"Cache-Control": "public, max-age=3600, must-revalidate", "Vary": "Accept, Accept-Encoding"});
+                    res.writeHead(304, {"Cache-Control": "max-age=3600, must-revalidate", "Vary": "Accept, Accept-Encoding"});
                     return res.end();
                 }
             }
@@ -110,14 +110,14 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let content_length = supaReq.headers.get("X-Content-Length");
 
             let cache_control = supaReq.headers.get('Cache-Control')
-            cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "public, max-age=1, s-maxage=4, stale-if-error=59, stale-while-revalidate=10"
+            cache_control = (cache_control && cache_control.indexOf('immutable') > -1 && supaReq.status === 200) ? cache_control : "max-age=1, s-maxage=4, stale-if-error=59, stale-while-revalidate=10"
 
             let supas_items = supaReq.headers.get('X-Supas-Items')
             if (supas_items) {
                 resHeaders['X-Supas-Items'] = supas_items
             }
 
-            cache_control = (supaReq.status === 206 || supas_items === "0") ? "public, max-age=0, must-revalidate" : cache_control
+            cache_control = (supaReq.status === 206 || supas_items === "0") ? "max-age=0, must-revalidate" : cache_control
 
             if (query?.cursor) {
                 resHeaders["Vary"] = "Accept";
@@ -144,7 +144,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                     }
 
                     if (cache_control.indexOf("s-maxage") > -1 && content_type === 'text/supas') {
-                        cache_control = "public, max-age=604800, immutable";
+                        cache_control = "max-age=604800, immutable";
                     }
                     const textContent = await supaReq.text();
                     let html = parse(textContent);
@@ -267,7 +267,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
 
                     let resStatus = (loopRecords) ? 200 : 204;
                     if (resStatus == 204 || content_type.indexOf("text/html") > -1) {
-                        resHeaders["Cache-Control"] = (sort == "desc") ? cache_control : "public, max-age=0, must-revalidate";
+                        resHeaders["Cache-Control"] = (sort == "desc") ? cache_control : "max-age=0, must-revalidate";
                         resHeaders["ETag"] = etag;
                     } else {
                         resHeaders["Cache-Control"] = cache_control;
