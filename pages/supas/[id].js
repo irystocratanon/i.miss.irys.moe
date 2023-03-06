@@ -78,7 +78,8 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
-                if (hashed_cursor && (none_match == `${hashed_cursor}${(sort == "desc") ? "/desc" : ""}`) && content_type === 'text/supas') {
+                const match_none_match = `${hashed_cursor}${(sort == "desc") ? "/desc" : ""}`;
+                if (hashed_cursor && (none_match == `"${match_none_match}"` || none_match == match_none_match) && content_type === 'text/supas') {
                     res.writeHead(304, {"Cache-Control": "max-age=3600, must-revalidate", "Vary": "Accept, Accept-Encoding"});
                     return res.end();
                 }
@@ -140,7 +141,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                 // the first request will load as many rows as it possibly can within a budget of 4.75mb (this gives some headroom for the max of 5mb)
                 if (cursor > 0 || (query?.limit && (limit < 0 || limit > 0)) || Math.round(content_length / (1024*1024)) >= 5) {
                     if (cursor > 0 && hashed_cursor && content_type === 'text/supas') {
-                        resHeaders["ETag"] = `${hashed_cursor}${(sort == "desc") ? "/desc": ""}`;
+                        resHeaders["ETag"] = `"${hashed_cursor}${(sort == "desc") ? "/desc": ""}"`;
                     }
 
                     if (cache_control.indexOf("s-maxage") > -1 && content_type === 'text/supas') {
@@ -268,7 +269,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     let resStatus = (loopRecords) ? 200 : 204;
                     if (resStatus == 204 || content_type.indexOf("text/html") > -1) {
                         resHeaders["Cache-Control"] = (sort == "desc") ? cache_control : "max-age=0, must-revalidate";
-                        resHeaders["ETag"] = etag;
+                        resHeaders["ETag"] = (etag.startsWith('"')) ? etag : `"${etag}"`;
                     } else {
                         resHeaders["Cache-Control"] = cache_control;
                     }
