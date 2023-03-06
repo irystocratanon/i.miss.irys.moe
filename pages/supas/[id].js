@@ -79,7 +79,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             if (none_match) {
                 supaReqHeaders['If-None-Match'] = none_match
                 const match_none_match = `${hashed_cursor}${(sort == "desc") ? "/desc" : ""}`;
-                if (hashed_cursor && (none_match == `"${match_none_match}"` || none_match == match_none_match) && content_type === 'text/supas') {
+                if (hashed_cursor && (none_match == `"${match_none_match}"` || none_match == `W/"${match_none_match}"` || none_match == match_none_match) && content_type === 'text/supas') {
                     res.writeHead(304, {"Cache-Control": "max-age=3600, must-revalidate", "Vary": "Accept, Accept-Encoding"});
                     return res.end();
                 }
