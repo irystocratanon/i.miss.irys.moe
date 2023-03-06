@@ -120,10 +120,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
 
             cache_control = (supaReq.status === 206 || supas_items === "0") ? "max-age=0, must-revalidate" : cache_control
 
-            if (query?.cursor) {
-                resHeaders["Vary"] = "Accept";
-            }
-
+            resHeaders["Vary"] = "Accept, Accept-Encoding";
             resHeaders["Cache-Control"] = cache_control
 
             if (supaReq.status === 304) {
