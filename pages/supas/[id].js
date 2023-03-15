@@ -175,6 +175,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
                         body += `
 <div class="bg-white min-w-[129vw] sm:min-w-[0]">
 <progress id="main-table-progress" class="w-full overflow-hidden" max="${rows.length}" value="${(cursor < 1) ? 1 : cursor}"></progress>
+<strong></strong>
 <div class="overflow-x-auto">
 <table class="main-table table-auto w-full" border="1">
 <script>document.currentScript.parentElement.style.visibility = 'collapse';document.currentScript.parentElement.parentElement.style["overflow-x"]="hidden";Array.from(document.getElementById('control').getElementsByTagName('input')).forEach(el => { el.disabled = true; })</script>
@@ -293,6 +294,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
     const showTable = () => {
         Array.from(document.getElementsByClassName('main-table')).forEach(table => { table.style.visibility = 'initial'; table.parentElement.style["overflow-x"]='auto'; });
         progressElement.style.display = 'none';
+        progressElement.nextElementSibling.style.display = 'none';
         Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = false; })
     };
     const appendScript = () => {
@@ -333,6 +335,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
     observer.observe(targetNode, config);
     let interval = setInterval(() => {
         progressElement.value += 1;
+        progressElement.nextElementSibling.innerHTML = progressElement.value;
     }, 300);
     async function requestRecords() {
         const cursorLength = document.querySelectorAll("tr[data-num]").length;
@@ -342,6 +345,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
         sort = (sort) ? '&sort=' + sort.pop() : '';
         for (let i = 0; i < 10; i++) {
             progressElement.value=${(cursor > 0) ? 'cursorNext' : 'cursorLength'};
+            progressElement.nextElementSibling.innerHTML = progressElement.value;
             let req
             try {
                 if (cursorNext == 1 && sort.endsWith("=desc")) {
