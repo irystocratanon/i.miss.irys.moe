@@ -262,6 +262,10 @@
 	    const supachaButton = document.querySelector('.supacha-button[data-supas]')
         supachaButton.nextSibling.textContent = " SuperChat(" + String(Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return window.getComputedStyle(e).display === 'table-row'; }).length).padStart(2, 0) + "/" + String(supachaButton.dataset["supas"]).padStart(2, 0) + ")"
     }
+    setTimeout(function() {
+        const visibleElements = Array.from(document.querySelectorAll('tr[data-num]')).filter(tr => window.getComputedStyle(tr).display==='table-row')
+        visibleElements.forEach(e => { e.firstElementChild.title=(visibleElements.findIndex(j => j.dataset["num"] === e.dataset["num"])+1) + "/" + visibleElements.length  })
+    }, 0);
 })();
 // log backend timing entries for supas request to the console
 if (window.performance && performance.getEntriesByType) { // avoid error in Safari 10, IE9- and other old browsers

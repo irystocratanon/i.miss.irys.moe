@@ -60,18 +60,17 @@ window.__i_miss_irys_supas = (function() {
 			if (checkboxState.hasOwnProperty(keyName)) {
 				el.checked = Boolean(checkboxState[keyName])
 			}
-            el.onchange = function() {
-                const self = this;
+            const onChange = function(self) {
                 self.disabled = true;
                 if (keyName !== 'supacha') { toggleControls(); };
-				const display = (this.checked) ? 'table-row' : 'none'
+				const display = (self.checked) ? 'table-row' : 'none'
 				try {
-					checkboxState[keyName] = this.checked
+					checkboxState[keyName] = self.checked
 					localStorage.setItem('buttons[' + k + ']', JSON.stringify(checkboxState))
 				} catch (e) { console.error(e); }
 				if (keyName === 'supacha') {
 					Array.from(document.getElementsByClassName('supacha-button')).forEach(btn => {
-                        btn.checked = this.checked
+                        btn.checked = self.checked
                         btn.disabled = true;
 						const _keyName = (btn.name || btn.className.split('-button')[0]);
                         checkboxState[_keyName] = btn.checked
@@ -95,7 +94,15 @@ window.__i_miss_irys_supas = (function() {
                 if (supachaButton) {
                     supachaButton.nextSibling.textContent = "SuperChat(" + String(Array.from(document.querySelectorAll('tr[data-num]')).filter(e => { return window.getComputedStyle(e).display === 'table-row'; }).length).padStart(2, 0) + "/" + String(supachaButton.dataset["supas"]).padStart(2, 0) + ")"
                 }
-			}
+            }
+            el.onchange = function() {
+                onChange(this);
+                setTimeout(function() {
+                    const visibleElements = Array.from(document.querySelectorAll('tr[data-num]')).filter(tr => window.getComputedStyle(tr).display==='table-row')
+                    visibleElements.forEach(e => {
+                        e.firstElementChild.title=(visibleElements.findIndex(j => j.dataset["num"] === e.dataset["num"])+1) + "/" + visibleElements.length  })
+                }, 0);
+            }
 			const cssClassName = (el.name || el.className.split('-button')[0]);
 			const display = (el.checked);
 			if (cssClassName == 'supacha') { return; }

@@ -429,8 +429,8 @@ export default function Home(props) {
         }
     }
 
-    const supas_js_pre_version = '0.9'
-    const supas_js_version = '3.8'
+    const supas_js_pre_version = '1.1'
+    const supas_js_version = '3.9'
     const supas_css_version = '1.1'
 
 
