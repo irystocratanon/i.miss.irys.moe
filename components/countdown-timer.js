@@ -57,7 +57,7 @@ export class CountdownTimer extends Component {
 
     render() {
         if ((this.state.status !== STREAM_STATUS.OFFLINE && !this.state.nextStream?.startTime) || this.state.status === STREAM_STATUS.LIVE || this.state.status === STREAM_STATUS.JUST_ENDED || (this.state.nextStream?.startTime === null && this.state.pastStream === null)) { this.componentWillUnmount(); return <></> }
-        let videoLink = (this.state.pastStream?.videoLink) ? this.state.pastStream.videoLink : `https://www.youtube.com/watch?v=${this.state.pastStream.id}`
+        let videoLink = (this.state.pastStream?.videoLink) ? this.state.pastStream.videoLink : `https://www.youtube.com/watch?v=${this.state.pastStream?.id}`
         videoLink = (!this.state.nextStream?.startTime) ? videoLink : (this.state.nextStream.videoLink || this.state.nextStream.link || `https://www.youtube.com/watch?v=${this.state.nextStream.id}`
 )
         let supasLink
