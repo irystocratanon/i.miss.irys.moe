@@ -464,7 +464,7 @@ export default function Home(props) {
             <Link href="/social">IRySocial</Link>
         </section>
         <div style={{display: "block", position: "absolute", top: 10, right: 10}}>
-            <input id="schedule" type="checkbox" ref={scheduleRef} onChange={() => {}} onClick={() => scheduleHook(true)} /><label htmlFor="schedule">Schedule&nbsp;</label>
+            <span style={{display: "none"}}><input id="schedule" type="checkbox" checked={false} ref={scheduleRef} onChange={() => {}} onClick={() => scheduleHook(true)} /><label htmlFor="schedule">Schedule&nbsp;</label></span>
             <input id="irysart" type="checkbox" checked={irysart} ref={irysartRef} onChange={() => {}} onClick={irysartHook} /><label htmlFor="irysart">#IRySart&nbsp;</label>
         </div>
         <div className={className}>
