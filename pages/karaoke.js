@@ -78,7 +78,7 @@ export default class KaraokeApp extends React.Component {
     return <div className={styles.site}>
         <Head>
             <title>Karaoke</title>
-            <link rel="shortcut icon" href="/Sing.png" />
+            <link rel="shortcut icon" href="/Sing.webp" />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <meta name="theme-color" content="#ffbafb" />
             <meta content="I MISS IRyS" property="og:title" />

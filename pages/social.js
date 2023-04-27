@@ -180,7 +180,7 @@ export default function SocialsApp(props) {
         return <div className={styles.site}>
             <Head>
             <title>IRySocial</title>
-            <link rel="shortcut icon" href="/Socool.png" />
+            <link rel="shortcut icon" href="/Socool.webp" />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <meta name="theme-color" content="#ffbafb" />
             <meta content="I MISS IRyS" property="og:title" />

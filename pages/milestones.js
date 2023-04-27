@@ -165,7 +165,7 @@ export default function Milestones(props) {
     return <div className={styles.site}>
         <Head>
             <title>Milestones</title>
-            <link rel="shortcut icon" href="/Woah.png" />
+            <link rel="shortcut icon" href="/Woah.webp" />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <meta name="theme-color" content="#ffbafb" />
             <meta content="I MISS IRyS" property="og:title" />

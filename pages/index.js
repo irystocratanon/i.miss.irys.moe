@@ -186,13 +186,13 @@ export default function Home(props) {
         className = "miss-her"
         imageSet = NO_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
-        favicon || setFavicon((Math.floor((Math.random()*10)%2)) ? 'Byerys.png' : 'Byerys2.png')
+        favicon || setFavicon((Math.floor((Math.random()*10)%2)) ? 'Byerys.webp' : 'Byerys2.webp')
     } else {
         className = "comfy" 
         caption = "I Don't Miss IRyS"
         imageSet = HAVE_STREAM_IMAGE_SET
         bottomInfo = <StreamInfo status={props.status} info={props.streamInfo} />
-        favicon || setFavicon('Hirys.png')
+        favicon || setFavicon('Hirys.webp')
     }
 
     if (irysart) {
