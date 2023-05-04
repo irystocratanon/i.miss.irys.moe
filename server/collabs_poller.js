@@ -1,5 +1,5 @@
 import {checkCache, writeToCache} from "./lib/http-cache-helper.js"
-import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
+import {getDefaultHoloDexRequestHeaders} from "./lib/http-request-helper.js"
 
 import {CancelledStreams} from "./cancelled.js"
 import {OptimalPOV} from "./optimal-pov.js"
@@ -22,7 +22,7 @@ export async function fetchCollabstreamPage(channelID) {
     let abortTimeout
     try {
         abortTimeout = setTimeout(() => { controller.abort(); }, 2500)
-        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal: controller.signal}))
+        const res = await fetch(createPollRoute(channelID), getDefaultHoloDexRequestHeaders({signal: controller.signal}))
         clearTimeout(abortTimeout)
         if (res.status !== 200) {
             return { error: `HTTP status: ${res.status}`, result: { items: [] }}

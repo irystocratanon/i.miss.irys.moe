@@ -1,5 +1,5 @@
 import {checkCache, readLivestreamFromCache, writeToCache} from "./lib/http-cache-helper.js"
-import {getDefaultRequestHeaders} from "./lib/http-request-helper.js"
+import {getDefaultHoloDexRequestHeaders} from "./lib/http-request-helper.js"
 import {CancelledStreams} from "./cancelled.js"
 import {OptimalPOV} from "./optimal-pov.js"
 
@@ -68,7 +68,7 @@ export async function fetchPaststreamPage(channelID) {
     try {
         t0 = performance.now()
         abortTimeout = setTimeout(() => controller.abort, 2500)
-        const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders({signal: controller.signal}))
+        const res = await fetch(createPollRoute(channelID), getDefaultHoloDexRequestHeaders({signal: controller.signal}))
         clearTimeout(abortTimeout)
         t1 = performance.now()
         console.debug(`[fetchPaststreamPage fetch] ${t1-t0}`);
