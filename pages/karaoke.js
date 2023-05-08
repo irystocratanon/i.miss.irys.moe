@@ -88,6 +88,8 @@ export default class KaraokeApp extends React.Component {
         <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Link href="/">I miss her&hellip;</Link>
             &nbsp;|&nbsp;
+            <Link href="/archives">Archives</Link>
+            &nbsp;|&nbsp;
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link className="font-bold no-underline" href="/karaoke">Karaoke</Link>
