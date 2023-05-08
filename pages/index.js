@@ -457,6 +457,8 @@ export default function Home(props) {
             <input id="livereload" type="checkbox" checked={liveReload} ref={liveReloadRef} onChange={() => {}} onClick={liveReloadHook} /><label htmlFor="livereload">live reload</label>
         </div>
         <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <Link href="/archives">Archives</Link>
+            &nbsp;|&nbsp;
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link href="/karaoke">Karaoke</Link>
