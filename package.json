@@ -12,12 +12,12 @@
   "dependencies": {
     "animate.css": "^4.1.1",
     "date-fns": "^2.30.0",
-    "next": "^13.4.0",
+    "next": "^13.4.1",
     "node-html-parser": "^6.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "xml2js": "^0.5.0",
-    "yt-scraping-utilities": "git+https://github.com/irystocratanon/yt-scraping-utilities.git"
+    "yt-scraping-utilities": "https://github.com/irystocratanon/yt-scraping-utilities.git"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
