@@ -21,6 +21,8 @@ export async function getServerSideProps({ query, res }) {
     const req = await fetch("https://github.com/irystocratanon/i.miss.irys.moe-supadata/blob/master/archives.jsonl.lz4?raw=true")
     const buf = await req.arrayBuffer()
     let channels = {}
+    const queryIsRegex = query.s && query.s[0] === '/' && query.s.length > 1 && query.s[query.s.length-1] === '/'
+    const r = (queryIsRegex) ? new RegExp(query.s.slice(1, query.s.length-1), "i") : null
     const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
         return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
     }).map(e => {
@@ -40,7 +42,7 @@ export async function getServerSideProps({ query, res }) {
             return e.channelId === 'UC8rcEBzJSleTkf_-agPM20g'
         }
     }).filter(e => {
-        return !query.s || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
+        return !query.s || (queryIsRegex && r.test(query.s)) || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
     }).slice(0, 1024*4.5)
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     return {props: {
@@ -132,7 +134,12 @@ export default class ArchivesApp extends React.Component {
     const channels = this.channels
 
     if(searchText && searchText.length && searchText != this.lastSearchText) {
-        searchResults = archives.filter(s => { return search(s.title, searchText) });
+        if (searchText[0] === '/' && searchText.length > 1 && searchText[searchText.length-1] === '/') {
+            const r = new RegExp(searchText.slice(1, searchText.length-1), "i")
+            searchResults = archives.filter(s => { return r.test(s.title) })
+        } else {
+            searchResults = archives.filter(s => { return search(s.title, searchText) });
+        }
     }
     // eslint-disable-next-line react/no-direct-mutation-state
     this.state.searchResults = (searchText.length < 1) ? [] : searchResults
