@@ -39,7 +39,9 @@ export async function getServerSideProps({ query, res }) {
         } else {
             return e.channelId === 'UC8rcEBzJSleTkf_-agPM20g'
         }
-    })
+    }).filter(e => {
+        return !query.s || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
+    }).slice(0, 1024*4.5)
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     return {props: {
         archives,
