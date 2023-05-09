@@ -168,7 +168,7 @@ export default class ArchivesApp extends React.Component {
             </colgroup>
             <tbody>
                 <tr>
-                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">{(new Date(k.startTime)).toLocaleString()}<br/><a href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={`https://i3.ytimg.com/vi/${k.videoId}/hqdefault.jpg`} loading="lazy" decoding="async" /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
+                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">{(new Date(k.startTime)).toLocaleString()}<br/><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={`https://i3.ytimg.com/vi/${k.videoId}/hqdefault.jpg`} loading="lazy" decoding="async" /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
                 </tr>
             </tbody>
         </table>
