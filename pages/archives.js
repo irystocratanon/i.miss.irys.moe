@@ -36,8 +36,9 @@ export async function getServerSideProps({ query, res }) {
         }
         if (query.channel) {
             return query.channel.toLowerCase() === 'all' || e.channelId === query.channel
+        } else {
+            return e.channelId === 'UC8rcEBzJSleTkf_-agPM20g'
         }
-        return true
     })
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     return {props: {
