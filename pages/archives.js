@@ -20,6 +20,7 @@ export async function getServerSideProps({ query, res }) {
     //const req = await fetch("http://127.0.0.1:8000/archives.jsonl.lz4")
     const req = await fetch("https://github.com/irystocratanon/i.miss.irys.moe-supadata/blob/master/archives.jsonl.lz4?raw=true")
     const buf = await req.arrayBuffer()
+    let channels = {}
     const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
         return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
     }).map(e => {
@@ -28,14 +29,20 @@ export async function getServerSideProps({ query, res }) {
         const hidden = Date.parse(tDate) > now+(((1000*3600)*24)*7);
         e.hidden = hidden
         return e
-    }).filter(e => {
+    }).filter((e, i, arr) => {
+        const {channelId, channelName} = arr[i]
+        if (!channels.hasOwnProperty(channelId)) {
+            channels[channelId] = channelName
+        }
         if (query.channel) {
-            return e.channelId === query.channel
+            return query.channel.toLowerCase() === 'all' || e.channelId === query.channel
         }
         return true
     })
+    channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     return {props: {
         archives,
+        channels,
         query: {
             s: query.s || null,
             channel: query.channel || null,
@@ -50,42 +57,66 @@ export default class ArchivesApp extends React.Component {
     super(props);
 
     this.archives = props.archives
-    this.channels = {}
-    for (let i = 0; i < this.archives.length; i++) {
-        const {channelId, channelName} = this.archives[i];
-        if (!this.channels.hasOwnProperty(channelId)) {
-            this.channels[channelId] = channelName
-        }
-    }
-    this.channels = Object.keys(this.channels).sort((a,b) => this.channels[a].localeCompare(this.channels[b])).reduce((acc,key) => { acc[key] = this.channels[key]; return acc; }, {});
+    this.channels = props.channels
 
-    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', selectedChannel: props.query.channel || 'UC8rcEBzJSleTkf_-agPM20g' };
+    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', selectedChannel: props.query.channel || 'UC8rcEBzJSleTkf_-agPM20g', searchResults: [] };
     
     this.lastSearchText = 'andkjanskdjnaskjdnakjs'
     this.handleChange = this.handleChange.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleMonthChange = this.handleMonthChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateLocation = this.updateLocation.bind(this);
+  }
+
+  updateLocation(newState = {}, reload = true) {
+      let { searchText, selectedMonth, selectedChannel } = this.state
+      searchText = (newState.hasOwnProperty('searchText')) ? newState['searchText'] : searchText
+      selectedMonth = (newState.hasOwnProperty('selectedMonth')) ? newState['selectedMonth'] : selectedMonth
+      selectedChannel = (newState.hasOwnProperty('selectedChannel')) ? newState['selectedChannel'] : selectedChannel
+      let search = ''
+      let token = "?"
+      if (location.pathname === "/archives" && (window.location.search.indexOf("channel=") > -1 || selectedChannel != 'UC8rcEBzJSleTkf_-agPM20g')) {
+          search += token + "channel=" + selectedChannel
+      }
+      if (selectedMonth) {
+          token = (search.length > 0) ? '&' : '?'
+          search += token + "month=" + selectedMonth
+      }
+      if (searchText) {
+          token = (search.length > 0) ? '&' : '?'
+          search += token + "s=" + searchText
+      }
+      if (reload) {
+          window.location.search = search
+      } else {
+          let updateState = true
+          if (newState.hasOwnProperty("selectedMonth")) {
+              updateState = (((newState["selectedMonth"].match(/[0-9]+-[0-9][0-9]?/) && ! newState["selectedMonth"].match(/[0-9]+-0$/)) || newState["selectedMonth"].length === 0)) ? true : false
+          }
+          if (updateState) {
+              let url = new URL(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443 ? ':' + window.location.port : '')) + window.location.pathname + search)
+              history.replaceState({}, "", url);
+          }
+      }
   }
 
   handleMonthChange(event) {
-      this.setState({ selectedMonth: event.target.value });
+      const newState = { selectedMonth: event.target.value }
+      this.setState(newState)
+      this.updateLocation(newState, false)
   }
 
   handleChannelChange(event) {
-    this.setState({ selectedChannel: event.target.value });  
-  }
-
-  handleChannelChange(event) {
-    this.setState({ selectedChannel: event.target.value });  
-  }
-
-  handleMonthChange(event) {
-    this.setState({ selectedMonth: event.target.value });  
+      const newState = { selectedChannel: event.target.value }
+      this.setState(newState)
+      this.updateLocation(newState)
   }
 
   handleChange(event) {
-    this.setState({ searchText: event.target.value });  
+      const newState = { searchText: event.target.value }
+      this.setState(newState)
+      this.updateLocation(newState, false)
   }
 
   handleSubmit(event) {
@@ -93,16 +124,15 @@ export default class ArchivesApp extends React.Component {
   }
 
   render() {
-    let { selectedChannel, selectedMonth, searchText } = this.state;
+    let { searchResults, selectedChannel, selectedMonth, searchText } = this.state;
     let archives = this.archives
     const channels = this.channels
-    var searchResults = [];
 
     if(searchText && searchText.length && searchText != this.lastSearchText) {
         searchResults = archives.filter(s => { return search(s.title, searchText) });
-    } else {
-        searchResults = [];
     }
+    // eslint-disable-next-line react/no-direct-mutation-state
+    this.state.searchResults = (searchText.length < 1) ? [] : searchResults
 
     this.lastSearchText = searchText;
     this.lastMonth = selectedMonth
@@ -122,7 +152,7 @@ export default class ArchivesApp extends React.Component {
     }
 
       let archivedList = archives.filter(k => {
-          return (selectedChannel != "-1") ? k.channelId === selectedChannel : true
+          return (selectedChannel != "all") ? k.channelId === selectedChannel : true
       }).filter(k => {
           return (isFutureMonth || isFutureYear) ? true : !k.hidden
       }).filter(k => {
@@ -142,12 +172,6 @@ export default class ArchivesApp extends React.Component {
             </tbody>
         </table>
         ))
-
-    if (this.state.searchText.length === 0) {
-        //archivedList = selectedMonth.length < 1 ? archivedList.slice(0, 116) : archivedList
-    } else {
-        archivedList = []
-    }
 
     return <div className={styles.site}>
         <Head>
@@ -174,15 +198,17 @@ export default class ArchivesApp extends React.Component {
         
             <section className={styles.search}>
                 <h3>Find Archived Streams</h3>
+                <form onSubmit={this.handleSubmit}>
                 <select value={this.state.selectedChannel} selected={this.state.selectedChannel} onChange={this.handleChannelChange}>
-                    <option value="-1">All</option>
+                    <option value="all">All</option>
                     {Object.keys(channels).map(k => {
                         return <option key={k} value={`${k}`}>{channels[k]}</option>
                     })}
                 </select>
                 <input value={this.state.selectedMonth} onChange={this.handleMonthChange} style={{width: "10em", marginLeft: "1em", marginBottom: "1em"}} title="filter month" placeholder={`year-month (${(new Date()).getFullYear()}-${(new Date()).getMonth()+1})`} type="month"></input>
+            </form>
                 <form onSubmit={this.handleSubmit}>        
-                    <input placeholder="Search..." type="text" value={this.state.searchText} onChange={this.handleChange} autoFocus={true} />
+                    <input placeholder="Search..." type="text" value={this.state.searchText} onChange={this.handleChange} />
                 </form>
 
                 <table width="100%">
@@ -212,9 +238,9 @@ export default class ArchivesApp extends React.Component {
 
             </section>
             <section className={styles.catalog}>
-                {archivedList.length > 0 && <h3>Archived Streams</h3>}
+                {archivedList.length > 0 && searchResults.length === 0 && <h3>Archived Streams</h3>}
                 
-                {archivedList}
+                {searchResults.length === 0 && archivedList}
             </section>
         
         
