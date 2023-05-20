@@ -1581,6 +1581,83 @@ let data = {
                     keywords: "here comes hope irys"
                 }
             ]
+        },
+        {
+            videoId: "_jkBQKlQNVM",
+            title: " 【Singing Stream】Oh Yeah KARAOKE~! 歌枠",
+            date: new Date("Dec 09, 2022"),
+            songs: [
+                {
+                  timestamp: "10m22s",
+                  title: "Haru Hisagi",
+                  keywords: "haru hisagi"
+                },
+                {
+                  timestamp: "17m38s",
+                  title: "Habit",
+                  keywords: "habit"
+                },
+                {
+                  timestamp: "25m40s",
+                  title: "Apollo",
+                  keywords: "apollo"
+                },
+                {
+                  timestamp: "32m20s",
+                  title: "Yoshiwara Lament",
+                  keywords: "yoshiwara lament"
+                },
+                {
+                  timestamp: "38m37s",
+                  title: "Kick back",
+                  keywords: "kick back"
+                },
+                {
+                  timestamp: "44m20s",
+                  title: "Kawaikute Gomen (Rehearsal)",
+                  keywords: "kawaikute gomen rehearsal"
+                },
+                {
+                  timestamp: "45m06s",
+                  title: "Kawaikute Gomen",
+                  keywords: "kawaikute gomen"
+                },
+                {
+                  timestamp: "02h20m29s",
+                  title: "Kawaikute Gomen (Secret Ending)",
+                  keywords: "kawaikute gomen secret ending"
+                },
+                {
+                  timestamp: "51m21s",
+                  title: "Ruma",
+                  keywords: "ruma"
+                },
+                {
+                  timestamp: "58m27s",
+                  title: "Akuma No ko",
+                  keywords: "akuma no ko"
+                },
+                {
+                  timestamp: "01h08m10s",
+                  title: "Choucho Musubi",
+                  keywords: "choucho musubi"
+                },
+                {
+                  timestamp: "01h17m15s",
+                  title: "Phony",
+                  keywords: "phony"
+                },
+                {
+                  timestamp: "01h24m28s",
+                  title: "Ai no Scenario",
+                  keywords: "ai no scenario"
+                },
+                {
+                  timestamp: "01h33m05s",
+                  title: "Roki",
+                  keywords: "roki"
+                }
+            ]
         }
     ]
 }
