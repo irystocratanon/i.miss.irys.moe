@@ -1740,6 +1740,120 @@ let data = {
                   keywords: "genesis of aquarion"
                 }
                 ]
+        },
+        {
+            videoId: "c2VP3Nt4MeM",
+            title: " 【Karaoke Stream / 歌枠】Singing using the Hololive Karaoke App! ",
+            date: new Date("10 May, 2023"),
+            songs: [
+                {
+                  timestamp: "11m57s",
+                  title: "Ruriiro No Chikyuu",
+                  artist: "Matsuda Seiko",
+                  keywords: "ruriiro no chikyuu matsuda seiko"
+                },
+                {
+                  timestamp: "19m24s",
+                  title: "Fiction",
+                  artist: "sumika",
+                  keywords: "fiction sumika"
+                },
+                {
+                  timestamp: "25m21s",
+                  title: "Koini Ochite",
+                  artist: "Olivia Ong",
+                  keywords: "koini ochite olivia ong"
+                },
+                {
+                  timestamp: "26m49s",
+                  title: "Love Story Wa Totsuzen ni",
+                  artist: "Kazumasa Oda.",
+                  keywords: "love story wa totsuzen ni kazumasa oda"
+                },
+                {
+                  timestamp: "34m30s",
+                  title: "Mabel (メーベル)",
+                  artist: "balloon ft. flower",
+                  keywords: "mabel balloon ft flower"
+                },
+                {
+                  timestamp: "39m35s",
+                  title: "Hitorinbo Envy",
+                  artist: "Koyori",
+                  keywords: "hitorinbo envy koyori"
+                },
+                {
+                  timestamp: "45m52s",
+                  title: "Mononoke Hime",
+                  artist: "Joe Hisaish",
+                  keywords: "mononoke hime joe hisaish"
+                },
+                {
+                  timestamp: "53m11s",
+                  title: "Connect",
+                  artist: "ClariS",
+                  keywords: "connect claris"
+                },
+                {
+                  timestamp: "01h00m34s",
+                  title: "Fragile",
+                  artist: "Every Little thing",
+                  keywords: "fragile every little thing"
+                },
+                {
+                  timestamp: "01h08m05s",
+                  title: "Pride Kakumei",
+                  artist: "CHiCO with HoneyWorks",
+                  keywords: "pride kakumei chico with honeyworks"
+                },
+                {
+                  timestamp: "01h14m46s",
+                  title: "Wakusei Loop",
+                  artist: "Nayutan Seijin",
+                  keywords: "wakusei loop nayutan seijin"
+                },
+                {
+                  timestamp: "01h20m05s",
+                  title: "Kimi wo nosete",
+                  artist: "Joe Hisaishi",
+                  keywords: "kimi wo nosete joe hisaishi"
+                },
+                {
+                  timestamp: "01h25m47s",
+                  title: "Old Fashion",
+                  keywords: "old fashion"
+                },
+                {
+                  timestamp: "01h36m39s",
+                  title: "Telecaster B Boy",
+                  artist: "Surii/Three",
+                  keywords: "telecaster b boy surii three"
+                },
+                {
+                  timestamp: "01h41m23s",
+                  title: "Asu e no Tobira",
+                  artist: "I Wish",
+                  keywords: "asu e no tobira i wish"
+                },
+                {
+                  timestamp: "01h49m20s",
+                  title: "Churrila Churrila Da",
+                  artist: "KurageP Ft. Yuzuki Yukari",
+                  keywords: "churrila churrila da kuragep ft yuzuki yukari"
+                },
+                {
+                  timestamp: "01h58m11s",
+                  title: "Again",
+                  artist: "Yui",
+                  keywords: "again yui"
+                },
+                {
+                  timestamp: "02h07m46s",
+                  title: "Odo",
+                  artist: "Ado",
+                  keywords: "odo ado"
+                }
+            ]
         }
     ]
 }
