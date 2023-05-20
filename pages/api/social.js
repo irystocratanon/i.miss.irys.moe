@@ -110,6 +110,23 @@ export async function getSocials(full = false) {
     }
 
     if (full) {
+        const spaceSearchTerms = ['?f=tweets&q=%23IRySpace&since=&until=&near=', '?f=tweets&q=twitter.com%2Fi%2Fspaces%2F&since=&until=&near=']
+        for (const term of spaceSearchTerms) {
+            for (let endpoint of nitterEndpoints) {
+                let tweets
+                try {
+                    tweets = await fetchTweets(endpoint.replace(/https?:\/\//, ''), `${endpoint}/irys_en/search/rss${term}`)
+                } catch (err) { console.error(err); }
+                if (tweets.length === 0 || !tweets) { continue; }
+                tweets.forEach(tweet => { if (socials.findIndex(e => { return e.id === tweet.id }) === -1) { socials.push(tweet); } })
+                t1 = performance.now()
+                if (tweets.length > 0) { timingInfo['twtr'] = t1-t0; }
+                break
+            }
+        }
+    }
+
+    if (full) {
         for (let endpoint of nitterEndpoints) {
             let tweets
             try {
