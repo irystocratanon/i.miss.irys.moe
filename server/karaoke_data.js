@@ -1998,6 +1998,25 @@ let data = {
             ]
         },
         {
+            videoId: "HjLhSdJ0Ugo",
+            title: "『hololive EXPO & 4th Fes』IRyS' Cheering Venue!!💎",
+            date: new Date("Mar 19, 2023"),
+            songs: [
+                {
+                  timestamp: "26m02s",
+                  title: "Inochi No Name",
+                  artist: "Spirited Away",
+                  keywords: "inochi no name spirited away"
+                },
+                {
+                  timestamp: "33m39s",
+                  title: "Haru Dorobou",
+                  artist: "Yorushika",
+                  keywords: "haru dorobou yorushika"
+                }
+            ]
+        },
+        {
             videoId: "7y8yAKaBzZw",
             title: "【BIRTHDAY 3D】Karaoke Birthday Bash! #happymoriday",
             date: new Date("Apr 04, 2023"),
