@@ -97,9 +97,12 @@ export default class KaraokeApp extends React.Component {
             <Link href="/social">IRySocial</Link>
 
         </section>
-        
+
+        <section className={styles.search}>
+            <a style={{display: 'flex', flexDirection: 'row-reverse', textDecoration: 'none', fontSize: 'x-large'}} href="/karaoke/random" target="_blank" title="random"><button><span style={{pointerEvents: 'none'}}>🎲 </span></button></a>
+        </section>
             <section className={styles.search}>
-            <h3>Find Archived Karaoke Song</h3>
+                <h3>Find Archived Karaoke Song</h3>
             <form onSubmit={this.handleSubmit}>        
                 <input placeholder="Search..." type="text" value={this.state.searchText} onChange={this.handleChange} autoFocus={true} />
             </form>
