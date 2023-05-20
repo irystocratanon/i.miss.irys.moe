@@ -54,10 +54,30 @@ const fetchTweets = async function (endpoint, url) {
     }
 }
 
+export async function getSupas() {
+    const lz4 = (await import('lz4'))
+    const req = await fetch("https://github.com/irystocratanon/i.miss.irys.moe-supadata/blob/master/archives.jsonl.lz4?raw=true")
+    const buf = await req.arrayBuffer()
+    return lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
+        return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
+    }).filter(e => {
+        return e.channelId === process.env.WATCH_CHANNEL_ID
+    });
+}
+
 export async function getSocials(full = false) {
     let socials = []
     let timingInfo = {}
     let t0, t1
+
+    let supas
+    try {
+        supas = await getSupas();
+    } catch (err) {
+        console.error(err);
+        supas = [];
+    }
+
     try {
         t0 = performance.now()
         let leddit = await fetch('https://old.reddit.com/user/IRySoWise.rss')
@@ -169,31 +189,12 @@ export async function getSocials(full = false) {
                     }
                     let has_supas = false
                     let has_supana = false
-                    const supas_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/${vod['yt:videoId'][0]}.html`
-                    const supana_endpoint = `${process.env.PUBLIC_HOST || ''}/supas/supana_${vod['yt:videoId'][0]}.html`
-                    for (let i = 0; i < 3; i++) {
-                        try {
-                            const req = await fetch(supas_endpoint, {method: 'HEAD'});
-                            const n = (req.status >= 400) ? 0 : Number(req.headers.get('x-supas-items'))
-                            has_supas = n > 0
-                            if (req.status < 300) {
-                                break
-                            }
-                        } catch (e) {
-                            console.error(e);
-                        }
-                    }
-                    for (let i = 0; i < 3; i++) {
-                        try {
-                            const req = await fetch(supana_endpoint, {method: 'HEAD'});
-                            const n = (req.status >= 400) ? 0 : Number(req.headers.get('x-supas-items'))
-                            has_supana = n > 0
-                            if (req.status < 300) {
-                                break
-                            }
-                        } catch (e) {
-                            console.error(e);
-                        }
+                    const found = supas.findIndex(e => {
+                        return e.videoId === _id
+                    });
+                    if (found > -1) {
+                        has_supas = supas[found].supas > 0
+                        has_supana = supas[found].supana > 0
                     }
                     socials.push({type: 'youtube', id: `yt${_id}`, date: new Date(vod.published[0]), data: {
                         attachmentType: 'VIDEO',
