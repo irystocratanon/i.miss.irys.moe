@@ -3,13 +3,18 @@
     font-size: x-large;
 }
 
+.top button span {
+    pointer-events: none;
+    @apply bg-white rounded-lg;
+}
+
 .milestones {
     @apply lg:w-3/4 mt-10 lg:mt-7 lg:mb-5 mx-auto lg:rounded-lg bg-white;
 }
 
 .top iframe {
     @apply rounded-lg aspect-video pb-1 mx-auto;
-    max-width: 400px;
+    max-width: 70vw;
     min-height: 240px;
 }
 

@@ -184,6 +184,9 @@ export default function Milestones(props) {
                 <Link href="/social">IRySocial</Link>
         </section>
         <div>
+            <section className={styles.top}>
+                <a href="/reps" target="_blank" title="random"><button><span>🎲 </span></button></a>
+            </section>
 
             {!topState.milestone.million && <section id={topMillionaireState.videoId} className={styles.top}>
                 <h3>Next Millionaire</h3>
