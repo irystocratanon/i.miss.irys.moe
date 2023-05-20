@@ -1742,6 +1742,78 @@ let data = {
                 ]
         },
         {
+            videoId: "Kqdgc0DVYTs",
+            title: "【CARaoke Sequel】Valentine's Singing Date ❤",
+            date: new Date("14 Feb, 2023"),
+            songs: [
+                {
+                  timestamp: "18m05s",
+                  title: "Hajimete No Chu",
+                  keywords: "hajimete no chu"
+                },
+                {
+                  timestamp: "27m15s",
+                  title: "Hohoemi no Bakudan",
+                  keywords: "hohoemi no bakudan"
+                },
+                {
+                  timestamp: "35m30s",
+                  title: "Kawaikute Gomen",
+                  keywords: "kawaikute gomen"
+                },
+                {
+                  timestamp: "42m34s",
+                  title: "Plastic Love",
+                  keywords: "plastic love"
+                },
+                {
+                  timestamp: "01h01m27s",
+                  title: "USSEEWA",
+                  keywords: "usseewa"
+                },
+                {
+                  timestamp: "01h11m51s",
+                  title: "Overdose",
+                  keywords: "overdose"
+                },
+                {
+                  timestamp: "01h30m19s",
+                  title: "Haru Dorobou",
+                  keywords: "haru dorobou"
+                },
+                {
+                  timestamp: "01h41m30s",
+                  title: "Valentine Kiss",
+                  keywords: "valentine kiss"
+                },
+                {
+                  timestamp: "01h52m25s",
+                  title: "Suzume",
+                  keywords: "suzume"
+                },
+                {
+                  timestamp: "02h00m11s",
+                  title: "Guitar To Kodoku To Aoi Hoshi",
+                  keywords: "guitar to kodoku to aoi hoshi"
+                },
+                {
+                  timestamp: "02h05m58s",
+                  title: "Fuwa Fuwa Time",
+                  keywords: "fuwa fuwa time"
+                },
+                {
+                  timestamp: "02h12m29s",
+                  title: "One Last Kiss",
+                  keywords: "one last kiss"
+                },
+                {
+                  timestamp: "02h20m14s",
+                  title: "Bokusatsu Tenshi Dokuro-chan",
+                  keywords: "bokusatsu tenshi dokuro chan"
+                }
+            ]
+        },
+        {
             videoId: "c2VP3Nt4MeM",
             title: " 【Karaoke Stream / 歌枠】Singing using the Hololive Karaoke App! ",
             date: new Date("10 May, 2023"),
