@@ -2,6 +2,19 @@ let data = {
     playlistId: "PLpBqtLy3mHw0a9b5hDrHGga9XFgsZYYqr",
     list: [
         {
+            videoId: "WTU3TIZRUCM",
+            title: "【DEBUT STREAM】Hope has descended! #irysdebutstream",
+            date: new Date("Jul 11, 2021"),
+            songs: [
+                {
+                    timestamp: "3037s",
+                    title: "Cruel Angel's Thesis",
+                    artist: "Yoko Takahashi",
+                    keywords: "cruel angel angel's angels thesis yoko takahashi evangelion"
+                }
+            ]
+        },
+        {
             videoId: "XGzuTH_-dIU",
             title: "【Singing】Very First Karaoke Party♪",
             date: new Date("Jul 16, 2021"),
