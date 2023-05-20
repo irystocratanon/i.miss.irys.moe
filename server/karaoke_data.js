@@ -1538,6 +1538,18 @@ let data = {
             ]
         },
         {
+            videoId: "eogSzuZ-7gw",
+            title: "【IRyS NEW DESIGN REVEAL】HOPE 2.0 is Coming Down To Earth!【#AWholeNewHOPE】",
+            date: new Date("Nov 27, 2022"),
+            songs: [
+                {
+                  timestamp: "01h38m32s",
+                  title: "Till the end of me",
+                  keywords: "till the end of me"
+                }
+            ]
+        },
+        {
             videoId: "ksUKrIahznk",
             title: "【KARAOKE ENDURANCE】Singing until 900k Subs!",
             date: new Date("Nov 30, 2022"),
