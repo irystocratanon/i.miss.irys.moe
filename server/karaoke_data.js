@@ -1444,6 +1444,58 @@ let data = {
             ]
         },
         {
+            videoId: "qBUNfuVwKuc",
+            title: "【歌枠】#AZRyS Collab KARAOKE！SINGING STREAM 【ホロライブ / AZKi / IRyS】",
+            date: new Date("Oct 12, 2022"),
+            songs: [
+                {
+                  timestamp: "05m58s",
+                  title: "Uchiage Hanabi / DAOKO × Kenshi Yonezu",
+                  keywords: "uchiage hanabi daoko kenshi yonezu"
+                },
+                {
+                  timestamp: "12m42s",
+                  title: "Hana ni Bourei / Yorushika",
+                  keywords: "hana ni bourei yorushika"
+                },
+                {
+                  timestamp: "19m43s",
+                  title: "Namidame Bakuhatsuon / Walkure",
+                  keywords: "namidame bakuhatsuon walkure"
+                },
+                {
+                  timestamp: "25m30s",
+                  title: "Seikan Hikou / Ranka Lee (Megumi Nakajima)",
+                  keywords: "seikan hikou ranka lee megumi nakajima"
+                },
+                {
+                  timestamp: "32m12s",
+                  title: "Sing My Pleasure / Vivy (Kairi Yagi)",
+                  keywords: "sing my pleasure vivy kairi yagi"
+                },
+                {
+                  timestamp: "40m02s",
+                  title: "Shangri-La / angela",
+                  keywords: "shangri la angela"
+                },
+                {
+                  timestamp: "46m35s",
+                  title: "One Last Kiss / Utada Hikaru",
+                  keywords: "one last kiss utada hikaru"
+                },
+                {
+                  timestamp: "55m09s",
+                  title: "HERE COMES HOPE / IRyS",
+                  keywords: "here comes hope irys"
+                },
+                {
+                  timestamp: "59m49s",
+                  title: "Inochi / AZKi",
+                  keywords: "inochi azki"
+                }
+            ]
+        },
+        {
             videoId: "XCHb3YxlTsI",
             title: "【Members Only】Learning new songs!!",
             date: new Date("Oct 14, 2022"),
