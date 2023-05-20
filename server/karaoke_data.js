@@ -1754,6 +1754,19 @@ let data = {
             ]
         },
         {
+            videoId: "o5YzoNS7Gqw",
+            title: "【New Years Greeting】HiRyS 2023!!!",
+            date: new Date("31 Dec, 2022"),
+            songs: [
+                {
+                  timestamp: "31m40s",
+                  title: "Akatsuki to Hana",
+                  artist: "IRyS",
+                  keywords: "akatsuki to hana irys"
+                }
+            ]
+        },
+        {
             videoId: "RsGurGap92s",
             title: "【Singing Stream】First Karaoke of the Year!",
             date: new Date("03 Jan, 2023"),
