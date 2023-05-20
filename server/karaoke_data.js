@@ -1908,6 +1908,23 @@ let data = {
             ]
         },
         {
+            videoId: "7y8yAKaBzZw",
+            title: "【BIRTHDAY 3D】Karaoke Birthday Bash! #happymoriday",
+            date: new Date("Apr 04, 2023"),
+            songs: [
+                {
+                  timestamp: "00h45m09s",
+                  title: "Reflectia / eufonius",
+                  keywords: "reflectia eufonius"
+                },
+                {
+                  timestamp: "00h50m36s",
+                  title: "COLORS / FLOW",
+                  keywords: "colors flow"
+                }
+            ]
+        },
+        {
             videoId: "c2VP3Nt4MeM",
             title: " 【Karaoke Stream / 歌枠】Singing using the Hololive Karaoke App! ",
             date: new Date("10 May, 2023"),
