@@ -1038,6 +1038,25 @@ let data = {
             ],
         },
         {
+            videoId: "eldLKxKLAZI",
+            title: "【RELEASE PARTY】Woooo! :D",
+            date: new Date("Feb 27, 2022"),
+            songs: [
+                {
+                  timestamp: "02h18m38s",
+                  title: "again",
+                  artist: "YUI",
+                  keywords: "again yui"
+                },
+                {
+                  timestamp: "02h28m53s",
+                  title: "ギラギラ",
+                  artist: "Ado (version take 4)",
+                  keywords: "ado version take"
+                }
+            ]
+        },
+        {
             videoId: "UEMcl5rzLPU",
             title: "『#BirthdayRyS』ITS MY B-DAY Woo~!🎈【BIRTHDAY STREAM】",
             date: new Date("Mar 6, 2022"),
