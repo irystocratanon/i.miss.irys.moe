@@ -1444,6 +1444,48 @@ let data = {
             ]
         },
         {
+            videoId: "XCHb3YxlTsI",
+            title: "【Members Only】Learning new songs!!",
+            date: new Date("Oct 14, 2022"),
+            songs: [
+                {
+                  timestamp: "01m00s",
+                  title: "Gravity",
+                  artist: "IRyS",
+                  keywords: "gravity irys"
+                },
+                {
+                  timestamp: "02m00s",
+                  title: "Shinjidai",
+                  artist: "Ado",
+                  keywords: "shinjidai ado"
+                },
+                {
+                  timestamp: "03m00s",
+                  title: "Aozora no Namida",
+                  artist: "Hitomi Takahashi",
+                  keywords: "aozora no namida hitomi takahashi"
+                },
+                {
+                  timestamp: "04m00s",
+                  title: "Souvenir",
+                  artist: "Bump of Chicken",
+                  keywords: "souvenir bump of chicken"
+                },
+                {
+                  timestamp: "05m00s",
+                  title: "Inochi (Revenge)",
+                  artist: "AZKi",
+                  keywords: "inochi revenge azki"
+                },
+                {
+                  timestamp: "05m00s",
+                  title: "IRyS' Raw vocals for her Cover of Inochi",
+                  keywords: "irys raw vocals for her cover of inochi"
+                }
+            ]
+        },
+        {
             videoId: "ksUKrIahznk",
             title: "【KARAOKE ENDURANCE】Singing until 900k Subs!",
             date: new Date("Nov 30, 2022"),
