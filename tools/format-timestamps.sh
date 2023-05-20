@@ -58,7 +58,8 @@ get_timestamps "$@" | grep -v -E '^$' | while read -r line
 do
 	set -- $(echo "$line")
 	ts="$1"
-	shift 2
+	shift 1
+	printf "%s" "$1" | grep -qE '^[0-9]+\.' && shift 1
 	[ "${first}" -eq 1 ] || _first=",\n"
 	printf "${_first}{\n"
 	printf "  timestamp: \"%s\",\n  title: %s,\n  keywords: \"%s\"\n" "$(format_ts "$ts")" "$(format_title "$*")" "$(format_keywords "$*")"
