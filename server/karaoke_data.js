@@ -1658,6 +1658,88 @@ let data = {
                   keywords: "roki"
                 }
             ]
+        },
+        {
+            videoId: "RsGurGap92s",
+            title: "【Singing Stream】First Karaoke of the Year!",
+            date: new Date("03 Jan, 2023"),
+            songs: [
+                {
+                  timestamp: "11m16s",
+                  title: "Candy Candy",
+                  keywords: "candy candy"
+                },
+                {
+                  timestamp: "23m32s",
+                  title: "Suzume",
+                  keywords: "suzume"
+                },
+                {
+                  timestamp: "31m32s",
+                  title: "Mixed Nuts",
+                  keywords: "mixed nuts"
+                },
+                {
+                  timestamp: "36m56s",
+                  title: "Butter-fly",
+                  keywords: "butter fly"
+                },
+                {
+                  timestamp: "46m34s",
+                  title: "Pale Blue",
+                  keywords: "pale blue"
+                },
+                {
+                  timestamp: "52m55s",
+                  title: "Byoushin wo Kamu",
+                  keywords: "byoushin wo kamu"
+                },
+                {
+                  timestamp: "01h01m07s",
+                  title: "Soba ni Iru yo",
+                  keywords: "soba ni iru yo"
+                },
+                {
+                  timestamp: "01h07m28s",
+                  title: "Lum No Love Song",
+                  keywords: "lum no love song"
+                },
+                {
+                  timestamp: "01h12m13s",
+                  title: "Shinigami",
+                  keywords: "shinigami"
+                },
+                {
+                  timestamp: "01h17m09s",
+                  title: "Unlasting",
+                  keywords: "unlasting"
+                },
+                {
+                  timestamp: "01h21m26s",
+                  title: "Takane No Hanako-san",
+                  keywords: "takane no hanako san"
+                },
+                {
+                  timestamp: "01h29m36s",
+                  title: "Sharuru",
+                  keywords: "sharuru"
+                },
+                {
+                  timestamp: "01h35m49s",
+                  title: "ANGELUS",
+                  keywords: "angelus"
+                },
+                {
+                  timestamp: "01h44m24s",
+                  title: "Sincerely",
+                  keywords: "sincerely"
+                },
+                {
+                  timestamp: "01h53m22s",
+                  title: "Genesis of Aquarion",
+                  keywords: "genesis of aquarion"
+                }
+                ]
         }
     ]
 }
