@@ -2,17 +2,20 @@ import KaraokeData from "../server/karaoke_data"
 export default function Home(props) {}
 
 Home.getInitialProps = async function ({ res }) {
-    let {songs} = KaraokeData;
-    songs = songs.filter(e => { return !e.hasOwnProperty('dead') });
+    const {list} = KaraokeData.karaoke
 
     let m3u8 = `#EXTM3U`;
 
-    for (let i = 0; i < songs.length; i++) {
-        m3u8 += `
+    list.reverse().forEach(el => {
+        let {songs} = el
+        songs = songs.filter(e => { return !e.hasOwnProperty('dead') });
+        for (let i = 0; i < songs.length; i++) {
+            m3u8 += `
 
 #EXTINF:-1,${songs[i].title}
-https://www.youtube.com/watch?v=${songs[i].karaoke.videoId}&t=${songs[i].timestamp}`
-    }
+https://www.youtube.com/watch?v=${el.videoId}&t=${songs[i].timestamp}`
+        }
+    })
 
     res.writeHead(200, {
         "Content-Type": "application/vnd.apple.mpegurl",
