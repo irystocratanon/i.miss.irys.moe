@@ -2342,6 +2342,58 @@ let data = {
                   keywords: "odo ado"
                 }
             ]
+        },
+        {
+            videoId: "vVjfuj3bRW8",
+            title: "【Members Only】Learning MORE songs",
+            date: new Date("24 May, 2023"),
+            songs: [
+                {
+                  timestamp: "12m00s",
+                  title: "Mephisto",
+                  keywords: "mephisto"
+                },
+                {
+                  timestamp: "41m23s",
+                  title: "Tokyo shandy rendezvous (Take 1)",
+                  keywords: "tokyo shandy rendezvous take"
+                },
+                {
+                  timestamp: "02h13m22s",
+                  title: "Tokyo shandy rendezvous (Take 2)",
+                  keywords: "tokyo shandy rendezvous take"
+                },
+                {
+                  timestamp: "01h16m20s",
+                  title: "Shayou",
+                  keywords: "shayou"
+                },
+                {
+                  timestamp: "01h57m33s",
+                  title: "Merry-Go-Round (Take 1)",
+                  keywords: "merry go round take"
+                },
+                {
+                  timestamp: "02h05m27s",
+                  title: "Merry-Go-Round (BrrrrrrRyS~ Ver.)",
+                  keywords: "merry go round brrrrrrrys ver"
+                },
+                {
+                  timestamp: "02h07m26s",
+                  title: "Merry-Go-Round (Take 2)",
+                  keywords: "merry go round take"
+                },
+                {
+                  timestamp: "03h28m37s",
+                  title: "Betelgeuse",
+                  keywords: "betelgeuse"
+                },
+                {
+                  timestamp: "04h05m37s",
+                  title: "Tabako",
+                  keywords: "tabako"
+                }
+            ]
         }
     ]
 }
