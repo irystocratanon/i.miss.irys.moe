@@ -2,6 +2,7 @@ import Head from "next/head"
 import Link from "next/link"
 import React from 'react'
 import styles from '../styles/Karaoke.module.css'
+import {intervalToDuration,formatDuration} from "date-fns"
 
 function search(kws, s) {
     if (!s.indexOf("【") >= 0) {
@@ -161,6 +162,19 @@ export default class ArchivesApp extends React.Component {
         isFutureMonth = (selectedMonthYear === currentYear && selectedMonthMonth > currentMonth) || isFutureYear
     }
 
+    const currentDate = new Date();
+    function formatDurationText(d) {
+        d = (d instanceof Date) ? d : new Date(d)
+        const duration = intervalToDuration({start: currentDate, end: d})
+        let formatDurationOpts = {format: ['years']}
+        if (duration.years === 0 || !duration.hasOwnProperty('years')) { formatDurationOpts['format'].push('months') }
+        if (duration.months === 0 || !duration.hasOwnProperty('months')) { formatDurationOpts['format'].push('weeks') }
+        if (duration.weeks === 0 || !duration.hasOwnProperty('weeks')) { formatDurationOpts['format'].push('days') }
+        if (duration.days === 0 || !duration.hasOwnProperty('days')) { formatDurationOpts['format'].push('hours') }
+        if (duration.hours === 0 || !duration.hasOwnProperty('hours')) { formatDurationOpts['format'].push('minutes') }
+        if (duration.minutes === 0 || !duration.hasOwnProperty('minutes')) { formatDurationOpts['format'].push('seconds') }
+        return (currentDate < d) ? d.toLocaleString() : `${formatDuration(duration, formatDurationOpts)} ago`
+      }
       let archivedList = archives.filter(k => {
           return (selectedChannel != "all") ? k.channelId === selectedChannel : true
       }).filter(k => {
@@ -169,7 +183,9 @@ export default class ArchivesApp extends React.Component {
           if (selectedMonth.length < 1) { return true; }
           const d = new Date(k.startTime)
           return selectedMonthMonth === d.getUTCMonth()+1 && selectedMonthYear === d.getFullYear()
-      }).map(k => (
+      }).map(k => {
+          const duration = formatDurationText(k.startTime);
+          return (
         <table width="100%" key={k.videoId}>
             <colgroup>
                 <col width="40px" />
@@ -177,11 +193,12 @@ export default class ArchivesApp extends React.Component {
             </colgroup>
             <tbody>
                 <tr>
-                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">{(new Date(k.startTime)).toLocaleString()}<br/><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={`https://i3.ytimg.com/vi/${k.videoId}/hqdefault.jpg`} loading="lazy" decoding="async" /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
+                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2"><span title={(new Date(k.startTime)).toLocaleString()}>{duration}</span><br/><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={`https://i3.ytimg.com/vi/${k.videoId}/hqdefault.jpg`} loading="lazy" decoding="async" /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
                 </tr>
             </tbody>
         </table>
-        ))
+        )
+    })
 
     return <div className={styles.site}>
         <Head>
@@ -237,7 +254,7 @@ export default class ArchivesApp extends React.Component {
                         <tr key={i}>
                             <td>{i+1}.</td>
                             <td><a href={`https://www.youtube.com/watch?v=${s.videoId}`} target="_blank" rel="noreferrer">{s.title}</a></td>
-                            <td>{(new Date(s.startTime)).toLocaleString()}</td>
+                            <td>{(new Date(s.startTime)).toLocaleString()} {currentDate > new Date(s.startTime) && <>(<strong>{formatDurationText(s.startTime)}</strong>)</>}</td>
                             <td><a href={`https://www.youtube.com/channel/${s.channelId}`} target="_blank" rel="noreferrer">{s.channelName}</a></td>
                             <td>{s.supas > 0 && <a href={`/supas/${s.videoId}.html`}>Supas({s.supas})</a> || <>Supas(0)</>}</td>
                             <td>{s.supana > 0 && <a href={`/supas/supana_${s.videoId}.html`}>Supana({s.supana})</a> || <>Supana(0)</>}</td>
