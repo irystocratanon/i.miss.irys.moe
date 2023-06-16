@@ -26,6 +26,7 @@ export default async function getReps() {
             'https://www.youtube.com/watch?v=YzS26Ao3vt8', /* 【ANIMATION MV】A Million Miles Away - BELLE || HAKOS BAELZ COVER  */
             'https://www.youtube.com/watch?v=kPyLnwSXqkA', /* The Twelve Days of Christmas - hololive English Cover */
             'https://www.youtube.com/watch?v=uFJHdT_ie9U', /* Ochame Kinou - hololive English Cover */
+            'https://www.youtube.com/watch?v=bitH6NZ_e2Q', /*  【MV】 Connect the World 【hololive English Original Song】 */
             ...manualTopicReps
         ]
 
