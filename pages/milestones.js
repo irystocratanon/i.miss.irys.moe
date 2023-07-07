@@ -72,10 +72,11 @@ function formatReps(_reps) {
     return {closestMillionaire, reps}
 }
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ query, res }) {
     const {closestMillionaire, reps} = formatReps(await getReps())
 
     return {props: {
+        full: Object.keys(query).indexOf('full') > -1,
         vids: reps, 
         top: reps[0],
         topMillionaire: closestMillionaire,
@@ -162,6 +163,9 @@ export default function Milestones(props) {
         setIntervalState(setTimeout(updateMilestoneState, (4000 + Math.random()*10000%1100) + (Math.random()*100000%15000)))
     }
 
+    const maxChannel = (props.full) ? Infinity : 6
+    const maxTopics = (props.full) ? Infinity : 6
+
     return <div className={styles.site}>
         <Head>
             <title>Milestones</title>
@@ -177,7 +181,7 @@ export default function Milestones(props) {
                 &nbsp;|&nbsp;
                 <Link href="/archives">Archives</Link>
                 &nbsp;|&nbsp;
-                <Link className="font-bold no-underline" href="/milestones">Milestones</Link>
+                <Link className="font-bold no-underline" href={'/milestones'+ (props.full) ? '?full' : ''}>Milestones</Link>
                 &nbsp;|&nbsp;
                 <Link href="/karaoke">Karaoke</Link>
                 &nbsp;|&nbsp;
@@ -205,9 +209,10 @@ export default function Milestones(props) {
             <section className={styles.milestones}>
             <section className={styles.mid}>
                 <h3>Channel Milestones</h3>
+                {props.full || <section className={'md:float-right'}><a href="?full"><button className={"rounded-full px-8 bg-sky-300 p-100"}>View all milestones</button></a></section>}
                 <table width="100%">
                     <tbody>
-                        {nonTopicState.slice(0, 3).map((r) => (
+                        {nonTopicState.slice(0, maxChannel).map((r) => (
                         <tr key={r.url}>
                             <td className={styles.titlecol}><a href={r.url}>{r.title}</a></td>
                             <td className={styles.numcol}><ViewsNumberFormat value={r.milestone.delta}/> away from <NumberFormat value={r.milestone.milestone}/>!!</td>
@@ -220,7 +225,7 @@ export default function Milestones(props) {
                 <h3>Topic Channel Milestones</h3>
                 <table width="100%">
                     <tbody>
-                        {topicState.slice(0, 3).map((r) => (
+                        {topicState.slice(0, maxTopics).map((r) => (
                         <tr key={r.url}>
                             <td className={styles.titlecol}><a href={r.url}>{r.title}</a></td>
                             <td className={styles.numcol}><ViewsNumberFormat value={r.milestone.delta}/> away from <NumberFormat value={r.milestone.milestone}/>!!</td>
