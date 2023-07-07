@@ -77,3 +77,11 @@
 .titlecol {
     @apply text-left;
 }
+
+.more_milestones_ctr {
+    @apply md:float-right;
+}
+
+.more_milestones_ctr button {
+    @apply rounded-full px-8 bg-sky-300;
+}

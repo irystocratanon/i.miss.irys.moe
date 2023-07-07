@@ -209,7 +209,7 @@ export default function Milestones(props) {
             <section className={styles.milestones}>
             <section className={styles.mid}>
                 <h3>Channel Milestones</h3>
-                {props.full || <section className={'md:float-right'}><a href="?full"><button className={"rounded-full px-8 bg-sky-300 p-100"}>View all milestones</button></a></section>}
+                {props.full || <section className={styles.more_milestones_ctr}><a href="?full"><button>View all milestones</button></a></section>}
                 <table width="100%">
                     <tbody>
                         {nonTopicState.slice(0, maxChannel).map((r) => (
