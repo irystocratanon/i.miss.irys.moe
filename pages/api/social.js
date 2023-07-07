@@ -94,7 +94,8 @@ export async function getSocials(full = false) {
         timingInfo['rdt'] = t1-t0
     } catch (err) { console.error(err); }
 
-    const nitterEndpoints = ['https://nitter.irys.moe', 'https://nitter.net']
+    //const nitterEndpoints = ['https://nitter.irys.moe', 'https://nitter.net']
+    const nitterEndpoints = []
 
     t0 = performance.now()
     for (let endpoint of nitterEndpoints) {
