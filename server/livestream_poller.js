@@ -22,6 +22,7 @@ function validateVideoLink(anyLink) {
 }
 
 export async function fetchLivestreamPage(channelID) {
+    //channelID = 'UC6eWCld0KwmyHFbAqK3V-Rw'
     try {
         const res = await fetch(createPollRoute(channelID), getDefaultRequestHeaders())
         if (res.status !== 200) {
@@ -36,6 +37,7 @@ export async function fetchLivestreamPage(channelID) {
 }
 
 const VIDEO_INFO_EXPECT_START = "var ytInitialPlayerResponse = "
+const INITIAL_DATA_EXPECT_START = "var ytInitialData = "
 export function extractLivestreamInfo(fromPageContent) {
     const dom = parse(fromPageContent, {
         blockTextElements: {
@@ -52,7 +54,77 @@ export function extractLivestreamInfo(fromPageContent) {
     }
 
     const videoLink = validateVideoLink(canonical.getAttribute("href"))
+    //console.log('videoLink: ', videoLink);
     if (!videoLink) {
+        if (canonical.getAttribute("href").endsWith(`/channel/${process.env.WATCH_CHANNEL_ID}`)) {
+            try {
+                const scripts = dom.querySelectorAll("script")
+                let playerInfo = null
+                for (let i = 0; i < scripts.length; ++i) {
+                    const text = scripts[i].textContent
+
+                    if (text.startsWith(INITIAL_DATA_EXPECT_START)) {
+                        try {
+                            playerInfo = JSON.parse(text.substring(INITIAL_DATA_EXPECT_START.length, text.length - 1))
+                        } catch {
+                            continue
+                        }
+                        break
+                    }
+                }
+                const grid = playerInfo.contents.twoColumnBrowseResultsRenderer.tabs.find(e => { return e.tabRenderer.title === 'Live'; })
+                //console.log('grid: ', grid)
+                let contents = grid.tabRenderer.content.richGridRenderer.contents
+                contents = contents.filter(e => {
+                    let is_live = false
+                    if (e.richItemRenderer) {
+                        try {
+                        let thumbnailOverlays = e.richItemRenderer.content.videoRenderer.thumbnailOverlays
+                        let thumbnailOverlayTimeStatusRenderer = thumbnailOverlays.find(e => Object.hasOwn(e, 'thumbnailOverlayTimeStatusRenderer'))
+                            is_live = (thumbnailOverlayTimeStatusRenderer) ? thumbnailOverlayTimeStatusRenderer.thumbnailOverlayTimeStatusRenderer.style.toLowerCase() === 'live' : is_live
+                        } catch {}
+                    }
+                    return  e.richItemRenderer &&
+                        e.richItemRenderer.content &&
+                        e.richItemRenderer.content.videoRenderer &&
+                        e.richItemRenderer.content.videoRenderer.upcomingEventData || is_live
+                });
+                contents = contents.sort((a,b) => {
+                    try {
+                        return a.richItemRenderer.content.videoRenderer.upcomingEventData.startTime > b.richItemRenderer.content.videoRenderer.upcomingEventData.startTime || -1
+                    } catch { return -1 }
+                })
+                if (contents.length > 0) {
+                    //console.log(contents.length)
+                    //console.log(contents[0].richItemRenderer.content)
+                    //console.log(contents[1].richItemRenderer.content)
+                    const i = 0
+                    const {videoId} = contents[i].richItemRenderer.content.videoRenderer
+                    const videoLink = `https://www.youtube.com/watch?v=${videoId}`
+                    const title = contents[i].richItemRenderer.content.videoRenderer.title.runs.map(e => {
+                        return e.text
+                    }).join(' ')
+                    let live = Object.hasOwn(contents[i].richItemRenderer.content.videoRenderer, 'upcomingEventData')
+                    let has_upcoming_event_data = Boolean(live)
+                    live = (!has_upcoming_event_data) ? STREAM_STATUS.LIVE : STREAM_STATUS.INDETERMINATE
+                    let streamStartTime = (has_upcoming_event_data) ? contents[i].richItemRenderer.content.videoRenderer.upcomingEventData.startTime : null
+                    if (streamStartTime) {
+                        const expectedStartTime = parseInt(streamStartTime) * 1000
+                        const waitTimeLeftMS = expectedStartTime - (new Date().getTime())
+                        streamStartTime = new Date(expectedStartTime)
+                        if (waitTimeLeftMS > 1800 * 1000) {
+                            live = STREAM_STATUS.OFFLINE
+                        }
+                    }
+                    //console.log(streamStartTime)
+                    const live_status = { error: null, result: { live, title, videoLink, streamStartTime, channel: "IRyS Ch. hololive-EN" } }
+                    //console.dir(live_status, {depth: null})
+                    return live_status
+                }
+            } catch (err) {
+                console.log('extractLivestreamInfo: ', err)
+            }
+        }
         return { error: null, result: { live: STREAM_STATUS.OFFLINE, title: null, videoLink: null, streamStartTime: null, channel: "IRyS Ch. hololive-EN" } }
     } 
 
@@ -84,6 +156,7 @@ export function extractLivestreamInfo(fromPageContent) {
     }
 
     if (!playerInfo) {
+        //console.log('basicResponse: ', basicResponse)
         return basicResponse
     }
 
@@ -127,10 +200,13 @@ export function extractLivestreamInfo(fromPageContent) {
 }
 
 export async function pollLivestreamStatus(channelID) {
+    //channelID = 'UC6eWCld0KwmyHFbAqK3V-Rw'
     const { error, result: youtubeHTML } = await fetchLivestreamPage(channelID)
     if (error) {
+        //console.log('error: ', error)
         return { error, result: null }
     }
+    //console.dir(extractLivestreamInfo(youtubeHTML))
 
     return extractLivestreamInfo(youtubeHTML)   
 }
