@@ -2448,6 +2448,93 @@ let data = {
                   keywords: "enjoy joy joyful"
                 }
             ]
+        },
+        {
+            videoId: 'zeb1g-Ah0JM',
+            title: '【Karaoke Stream / 歌枠】Lala Haha',
+            date: new Date("27 Jul, 2023"),
+            songs: [
+                {
+                  timestamp: "07m19s",
+                  title: "Love Story Wa Tasuezen NI",
+                  keywords: "love story wa tasuezen ni"
+                },
+                {
+                  timestamp: "15m24s",
+                  title: "Otona Blue",
+                  keywords: "otona blue"
+                },
+                {
+                  timestamp: "22m26s",
+                  title: "Ai no Uta",
+                  keywords: "ai no uta"
+                },
+                {
+                  timestamp: "30m54s",
+                  title: "Chikyuugi",
+                  keywords: "chikyuugi"
+                },
+                {
+                  timestamp: "38m56s",
+                  title: "Akuma no ko",
+                  keywords: "akuma no ko"
+                },
+                {
+                  timestamp: "45m24s",
+                  title: "Shoujo Rei",
+                  keywords: "shoujo rei"
+                },
+                {
+                  timestamp: "52m56s",
+                  title: "Mamoritai White Wishes",
+                  keywords: "mamoritai white wishes"
+                },
+                {
+                  timestamp: "59m09s",
+                  title: "Seishoujo Ryouiki",
+                  keywords: "seishoujo ryouiki"
+                },
+                {
+                  timestamp: "01h08m02s",
+                  title: "Hana ni Bourei",
+                  keywords: "hana ni bourei"
+                },
+                {
+                  timestamp: "01h15m53s",
+                  title: "Hitchcock",
+                  keywords: "hitchcock"
+                },
+                {
+                  timestamp: "01h24m49s",
+                  title: "Dry Flower",
+                  keywords: "dry flower"
+                },
+                {
+                  timestamp: "01h34m28s",
+                  title: "Shayou",
+                  keywords: "shayou"
+                },
+                {
+                  timestamp: "01h40m42s",
+                  title: "Mephisto (TV Size)",
+                  keywords: "mephisto tv size"
+                },
+                {
+                  timestamp: "01h44m42s",
+                  title: "Kurruto mawatte Ikkaiten",
+                  keywords: "kurruto mawatte ikkaiten"
+                },
+                {
+                  timestamp: "01h52m12s",
+                  title: "Last Stardust",
+                  keywords: "last stardust"
+                },
+                {
+                  timestamp: "01h58m50s",
+                  title: "Kyoufuu All Back",
+                  keywords: "kyoufuu all back"
+                }
+            ]
         }
     ]
 }
