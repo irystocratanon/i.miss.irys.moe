@@ -2535,6 +2535,43 @@ let data = {
                   keywords: "kyoufuu all back"
                 }
             ]
+        },
+        {
+            videoId: 'afSBWXV7JQw',
+            title: '【#ホロサマ歌枠リレー】Singing Summer Songs in Swimsuit?!',
+            date: new Date("30 Jul, 2023"),
+            songs: [
+                {
+                  timestamp: "01m07s",
+                  title: "17 Sai",
+                  artist: "Moritaka Chisato",
+                  keywords: "sai moritaka chisato"
+                },
+                {
+                  timestamp: "06m39s",
+                  title: "Sazan Wind",
+                  artist: "Nakamori Akina",
+                  keywords: "sazan wind nakamori akina"
+                },
+                {
+                  timestamp: "11m02s",
+                  title: "Kimitachi Kiwi, Papaya, Mango Dane.",
+                  artist: "Nakahara Meiko",
+                  keywords: "kimitachi kiwi papaya mango dane nakahara meiko"
+                },
+                {
+                  timestamp: "14m42s",
+                  title: "Hito natsu no keiken",
+                  artist: "Yamaguchi Momoe",
+                  keywords: "hito natsu no keiken yamaguchi momoe"
+                },
+                {
+                  timestamp: "17m44s",
+                  title: "Garnet",
+                  artist: "Hanako Oku",
+                  keywords: "garnet hanako oku"
+                }
+            ]
         }
     ]
 }
