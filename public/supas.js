@@ -100,22 +100,13 @@
                 const table_rows = Array.from(document.querySelectorAll('tr[data-num]'));
                 const firstElement = table_rows.find(e => { return window.getComputedStyle(e).display === 'table-row'; })
                 console.log('firstElement', firstElement);
-                lastElement = ((sort_is_descending) ? table_rows.reverse() : table_rows).filter(e => { return e.dataset['num'] >= lastElement }).find(e => { return window.getComputedStyle(e).display === 'table-row'; })
+                lastElement = ((sort_is_descending) ? table_rows.reverse() : table_rows).filter(e => { return Number(e.dataset['num']) >= lastElement && lastElement != firstElement.dataset['num'] }).find(e => { return window.getComputedStyle(e).display === 'table-row'; })
                 console.log('lastElement', lastElement);
 				scrollPosition = (lastElement && lastElement.length === 1 && scrollToLastElement) ? window.scrollMaxY : scrollPosition
 				if (lastElement) {
-					if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
-						if (! k.startsWith("supana_")) {
-							lastElement.nextElementSibling.style.backgroundColor = 'yellow'
-						}
-                        lastElement.style.backgroundColor = 'yellow'
-                        try {
-                            // This is ugly. I should find a better way to do this...
-							Array.from(lastElement.querySelectorAll('span')).forEach(e => { e.parentElement.style.backgroundColor = 'yellow'; e.style.backgroundColor = 'yellow'; });
-							if (! k.startsWith("supana_")) {
-								Array.from(lastElement.nextElementSibling.querySelectorAll('span')).forEach(e => { e.parentElement.style.backgroundColor = 'yellow'; e.style.backgroundColor = 'yellow'; })
-							}
-                        } catch {}
+                    if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
+                        lastElement = (k.startsWith("supana_")) ? lastElement.previousElementSibling : lastElement
+                        lastElement.style.borderTop = 'solid 0.5em orange'
                         if (scrollToLastElement) {
                             scrollPosition = lastElement.offsetTop
                         }
