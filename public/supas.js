@@ -95,15 +95,17 @@
             lastElement = (sort_is_descending()) ? lastElement : lastElement + 1
 		} catch {}
 		try {
-            if (lastElement) {
+            if (lastElement && lastElement != 1) {
                 console.log('lastElement', lastElement);
                 const table_rows = Array.from(document.querySelectorAll('tr[data-num]'));
                 const firstElement = table_rows.find(e => { return window.getComputedStyle(e).display === 'table-row'; })
                 console.log('firstElement', firstElement);
-                lastElement = ((sort_is_descending) ? table_rows.reverse() : table_rows).filter(e => { return Number(e.dataset['num']) >= lastElement && lastElement != firstElement.dataset['num'] }).find(e => { return window.getComputedStyle(e).display === 'table-row'; })
+                lastElement = ((sort_is_descending) ? table_rows.reverse() : table_rows).filter(e => { return Number(e.dataset['num']) >= lastElement && lastElement != firstElement.dataset['num'] }).filter(e => { return window.getComputedStyle(e).display === 'table-row'; })
+                const lastElementLength = lastElement.length
+                lastElement = lastElement[lastElementLength-1]
                 console.log('lastElement', lastElement);
 				scrollPosition = (lastElement && lastElement.length === 1 && scrollToLastElement) ? window.scrollMaxY : scrollPosition
-				if (lastElement) {
+                if (lastElement && lastElementLength > 1) {
                     if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
                         lastElement = (k.startsWith("supana_")) ? lastElement.previousElementSibling : lastElement
                         lastElement.style.borderTop = 'solid 0.5em orange'
