@@ -17,7 +17,13 @@ Home.getInitialProps = async function ({ req, res, query }) {
             return res.end()
         }
         if (!query || !query?.id || query?.id.endsWith('.html') === false) {
-            res.writeHead(404);
+            if (query && query.id) {
+                res.writeHead(307, {
+                    Location: `/supas/${query.id}.html`
+                });
+            } else {
+                res.writeHead(404);
+            }
             return res.end()
         }
         let hashed_cursor
