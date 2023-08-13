@@ -288,13 +288,19 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
     const cursor = !!window.location.search.match(/(\??|\&)cursor=[0-9]+\&?/);
     const sort_is_descending = !!window.location.search.match(/(\?|\&)sort=desc\&?/);
 
-    const backgroundUpdateCache = async function() {
+    const backgroundUpdateCache = async function(modified_since = null) {
         let x
         try {
-            x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD'});
+            let headers = {}
+            if (modified_since) {
+                headers["If-Modified-Since"] = modified_since
+            }
+            x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD', headers: headers});
+            const _modified_since = x.headers.get('last-modified')
+            modified_since = (_modified_since) ? _modified_since : modified_since
         } catch {
             delay*=2
-            return setTimeout(backgroundUpdateCache, delay);
+            return setTimeout(() => { return backgroundUpdateCache(modified_since) }, delay);
         }
         is_5xx = x.status >= 500
         is_4xx = x.status >= 400 && x.status < 500
@@ -339,7 +345,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             }
             // if the request takes longer than 1000ms or a server error has occurred then keep backing off, else set the delay to initialDelay + some random fuzz
             delay = (server_timing && server_timing >= 1_000 || is_5xx) ? delay*2 : ((initialDelay*2) + Math.random()*1000)
-            return setTimeout(backgroundUpdateCache, delay);
+            return setTimeout(() => { return backgroundUpdateCache(modified_since) }, delay);
         }
     }
     if (!limit && !(cursor && sort_is_descending)) {
