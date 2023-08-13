@@ -2572,6 +2572,79 @@ let data = {
                   keywords: "garnet hanako oku"
                 }
             ]
+        },
+        {
+            videoId: 'sZlslLuBlOc',
+            title: '【singing / 歌枠 + 告知】KARAOKE with ANNOUNCEMENT!!!',
+            date: new Date("13 Aug, 2023"),
+            songs: [
+                {
+                  timestamp: "07m51s",
+                  title: "Kimi no Nosete",
+                  artist: "Inoue Azumi",
+                  keywords: "kimi no nosete inoue azumi"
+                },
+                {
+                  timestamp: "14m43s",
+                  title: "Watarase Bashi",
+                  artist: "Matsuura AQya",
+                  keywords: "watarase bashi matsuura aqya"
+                },
+                {
+                  timestamp: "22m22s",
+                  title: "Saudade",
+                  artist: "P0rno graffitti",
+                  keywords: "saudade p rno graffitti"
+                },
+                {
+                  timestamp: "30m38s",
+                  title: "Hohoemi No Bakudan",
+                  artist: "Matsuko Mawatari",
+                  keywords: "hohoemi no bakudan matsuko mawatari"
+                },
+                {
+                  timestamp: "38m43s",
+                  title: "Suzume no Tojimari",
+                  artist: "RADWIMPS feat. toaka",
+                  keywords: "suzume no tojimari radwimps feat toaka"
+                },
+                {
+                  timestamp: "45m43s",
+                  title: "SANPO",
+                  artist: "Azumi Inoue",
+                  keywords: "sanpo azumi inoue",
+                  dead: true
+                },
+                {
+                  timestamp: "48m37s",
+                  title: "Inochi no namae",
+                  artist: "Joe Hisaishi",
+                  keywords: "inochi no namae joe hisaishi"
+                },
+                {
+                  timestamp: "54m05s",
+                  title: "Rouge no Dengon",
+                  artist: "Yumi Matsutoya",
+                  keywords: "rouge no dengon yumi matsutoya"
+                },
+                {
+                  timestamp: "01h00m06s",
+                  title: "attack no1",
+                  artist: "m-flo",
+                  keywords: "attack no m flo"
+                },
+                {
+                  timestamp: "01h11m20s",
+                  title: "Homura",
+                  artist: "LiSA",
+                  keywords: "homura lisa"
+                },
+                {
+                  timestamp: "01h21m01s",
+                  title: "Cruel Angel’s thesis -Yoko Takahashi",
+                  keywords: "cruel angel s thesis yoko takahashi"
+                }
+            ]
         }
     ]
 }
