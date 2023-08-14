@@ -56,7 +56,7 @@ const fetchTweets = async function (endpoint, url) {
 
 export async function getSupas() {
     const lz4 = (await import('lz4'))
-    const req = await fetch("https://github.com/irystocratanon/i.miss.irys.moe-supadata/blob/master/archives.jsonl.lz4?raw=true")
+    const req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
     const buf = await req.arrayBuffer()
     return lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
         return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
