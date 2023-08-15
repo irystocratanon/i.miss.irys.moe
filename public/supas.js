@@ -118,7 +118,8 @@
 			if (!scrollPosition) {
 				scrollPosition = (scrollToLastElement && lastElement) ? (lastElement.offsetTop) : localStorage.getItem('scrollPosition[' + k + ']')
 			}
-            window.onload = function() {
+            window.pageshow = function(event) {
+                if (event.persisted) { return; }
                 palemoonWorkaround();
 				let interval
 				let breakLoops = 1
@@ -183,7 +184,8 @@
 			el[0].children[0].style.backgroundColor = 'aquamarine'
 			window.scrollTo(window.scrollX, el[0].offsetTop)
 			el[0].scrollIntoView();
-            window.onload = function() {
+            window.pageshow = function(event) {
+                if (event.persisted) { return; }
                 palemoonWorkaround();
 				let interval
 				let breakLoops = 1
