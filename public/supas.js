@@ -150,7 +150,8 @@
 		} catch (e) { console.error(e); }
     }
     invalidate_scroll();
-	addEventListener('pagehide', (event) => {
+    addEventListener('pagehide', (event) => {
+        if (event.persisted) { return; }
         try {
             const descSort = sort_is_descending();
             setCursor();
