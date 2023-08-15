@@ -150,7 +150,7 @@
 		} catch (e) { console.error(e); }
     }
     invalidate_scroll();
-	addEventListener('beforeunload', (event) => {
+	addEventListener('pagehide', (event) => {
         try {
             const descSort = sort_is_descending();
             setCursor();
