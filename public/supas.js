@@ -298,6 +298,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
             x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD', headers: headers});
             const _modified_since = x.headers.get('last-modified')
             modified_since = (_modified_since) ? _modified_since : modified_since
+            const vercel_cache_state = x.headers.get('x-vercel-cache')
+            if (vercel_cache_state && vercel_cache_state === "STALE") { modified_since = null; }
         } catch {
             delay*=2
             return setTimeout(() => { return backgroundUpdateCache(modified_since) }, delay);
