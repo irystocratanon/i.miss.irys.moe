@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com
+! tailwindcss v3.3.3 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -31,6 +31,7 @@
 3. Use a more readable tab size.
 4. Use the user's configured `sans` font-family by default.
 5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
 */
 
 html {
@@ -47,6 +48,8 @@ html {
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
+  font-variation-settings: normal;
+  /* 6 */
 }
 
 /*
@@ -187,6 +190,10 @@ optgroup,
 select,
 textarea {
   font-family: inherit;
+  /* 1 */
+  font-feature-settings: inherit;
+  /* 1 */
+  font-variation-settings: inherit;
   /* 1 */
   font-size: 100%;
   /* 1 */
@@ -339,6 +346,14 @@ menu {
 }
 
 /*
+Reset default styling for dialogs.
+*/
+
+dialog {
+  padding: 0;
+}
+
+/*
 Prevent resizing textareas horizontally by default.
 */
 
@@ -433,6 +448,9 @@ video {
   --tw-pan-y:  ;
   --tw-pinch-zoom:  ;
   --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
   --tw-ordinal:  ;
   --tw-slashed-zero:  ;
   --tw-numeric-figure:  ;
@@ -480,6 +498,9 @@ video {
   --tw-pan-y:  ;
   --tw-pinch-zoom:  ;
   --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
   --tw-ordinal:  ;
   --tw-slashed-zero:  ;
   --tw-numeric-figure:  ;
@@ -525,16 +546,20 @@ video {
   position: static;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .relative {
   position: relative;
 }
 
-.top-\[-5px\] {
-  top: -5px;
-}
-
 .left-1 {
   left: 0.25rem;
+}
+
+.top-\[-5px\] {
+  top: -5px;
 }
 
 .m-0 {
@@ -549,12 +574,16 @@ video {
   margin: 3px;
 }
 
-.mt-\[3px\] {
-  margin-top: 3px;
-}
-
 .mb-\[3px\] {
   margin-bottom: 3px;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mt-\[3px\] {
+  margin-top: 3px;
 }
 
 .inline-block {
@@ -581,24 +610,24 @@ video {
   min-height: 100%;
 }
 
-.w-\[30rem\] {
-  width: 30rem;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.w-\[1em\] {
-  width: 1em;
-}
-
 .w-\[0\.1\%\] {
   width: 0.1%;
 }
 
 .w-\[0\.5em\] {
   width: 0.5em;
+}
+
+.w-\[1em\] {
+  width: 1em;
+}
+
+.w-\[30rem\] {
+  width: 30rem;
+}
+
+.w-full {
+  width: 100%;
 }
 
 .min-w-\[129vw\] {
@@ -613,13 +642,13 @@ video {
   table-layout: auto;
 }
 
-.rotate-90 {
-  --tw-rotate: 90deg;
+.-rotate-90 {
+  --tw-rotate: -90deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.-rotate-90 {
-  --tw-rotate: -90deg;
+.rotate-90 {
+  --tw-rotate: 90deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -631,12 +660,12 @@ video {
   word-break: break-all;
 }
 
-.rounded-\[50\%\] {
-  border-radius: 50%;
-}
-
 .rounded {
   border-radius: 0.25rem;
+}
+
+.rounded-\[50\%\] {
+  border-radius: 50%;
 }
 
 .rounded-l {
@@ -653,20 +682,35 @@ video {
   border-width: 1px;
 }
 
-.border-r-0 {
-  border-right-width: 0px;
+.border-b-0 {
+  border-bottom-width: 0px;
 }
 
 .border-l-0 {
   border-left-width: 0px;
 }
 
+.border-r-0 {
+  border-right-width: 0px;
+}
+
 .border-t-0 {
   border-top-width: 0px;
 }
 
-.border-b-0 {
-  border-bottom-width: 0px;
+.border-gray-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity));
+}
+
+.border-slate-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(203 213 225 / var(--tw-border-opacity));
+}
+
+.border-slate-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
 .bg-\[\#00984f\] {
@@ -674,9 +718,8 @@ video {
   background-color: rgb(0 152 79 / var(--tw-bg-opacity));
 }
 
-.bg-white {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+.bg-\[\] {
+  background-color: ;
 }
 
 .bg-\[blue\] {
@@ -687,11 +730,6 @@ video {
 .bg-\[cyan\] {
   --tw-bg-opacity: 1;
   background-color: rgb(0 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-\[springgreen\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 255 127 / var(--tw-bg-opacity));
 }
 
 .bg-\[darkorange\] {
@@ -714,31 +752,46 @@ video {
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
 }
 
+.bg-\[springgreen\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 255 127 / var(--tw-bg-opacity));
+}
+
 .bg-gray-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
-.p-\[9px\] {
-  padding: 9px;
-}
-
-.p-\[0\%\] {
-  padding: 0%;
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 .p-0 {
   padding: 0px;
 }
 
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+.p-\[0\%\] {
+  padding: 0%;
+}
+
+.p-\[9px\] {
+  padding: 9px;
+}
+
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .text-left {
@@ -747,11 +800,6 @@ video {
 
 .text-right {
   text-align: right;
-}
-
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
 }
 
 .text-\[0\] {
@@ -763,8 +811,17 @@ video {
   line-height: 1.25rem;
 }
 
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
 .font-bold {
   font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .text-blue-600 {
@@ -779,6 +836,12 @@ video {
 
 .underline {
   text-decoration-line: underline;
+}
+
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 table {
@@ -810,6 +873,11 @@ th {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .hover\:bg-gray-100:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+  }
+
   .hover\:bg-gray-400:hover {
     --tw-bg-opacity: 1;
     background-color: rgb(156 163 175 / var(--tw-bg-opacity));
@@ -819,6 +887,14 @@ th {
 .active\:text-red-600:active {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.disabled\:cursor-not-allowed:disabled {
+  cursor: not-allowed;
+}
+
+.disabled\:opacity-50:disabled {
+  opacity: 0.5;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -852,6 +928,14 @@ th {
     min-width: 0;
   }
 
+  .sm\:max-w-\[99\%\] {
+    max-width: 99%;
+  }
+
+  .sm\:border-b {
+    border-bottom-width: 1px;
+  }
+
   .sm\:border-l {
     border-left-width: 1px;
   }
@@ -860,8 +944,8 @@ th {
     border-top-width: 1px;
   }
 
-  .sm\:border-b {
-    border-bottom-width: 1px;
+  .sm\:bg-\[initial\] {
+    background-color: initial;
   }
 
   .sm\:bg-white {
@@ -869,16 +953,12 @@ th {
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   }
 
-  .sm\:bg-\[initial\] {
-    background-color: initial;
-  }
-
   .sm\:p-0 {
     padding: 0px;
   }
 }
 
-@media (hover:hover) {
+@media(hover:hover) {
   .\[\@media\(hover\:hover\)\]\:hidden {
     display: none;
   }

@@ -297,7 +297,10 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
 
     const limit = !!window.location.search.match(/(\??|\&)limit=-?[0-9]+\&?/);
     const cursor = !!window.location.search.match(/(\??|\&)cursor=[0-9]+\&?/);
-    const sort_is_descending = !!window.location.search.match(/(\?|\&)sort=desc\&?/);
+    const is_sort_desc = () => {
+        return !!window.location.search.match(/(\?|\&)sort=desc\&?/);
+    }
+    const sort_is_descending = is_sort_desc();
 
     const backgroundUpdateCache = async function(modified_since = null) {
         let x
@@ -319,6 +322,9 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         is_4xx = x.status >= 400 && x.status < 500
         delay = (delay > 60_000 && is_5xx === false) ? Number(initialDelay) : delay
         const cache_control = x.headers.get('cache-control');
+        const resetTitle = () => {
+            document.title = `${window.location.hostname}${window.location.pathname}`;
+        }
         if (cache_control.indexOf('immutable') === -1 && !is_4xx) {
             let last_modified = x.headers.get("Last-Modified")
             last_modified = (last_modified) ? new Date(last_modified) : new Date(now)
@@ -337,9 +343,67 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                     current_items = (first > last) ? first : last
                 } catch { current_items = 0 }
                 x_supas_items = Number(x_supas_items)
+                let load_more_btn = document.querySelector(".load-more")
                 if (x_supas_items > current_items) {
                     // String.fromCharCode is used here because the minification eats the space
-                    document.title = `(${x_supas_items-current_items})${String.fromCharCode(32)}${window.location.hostname}${window.location.pathname}`
+                    document.title = `(${x_supas_items-current_items})${String.fromCharCode(32)}${window.location.hostname}${window.location.pathname}`;
+                    if (!load_more_btn) {
+                        const main_table = document.querySelector(".main-table")
+                        load_more_btn = document.createElement("button")
+                        load_more_btn.className="load-more absolute w-full sm:max-w-[99%] bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-2 border border-gray-400 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                        load_more_btn.innerHTML="Load More"
+                        load_more_btn.onclick = function(event) {
+                            load_more_btn.setAttribute("disabled", "");
+                            (async function(self, evt) {
+                                const first = Number(document.querySelector('[data-num]').dataset['num'])
+                                const last = Number(Array.from(document.querySelectorAll('[data-num]')).pop().dataset['num'])
+                                const current_items = (first > last) ? first : last
+                                let cursor = current_items;
+                                cursor = (cursor < 0) ? 0 : cursor
+                                let supaReq = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname + `?cursor=${cursor}&api=true`, {headers: {"Accept": "text/supas"}});
+                                if (!supaReq.status === 200) { return; }
+                                let text = await supaReq.text();
+                                let frag = document.createElement("template")
+                                frag.innerHTML = text
+                                const sort_is_descending = is_sort_desc();
+                                if (sort_is_descending) {
+                                    Array.from(main_table.querySelectorAll("tr[data-num]")).map(e => e.nextElementSibling).filter(e => e.style.borderBottom.indexOf('orange') > -1).forEach(el => el.style.borderBottom = 'initial')
+                                    let nodes = []
+                                    let rows = Array.from(frag.content.querySelectorAll('tr'));
+                                    for (let i = 0; i < rows.length; i++) {
+                                        let node = [rows[i], rows[i+1]]
+                                        nodes.push(node)
+                                        i+=1
+                                    }
+                                    nodes.forEach((row, i) => {
+                                        const targetNode = main_table.querySelector('.main-table tr[data-num]')
+                                        if (i === 0) {
+                                            row[0].nextElementSibling.style.borderBottom = 'solid 0.5em orange'
+                                        }
+                                        main_table.querySelector('tbody').insertBefore(row[0], targetNode)
+                                        main_table.querySelector('tbody').insertBefore(row[1], targetNode)
+                                    })
+                                } else {
+                                    Array.from(main_table.querySelectorAll("tr[data-num]")).filter(e => e.style.borderTop.indexOf('orange') > -1).forEach(el => el.style.borderTop = 'initial')
+                                    frag.content.firstChild.style.borderTop = 'solid 0.5em orange'
+                                    main_table.querySelector('tbody').appendChild(frag.content)
+                                }
+                                const firstVisible = Array.from(main_table.querySelectorAll("tr[data-num]")).filter(e => { return e.dataset["num"] > cursor; }).find(e => window.getComputedStyle(e).display === 'table-row')
+                                firstVisible.scrollIntoView();
+                                resetTitle();
+                            })(this, event)
+                        }
+                        if (is_sort_desc()) {
+                            main_table.style.marginTop = '3.5rem'
+                            document.querySelector('.main-table').parentElement.prepend(load_more_btn);
+                        } else {
+                            document.querySelector('.main-table').parentElement.appendChild(load_more_btn);
+                        }
+                    } else {
+                        load_more_btn.removeAttribute("disabled")
+                    }
+                } else {
+                    resetTitle();
                 }
             }
             let server_timing_header = x.headers.get('server-timing')

@@ -9,7 +9,6 @@ module.exports = {
   },
   plugins: [],
     blocklist: [
-        "absolute",
         "block",
         "border-collapse",
         "flex",
@@ -25,7 +24,6 @@ module.exports = {
         "outline",
         "resize",
         "ring",
-        "shadow",
         "transition",
         "transform",
         "grow",
