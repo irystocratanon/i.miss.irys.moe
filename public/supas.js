@@ -326,7 +326,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         const resetTitle = () => {
             document.title = `${window.location.hostname}${window.location.pathname}`;
         }
-        if (cache_control.indexOf('immutable') === -1 && !is_4xx) {
+        if (true && !is_4xx) {
             let last_modified = x.headers.get("Last-Modified")
             last_modified = (last_modified) ? new Date(last_modified) : new Date(now)
             if (Date.parse(last_modified) - Date.parse(nowDate) >= ((3600*48)*1000)) {
