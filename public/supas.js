@@ -56,6 +56,16 @@
         setCursor();
     }
 
+    const addEventListeners = (listeners, f) => {
+        listeners.forEach(l => {
+            window.addEventListener(l, f)
+        })
+    }
+
+    const scrollMaxY = () => {
+        return Object.hasOwn(window, 'scrollMaxY') ? window.scrollMaxY : document.documentElement.scrollHeight - document.documentElement.clientHeight
+    }
+
     const palemoonWorkaround = () => {
         // quirk for PaleMoon which doesn't seem to support content: url("data:image/png;base64,...") properly on img elements
         const applyWorkaround = String(navigator?.userAgent || '').indexOf("PaleMoon/") > -1;
@@ -104,7 +114,7 @@
                 const lastElementLength = lastElement.length
                 lastElement = lastElement[lastElementLength-1]
                 console.log('lastElement', lastElement);
-				scrollPosition = (lastElement && lastElement.length === 1 && scrollToLastElement) ? window.scrollMaxY : scrollPosition
+				scrollPosition = (lastElement && lastElement.length === 1 && scrollToLastElement) ? scrollMaxY() : scrollPosition
                 if (lastElement && lastElementLength > 1) {
                     if (lastElement.dataset['num'] != 1 && lastElement != firstElement) {
                         lastElement = (k.startsWith("supana_")) ? lastElement.previousElementSibling : lastElement
@@ -132,11 +142,11 @@
 							breakLoops+=1
 							console.log('scrollY: ', Number.parseInt(window.scrollY))
 							console.log('scrollPosition: ', Number.parseInt(scrollPosition))
-							scrollPosition = (scrollPosition > Number.parseInt(window.scrollMaxY) && window.scrollMaxY > 0) ? window.scrollMaxY : scrollPosition
+							scrollPosition = (scrollPosition > Number.parseInt(scrollMaxY()) && scrollMaxY() > 0) ? scrollMaxY() : scrollPosition
 							window.scrollTo(window.scrollX, Number.parseInt(scrollPosition))
 							console.log('scrollY: ', Number.parseInt(window.scrollY))
 							console.log('scrollPosition: ', Number.parseInt(scrollPosition))
-							if (Number.parseInt(window.scrollY) === Number.parseInt(scrollPosition) || (Number.parseInt(scrollPosition) > window.scrollMaxY && window.scrollMaxY > 0) || breakLoops >= 100) {
+							if (Number.parseInt(window.scrollY) === Number.parseInt(scrollPosition) || (Number.parseInt(scrollPosition) > scrollMaxY() && scrollMaxY() > 0) || breakLoops >= 100) {
 								if (breakLoops >= 100) {
 									console.warn('window.scrollTo is broken? Breaking interval to avoid breaking scrolling.')
 								}
@@ -150,7 +160,7 @@
 		} catch (e) { console.error(e); }
     }
     invalidate_scroll();
-    addEventListener('pagehide', (event) => {
+    addEventListeners(['pagehide', 'contextmenu'], (event) => {
         if (event.persisted) { return; }
         try {
             const descSort = sort_is_descending();
@@ -168,7 +178,7 @@
             if (firstLast > 0) {
                 localStorage.setItem('lastElement[' + k + ']', firstLast)
             }
-            localStorage.setItem('scrollToLastElement[' + k + ']', (window.scrollMaxY === Math.round(window.scrollY)) ? "1" : "0");
+            localStorage.setItem('scrollToLastElement[' + k + ']', (scrollMaxY() === Math.round(window.scrollY)) ? "1" : "0");
             if (selected_rows && selected_rows.length > 0) {
                 localStorage.setItem('selected_rows[' + k + ']', selected_rows.toString())
             }
@@ -193,7 +203,7 @@
 					interval = setInterval(function() {
 						breakLoops+=1
 						window.scrollTo(window.scrollX, el[0].offsetTop)
-						if (Number.parseInt(window.scrollY) === Number.parseInt(el[0].offsetTop) || (Number.parseInt(el[0].offsetTop) > window.scrollMaxY && window.scrollMaxY > 0) || breakLoops >= 100) {
+						if (Number.parseInt(window.scrollY) === Number.parseInt(el[0].offsetTop) || (Number.parseInt(el[0].offsetTop) > scrollMaxY() && scrollMaxY() > 0) || breakLoops >= 100) {
 							if (breakLoops >= 100) {
 								console.warn('window.scrollTo is broken? Breaking interval to avoid breaking scrolling.')
 							}
