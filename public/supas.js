@@ -368,7 +368,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                 frag.innerHTML = text
                                 const sort_is_descending = is_sort_desc();
                                 if (sort_is_descending) {
-                                    Array.from(main_table.querySelectorAll("tr[data-num]")).map(e => e.nextElementSibling).filter(e => e.style.borderBottom.indexOf('orange') > -1).forEach(el => el.style.borderBottom = 'initial')
+                                    Array.from(main_table.querySelectorAll("tr[data-num]")).map(e => e?.nextElementSibling).filter(e => e && e.style.borderBottom.indexOf('orange') > -1).forEach(el => el.style.borderBottom = 'initial')
                                     let nodes = []
                                     let rows = Array.from(frag.content.querySelectorAll('tr'));
                                     for (let i = 0; i < rows.length; i++) {
@@ -385,7 +385,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                         main_table.querySelector('tbody').insertBefore(row[1], targetNode)
                                     })
                                 } else {
-                                    Array.from(main_table.querySelectorAll("tr[data-num]")).filter(e => e.style.borderTop.indexOf('orange') > -1).forEach(el => el.style.borderTop = 'initial')
+                                    Array.from(main_table.querySelectorAll("tr[data-num]")).filter(e => e && e.style.borderTop.indexOf('orange') > -1).forEach(el => el.style.borderTop = 'initial')
                                     frag.content.firstChild.style.borderTop = 'solid 0.5em orange'
                                     main_table.querySelector('tbody').appendChild(frag.content)
                                 }
