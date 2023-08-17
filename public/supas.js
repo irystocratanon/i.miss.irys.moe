@@ -405,6 +405,9 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                     }
                 } else {
                     resetTitle();
+                    if (load_more_btn) {
+                        load_more_btn.setAttribute("disabled", "")
+                    }
                 }
             }
             let server_timing_header = x.headers.get('server-timing')
