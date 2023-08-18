@@ -418,6 +418,12 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     let html = await req.text()
                                     frag.innerHTML=html
                                     document.querySelector("table").replaceWith(frag.content.querySelector("table"))
+                                    const controlCssEl = document.querySelector('#control style')
+                                    if (controlCssEl) {
+                                        let controlCss = document.createElement('style');
+                                        controlCss.innerHTML = controlCssEl.innerHTML;
+                                        document.head.appendChild(controlCss)
+                                    }
                                     document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
                                     Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { let targetNode = document.querySelector(".replace-styles"); if (!targetNode) { const css = document.createElement("style"); css.className="replace-styles"; document.body.appendChild(css); targetNode = document.querySelector(".replace-styles") } if (i === 0) { e.className="replace-styles"; targetNode.replaceWith(e) } else { targetNode.parentNode.appendChild(e); }  })
                                 })()
