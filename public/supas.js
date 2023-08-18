@@ -407,7 +407,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     s.src = targetScript.src
                                     document.querySelector("#control").appendChild(s);
 
-                                    Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { let targetNode = document.querySelector(".replace-styles"); if (!targetNode) { const css = document.createElement("style"); css.className="replace-styles"; document.body.appendChild(css); targetNode = document.querySelector(".replace-styles") } if (i === 0) { e.className="replace-styles"; targetNode.replaceWith(e) } else { targetNode.parentNode.appendChild(e); }  })
+                                    Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=selector.slice(1); document.body.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
                                     main_table.replaceWith(frag.content.querySelector(".main-table"))
                                 } else {
                                     const sort_is_descending = is_sort_desc();
@@ -448,6 +448,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
                                     s.addEventListener("afterscriptexecute", scrollFirstVisible)
                                     document.querySelector("#control").appendChild(s);
+                                    Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=selector.slice(1); document.body.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
                                 })()
                             })(this, event)
                         }
