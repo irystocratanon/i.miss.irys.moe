@@ -458,7 +458,10 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     let s = document.createElement("script");
                                     const targetScript = Array.from(document.scripts).find(e => e.src && e.src.indexOf("/supas.pre.min") > -1)
                                     s.src = targetScript.src
-                                    document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
+                                    const replacementControl = frag.content.querySelector("#control")
+                                    if (replacementControl) {
+                                        document.querySelector("#control").replaceWith(replacementControl)
+                                    }
                                     s.addEventListener("afterscriptexecute", scrollFirstVisible)
                                     const control = document.querySelector("#control")
                                     if (control) {
