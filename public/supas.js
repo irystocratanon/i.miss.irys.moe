@@ -424,7 +424,11 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                         controlCss.innerHTML = controlCssEl.innerHTML;
                                         document.head.appendChild(controlCss)
                                     }
+                                    let s = document.createElement("script");
+                                    const targetScript = Array.from(document.scripts).find(e => e.src && e.src.indexOf("/supas.pre.min") > -1)
+                                    s.src = targetScript.src
                                     document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
+                                    document.querySelector("#control").appendChild(s);
                                     Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { let targetNode = document.querySelector(".replace-styles"); if (!targetNode) { const css = document.createElement("style"); css.className="replace-styles"; document.body.appendChild(css); targetNode = document.querySelector(".replace-styles") } if (i === 0) { e.className="replace-styles"; targetNode.replaceWith(e) } else { targetNode.parentNode.appendChild(e); }  })
                                 })()
                             })(this, event)
