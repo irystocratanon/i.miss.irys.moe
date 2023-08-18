@@ -367,9 +367,22 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                 const current_items = (first > last) ? first : last
                                 let cursor = current_items;
                                 cursor = (cursor < 0) ? 0 : cursor
-                                let supaReq = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname + `?cursor=${cursor}&api=true`, {headers: {"Accept": "text/supas"}});
-                                if (!supaReq.status === 200) { return; }
-                                let text = await supaReq.text();
+                                let text = ''
+                                while (true) {
+                                    let supaReq = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname + `?cursor=${cursor}&api=true`, {headers: {"Accept": "text/supas"}});
+                                    if (!supaReq.status === 200) { break; }
+                                    const body = await supaReq.text();
+                                    text += body
+                                    const frag = document.createElement("template")
+                                    frag.innerHTML = body
+                                    const nodes = frag.content.querySelectorAll("tr[data-num]")
+                                    if (nodes.length < 1) { break; }
+                                    console.dir(nodes, {depth: null})
+                                    const first = nodes[0].dataset.num
+                                    const last = nodes[nodes.length-1].dataset.num
+                                    const firstLast = (first > last) ? first : last
+                                    cursor = +firstLast+1
+                                }
                                 let frag = document.createElement("template")
                                 frag.innerHTML = text
                                 Array.from(frag.content.querySelectorAll('td[title]')).filter(e => e && e.parentNode && e.parentNode.dataset.hasOwnProperty("num")).forEach(e => {
