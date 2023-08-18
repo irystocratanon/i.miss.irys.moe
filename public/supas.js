@@ -372,6 +372,13 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                 let text = await supaReq.text();
                                 let frag = document.createElement("template")
                                 frag.innerHTML = text
+                                Array.from(frag.content.querySelectorAll('td[title]')).filter(e => e && e.parentNode && e.parentNode.dataset.hasOwnProperty("num")).forEach(e => {
+                                    let span = e.querySelector('span');
+                                    let d = new Date(e.title);
+                                    let year=((new Date()).getFullYear()!=d.getFullYear())?'numeric':undefined;
+                                    let timestamp = (d=="Invalid Date")?'':`${d.toLocaleDateString([...navigator.languages, 'en'], {day: 'numeric', month: 'numeric', year})}<br>${d.toLocaleTimeString()}`;
+                                    span.innerHTML = timestamp;
+                                })
                                 if (first === 0 && last === 0) {
                                     document.querySelector("table").replaceWith(frag.content.querySelector("table"))
                                     document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
