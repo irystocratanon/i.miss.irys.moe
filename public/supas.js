@@ -412,23 +412,32 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                 } else {
                                     const sort_is_descending = is_sort_desc();
                                     if (sort_is_descending) {
+                                        const k = window.location.pathname.split('/').filter(e => { return e.length > 0}).pop().split('.html').filter(e => { return e.length > 0}).pop();
                                         ["borderTop", "borderBottom"].forEach(b => {
                                             Array.from(main_table.querySelectorAll("tr[data-num]")).map(e => e?.nextElementSibling).filter(e => e && e.style[b].indexOf('orange') > -1).forEach(el => el.style[b] = 'initial')
                                         })
                                         let nodes = []
                                         let rows = Array.from(frag.content.querySelectorAll('tr'));
                                         for (let i = 0; i < rows.length; i++) {
+                                            if (k.startsWith("supana_")) {
+                                                nodes.push([rows[i]])
+                                                continue
+                                            }
                                             let node = [rows[i], rows[i+1]]
                                             nodes.push(node)
                                             i+=1
                                         }
                                         nodes.forEach((row, i) => {
+                                            const is_supana = k.startsWith("supana_")
                                             const targetNode = main_table.querySelector('.main-table tr[data-num]')
                                             if (i === 0) {
-                                                row[0].nextElementSibling.style.borderBottom = 'solid 0.5em orange'
+                                                const highlight = (is_supana) ? row[0] : row[0].nextElementSibling
+                                                highlight.style.borderBottom = 'solid 0.5em orange'
                                             }
                                             main_table.querySelector('tbody').insertBefore(row[0], targetNode)
-                                            main_table.querySelector('tbody').insertBefore(row[1], targetNode)
+                                            if (!is_supana) {
+                                                main_table.querySelector('tbody').insertBefore(row[1], targetNode)
+                                            }
                                         })
                                     } else {
                                         ["borderTop", "borderBottom"].forEach(b => {
@@ -451,7 +460,10 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     s.src = targetScript.src
                                     document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
                                     s.addEventListener("afterscriptexecute", scrollFirstVisible)
-                                    document.querySelector("#control").appendChild(s);
+                                    const control = document.querySelector("#control")
+                                    if (control) {
+                                        control.appendChild(s);
+                                    }
                                     Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=selector.slice(1); document.body.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
                                     scrollFirstVisible();
                                 })()
