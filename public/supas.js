@@ -449,6 +449,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     s.addEventListener("afterscriptexecute", scrollFirstVisible)
                                     document.querySelector("#control").appendChild(s);
                                     Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=selector.slice(1); document.body.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
+                                    scrollFirstVisible();
                                 })()
                             })(this, event)
                         }
