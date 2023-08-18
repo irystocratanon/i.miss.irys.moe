@@ -373,7 +373,10 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                 let frag = document.createElement("template")
                                 frag.innerHTML = text
                                 if (first === 0 && last === 0) {
-                                    main_table.querySelector('tbody').appendChild(frag.content)
+                                    document.querySelector("table").replaceWith(frag.content.querySelector("table"))
+                                    document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
+                                    Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { let targetNode = document.querySelector(".replace-styles"); if (!targetNode) { const css = document.createElement("style"); css.className="replace-styles"; document.body.appendChild(css); targetNode = document.querySelector(".replace-styles") } if (i === 0) { e.className="replace-styles"; targetNode.replaceWith(e) } else { targetNode.parentNode.appendChild(e); }  })
+                                    main_table.replaceWith(frag.content.querySelector(".main-table"))
                                 } else {
                                     const sort_is_descending = is_sort_desc();
                                     if (sort_is_descending) {
