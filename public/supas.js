@@ -379,6 +379,13 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     let timestamp = (d=="Invalid Date")?'':`${d.toLocaleDateString([...navigator.languages, 'en'], {day: 'numeric', month: 'numeric', year})}<br>${d.toLocaleTimeString()}`;
                                     span.innerHTML = timestamp;
                                 })
+                                const getFirstVisible = () => { return Array.from(main_table.querySelectorAll("tr[data-num]")).filter(e => { return e.dataset["num"] > cursor; }).find(e => window.getComputedStyle(e).display === 'table-row') }
+                                const scrollFirstVisible = () => {
+                                    const visible = getFirstVisible()
+                                    if (visible) {
+                                        visible.scrollIntoView()
+                                    }
+                                }
                                 if (first === 0 && last === 0) {
                                     document.querySelector("table").replaceWith(frag.content.querySelector("table"))
                                     let s = document.createElement("script");
@@ -414,8 +421,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                         main_table.querySelector('tbody').appendChild(frag.content)
                                     }
                                 }
-                                const firstVisible = Array.from(main_table.querySelectorAll("tr[data-num]")).filter(e => { return e.dataset["num"] > cursor; }).find(e => window.getComputedStyle(e).display === 'table-row')
-                                firstVisible.scrollIntoView();
+                                scrollFirstVisible();
                                 resetTitle();
                                 (async function() {
                                     let req = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname + "?cursor=1&limit=1")
@@ -427,6 +433,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     const targetScript = Array.from(document.scripts).find(e => e.src && e.src.indexOf("/supas.pre.min") > -1)
                                     s.src = targetScript.src
                                     document.querySelector("#control").replaceWith(frag.content.querySelector("#control"))
+                                    s.addEventListener("afterscriptexecute", scrollFirstVisible)
                                     document.querySelector("#control").appendChild(s);
                                 })()
                             })(this, event)
