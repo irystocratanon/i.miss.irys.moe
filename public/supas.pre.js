@@ -48,8 +48,9 @@ window.__i_miss_irys_supas = (function() {
 			localStorage.removeItem('buttons[' + k + ']')
 		} catch {}
 	}
-	checkboxState = (!checkboxState) ? {} : checkboxState
-    document.write('<style>tr { display: table-row }');
+    checkboxState = (!checkboxState) ? {} : checkboxState
+    let styleEl = document.createElement("style");
+    styleEl.innerHTML += 'tr { display: table-row }'
     const toggleControls = (toggle = true) => {
         Array.from(document.querySelectorAll("#control input[type=checkbox]")).forEach(el => { el.disabled = toggle; })
     };
@@ -106,7 +107,7 @@ window.__i_miss_irys_supas = (function() {
 			const cssClassName = (el.name || el.className.split('-button')[0]);
 			const display = (el.checked);
 			if (cssClassName == 'supacha') { return; }
-			document.write('.' + ((cssClassName.startsWith('#')) ? '\\' + cssClassName : cssClassName) + '{display: ' + (el.checked ? 'table-row' : 'none') + '}')
+			styleEl.innerHTML += ('.' + ((cssClassName.startsWith('#')) ? '\\' + cssClassName : cssClassName) + '{display: ' + (el.checked ? 'table-row' : 'none') + '}')
 		})
-	document.write('</style>');
+	document.querySelector("#control").appendChild(styleEl)
 })()
