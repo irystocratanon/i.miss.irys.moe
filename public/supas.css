@@ -928,10 +928,6 @@ th {
     min-width: 0;
   }
 
-  .sm\:max-w-\[99\%\] {
-    max-width: 99%;
-  }
-
   .sm\:border-b {
     border-bottom-width: 1px;
   }
