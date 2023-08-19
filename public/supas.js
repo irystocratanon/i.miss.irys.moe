@@ -307,9 +307,16 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
         try {
             let headers = {}
             if (modified_since) {
-                //headers["If-Modified-Since"] = modified_since
+                let debug_cache = null
+                try {
+                    let debug_cache = localStorage.getItem('debug_cache')
+                } catch {}
+                if (debug_cache === null) {
+                    headers["If-Modified-Since"] = modified_since
+                } else {
+                    headers["Pragma"]="no-cache"
+                }
             }
-            headers["Pragma"]="no-cache"
             x = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname, {method: 'HEAD', headers: headers});
             const _modified_since = x.headers.get('last-modified')
             modified_since = (_modified_since) ? _modified_since : modified_since
