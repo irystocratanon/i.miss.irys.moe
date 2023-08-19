@@ -360,7 +360,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                     if (!load_more_btn) {
                         const main_table = document.querySelector(".main-table")
                         load_more_btn = document.createElement("button")
-                        load_more_btn.className="load-more absolute w-full sm:max-w-[99%] bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-2 border border-gray-400 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                        load_more_btn.className="load-more sticky w-full sm:max-w-[99%] bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-2 border border-gray-400 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed"
                         load_more_btn.innerHTML="Load More"
                         load_more_btn.onclick = function(event) {
                             load_more_btn.setAttribute("disabled", "");
