@@ -382,6 +382,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     const firstLast = (first > last) ? first : last
                                     cursor = +firstLast+1
                                 }
+                                if (text.length === 0) { return; }
                                 let frag = document.createElement("template")
                                 frag.innerHTML = text
                                 Array.from(frag.content.querySelectorAll('td[title]')).filter(e => e && e.parentNode && e.parentNode.dataset.hasOwnProperty("num")).forEach(e => {
