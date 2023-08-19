@@ -311,7 +311,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                 try {
                     let debug_cache = localStorage.getItem('debug_cache')
                 } catch {}
-                if (debug_cache === null) {
+                if (!debug_cache) {
                     headers["If-Modified-Since"] = modified_since
                 } else {
                     headers["Pragma"]="no-cache"
