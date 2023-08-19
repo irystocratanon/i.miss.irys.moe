@@ -74,6 +74,8 @@
         }
     };
 
+    addEventListener("palemoon_quirk", palemoonWorkaround)
+
     const systemEmojis = () => {
         Array.from(document.querySelectorAll("img")).filter(e => { return [...e.alt].length === 1 }).forEach(img => { img.outerHTML = `<span class="${img.className}" style="font-size: 26px;font-family: Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;">${img.alt}</span>`; })
     };
@@ -476,6 +478,8 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     }
                                     Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; e.className=selector.slice(1); let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=e.className; document.head.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
                                     scrollFirstVisible();
+                                    const quirk_evt = new Event("palemoon_quirk");
+                                    window.dispatchEvent(quirk_evt);
                                 })()
                             })(this, event)
                         }
