@@ -377,7 +377,6 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     frag.innerHTML = body
                                     const nodes = frag.content.querySelectorAll("tr[data-num]")
                                     if (nodes.length < 1) { break; }
-                                    console.dir(nodes, {depth: null})
                                     const first = nodes[0].dataset.num
                                     const last = nodes[nodes.length-1].dataset.num
                                     const firstLast = (first > last) ? first : last
@@ -467,7 +466,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     if (control) {
                                         control.appendChild(s);
                                     }
-                                    Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; e.className=selector.slice(1); let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=e.className; document.body.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
+                                    Array.from(frag.content.querySelectorAll("style")).forEach((e,i) => { const selector = `.replace-syles${i}`; e.className=selector.slice(1); let targetNode = document.querySelector(selector); if (!targetNode) { const css = document.createElement("style"); css.className=e.className; document.head.appendChild(css); targetNode = document.querySelector(selector) } targetNode.replaceWith(e); })
                                     scrollFirstVisible();
                                 })()
                             })(this, event)

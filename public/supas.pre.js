@@ -108,6 +108,14 @@ window.__i_miss_irys_supas = (function() {
 			const display = (el.checked);
 			if (cssClassName == 'supacha') { return; }
 			styleEl.innerHTML += ('.' + ((cssClassName.startsWith('#')) ? '\\' + cssClassName : cssClassName) + '{display: ' + (el.checked ? 'table-row' : 'none') + '}')
-		})
-	document.querySelector("#control").appendChild(styleEl)
+        })
+    styleEl.className = "control-styles"
+    let targetNode = document.querySelector(`.${styleEl.className}`);
+    if (!targetNode) {
+        let css = document.createElement("style")
+        css.className = styleEl.className
+        document.head.appendChild(css)
+        targetNode = document.querySelector(`.${css.className}`)
+    }
+	targetNode.replaceWith(styleEl)
 })()
