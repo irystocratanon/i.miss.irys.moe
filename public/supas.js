@@ -381,6 +381,7 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     let supaReq = await fetch(window.location.protocol + '//' + window.location.hostname + ((window.location.port != 80 && window.location.port != 443) ? (':' + window.location.port) : '') + window.location.pathname + `?cursor=${cursor}&api=true`, {headers: {"Accept": "text/supas"}});
                                     if (!supaReq.status === 200) { break; }
                                     const body = await supaReq.text();
+                                    if (body.length === 0) { break; }
                                     text += body
                                     const frag = document.createElement("template")
                                     frag.innerHTML = body
