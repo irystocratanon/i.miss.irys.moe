@@ -384,10 +384,10 @@ if (window.performance && performance.getEntriesByType) { // avoid error in Safa
                                     frag.innerHTML = body
                                     const nodes = frag.content.querySelectorAll("tr[data-num]")
                                     if (nodes.length < 1) { break; }
-                                    const first = nodes[0].dataset.num
-                                    const last = nodes[nodes.length-1].dataset.num
+                                    const first = +nodes[0].dataset.num
+                                    const last = +nodes[nodes.length-1].dataset.num
                                     const firstLast = (first > last) ? first : last
-                                    cursor = +firstLast+1
+                                    cursor = firstLast+1
                                 }
                                 if (text.length === 0) { return; }
                                 let frag = document.createElement("template")
