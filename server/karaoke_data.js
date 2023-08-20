@@ -2645,6 +2645,63 @@ let data = {
                   keywords: "cruel angel s thesis yoko takahashi"
                 }
             ]
+        },
+        {
+            videoId: 'dR9q_J-8mfM',
+            title: '【3D SHOWCASE】HOPE IS ON THE MOVE! #3DRyS',
+            date: new Date("20 Aug, 2023"),
+            songs: [
+                {
+                  timestamp: "02m49s",
+                  title: "Caesura of Despair",
+                  keywords: "caesura of despair"
+                },
+                {
+                  timestamp: "08m52s",
+                  title: "Shangri-La",
+                  keywords: "shangri la"
+                },
+                {
+                  timestamp: "13m33s",
+                  title: "Renai Circulation",
+                  keywords: "renai circulation"
+                },
+                {
+                  timestamp: "31m34s",
+                  title: "AHOY (+MARINE)",
+                  keywords: "ahoy marine"
+                },
+                {
+                  timestamp: "36m56s",
+                  title: "Stand By You",
+                  keywords: "stand by you"
+                },
+                {
+                  timestamp: "44m33s",
+                  title: "FACT (+TOWA!)",
+                  keywords: "fact towa"
+                },
+                {
+                  timestamp: "50m48s",
+                  title: "ばかみたい / B@ka Mitai",
+                  keywords: "b ka mitai"
+                },
+                {
+                  timestamp: "56m55s",
+                  title: "CR@ZY FOR LOVE",
+                  keywords: "cr zy for love"
+                },
+                {
+                  timestamp: "01h05m12s",
+                  title: "BERSERKER",
+                  keywords: "berserker"
+                },
+                {
+                  timestamp: "01h09m11s",
+                  title: " One last Kiss",
+                  keywords: "one last kiss"
+                }
+            ]
         }
     ]
 }
