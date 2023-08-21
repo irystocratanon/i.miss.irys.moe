@@ -95,13 +95,13 @@ export default async function getResult() {
                 const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
                     return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
                 }).filter(j => j.channelId === process.env.WATCH_CHANNEL_ID).filter(j => j.title.indexOf('FREE CHAT') === -1)
-                let manual_poller = {
+                const manual_poller = {
 	                "live": 1,
 	                "title": archives[0].title,
 	                "videoLink": `https://www.youtube.com/watch?v=${archives[0].videoId}`,
 	                "end_actual": archives[0].startTime
                 }
-                return {error: null, result: {live: 1, videoLink: manual_poller.videoLink, title: ""}, pastStream: manual_poller}
+                return {error: null, result, pastStream: manual_poller}
             } catch {}
 
             return {error, result, pastStream}

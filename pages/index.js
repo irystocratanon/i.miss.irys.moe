@@ -30,8 +30,6 @@ export async function getServerSideProps({ req, res, query }) {
 
     const {error,result,pastStream} = await getResult()
 
-    console.log('error: ', error)
-
     let has_supana = false;
     try {
         let supana_req = await fetch(`${process.env.PUBLIC_HOST}/supana`, {method: 'HEAD'});
