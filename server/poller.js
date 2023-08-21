@@ -88,6 +88,22 @@ export default async function getResult() {
             }
         } catch (e) { pastStream = null }
         if (pastStream === null && collabs === null) {
+            try {
+                const lz4 = (await import('lz4'))
+                const req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
+                const buf = await req.arrayBuffer()
+                const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
+                    return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
+                }).filter(j => j.channelId === process.env.WATCH_CHANNEL_ID).filter(j => j.title.indexOf('FREE CHAT') === -1)
+                let manual_poller = {
+	                "live": 1,
+	                "title": archives[0].title,
+	                "videoLink": `https://www.youtube.com/watch?v=${archives[0].videoId}`,
+	                "end_actual": archives[0].startTime
+                }
+                return {error: null, result: {live: 1, videoLink: manual_poller.videoLink, title: ""}, pastStream: manual_poller}
+            } catch {}
+
             return {error, result, pastStream}
         }
         if (pastStream?.status !== 'live' && pastStream?.status !== 'just-ended') {

@@ -30,6 +30,8 @@ export async function getServerSideProps({ req, res, query }) {
 
     const {error,result,pastStream} = await getResult()
 
+    console.log('error: ', error)
+
     let has_supana = false;
     try {
         let supana_req = await fetch(`${process.env.PUBLIC_HOST}/supana`, {method: 'HEAD'});
@@ -117,7 +119,7 @@ function StreamInfo(props) {
                 break
             case STREAM_STATUS.OFFLINE:
                 if (props?.info?.currentTime > props?.info?.startTime) {
-                    text = "Previous Stream: "
+                    text = (props?.info?.title.length > 0) ? "Previous Stream: " : ""
                     break
                 }
             default:
