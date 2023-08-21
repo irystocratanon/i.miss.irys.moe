@@ -68,7 +68,7 @@ export async function fetchPaststreamPage(channelID) {
     try {
         console.debug(`[fetchPaststreamPage fetch (begin)]`);
         t0 = performance.now()
-        abortTimeout = setTimeout(() => controller.abort(), 2500)
+        abortTimeout = setTimeout(() => controller.abort(), 1250)
         const res = await fetch(createPollRoute(channelID), getDefaultHoloDexRequestHeaders({signal: controller.signal}))
         clearTimeout(abortTimeout)
         t1 = performance.now()
