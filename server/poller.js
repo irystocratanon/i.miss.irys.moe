@@ -57,7 +57,7 @@ export default async function getResult() {
     let apiVal
 	let pastStream
     let collabs
-    let archivedStreams
+    let archivedStreams = null
     if (process.env.USE_DUMMY_DATA === "true") {
         apiVal = await pollLivestreamStatusDummy(process.env.WATCH_CHANNEL_ID, query.mock)
     } else {
@@ -71,7 +71,7 @@ export default async function getResult() {
 
     if (result.live !== STREAM_STATUS.LIVE) {
         try {
-            archivedStreams = await getArchivedStreams();
+            //archivedStreams = await getArchivedStreams();
         } catch (e) { archivedStreams = null; }
         try {
             collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)

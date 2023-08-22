@@ -47,7 +47,15 @@ export function extractCollabstreamInfo(fromPageContent) {
         return e.status === 'live'
     })
     if (liveCollabs.length === 0) {
-        return collabs[0]
+        let possible_collabs = []
+        const start = collabs.findIndex(e => e.status == 'upcoming')
+        let end = collabs.findIndex(e => e.status != 'upcoming')
+        end = (end < 0) ? collabs.length : end
+        for (let i = start; i < end; i++) {
+            possible_collabs.push(collabs[i])
+        }
+        possible_collabs = possible_collabs.sort((a,b) => { return new Date(a.start_scheduled) > new Date(b.start_scheduled) ? 1 : -1 });
+        return possible_collabs[0];
     } else {
         return liveCollabs[Math.floor(Math.random()*liveCollabs.length)]
     }
