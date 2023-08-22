@@ -1,4 +1,5 @@
 import { STREAM_STATUS, pollLivestreamStatus, pollLivestreamStatusDummy } from "../server/livestream_poller"
+import { getArchivedStreams } from "../server/archived_poller"
 import { getPastStream } from "../server/paststream_poller"
 import { LIVESTREAM_CACHE, PASTSTREAM_CACHE } from "../server/constants"
 import { pollCollabstreamStatus } from "../server/collabs_poller"
@@ -55,7 +56,8 @@ export default async function getResult() {
 
     let apiVal
 	let pastStream
-	let collabs
+    let collabs
+    let archivedStreams
     if (process.env.USE_DUMMY_DATA === "true") {
         apiVal = await pollLivestreamStatusDummy(process.env.WATCH_CHANNEL_ID, query.mock)
     } else {
@@ -68,6 +70,9 @@ export default async function getResult() {
     let { result, error } = apiVal
 
     if (result.live !== STREAM_STATUS.LIVE) {
+        try {
+            archivedStreams = await getArchivedStreams();
+        } catch (e) { archivedStreams = null; }
         try {
             collabs = await pollCollabstreamStatus(process.env.WATCH_CHANNEL_ID)
             t1 = performance.now()
@@ -110,10 +115,15 @@ export default async function getResult() {
             switch (collabs.status) {
                 case 'upcoming':
                 case 'live':
-                    const collabStart = parseISO(collabs.start_scheduled)
-		    		const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart || (result.streamStartTime instanceof Date && collabStart instanceof Date && result.streamStartTime.getTime() === collabStart.getTime()))) : false
-                    if (streamEarlierThanCollab) {
+                    let collabStart = parseISO(collabs.start_scheduled)
+                    const streamEarlierThanCollab = (result.streamStartTime !== null) ? ((result.streamStartTime < collabStart || (result.streamStartTime instanceof Date && collabStart instanceof Date && result.streamStartTime.getTime() === collabStart.getTime()))) : false
+                    const streamEarlierThanArchive = (result.streamStartTime !== null && archivedStreams && archivedStreams.length > 0 && archivedStreams[0]?.start_scheduled) ? ((result.streamStartTime < archivedStreams[0].start_scheduled)) : true
+                    if (streamEarlierThanCollab && streamEarlierThanArchive) {
                         break
+                    }
+                    collabs = (archivedStreams && archivedStreams.length > 0 && archivedStreams[0].start_scheduled < collabStart) ? archivedStreams[0] : collabs
+                    if (archivedStreams && archivedStreams.length > 0 && archivedStreams[0] == collabs) {
+                        collabStart = parseISO(collabs.startTime)
                     }
                     let collabStatus = (collabs.status === 'upcoming') ? STREAM_STATUS.INDETERMINATE : STREAM_STATUS.LIVE
                     const timeLeft = intervalToDuration({start: Date.now(), end: collabStart})
@@ -121,9 +131,9 @@ export default async function getResult() {
                     result = {
                         live: collabStatus,
                         title: collabs.title,
-                        videoLink: `https://www.youtube.com/watch?v=${collabs.id}`,
+                        videoLink: `https://www.youtube.com/watch?v=${collabs?.id || collabs?.videoId}`,
                         id: collabs.id,
-                        channel: collabs.channel.name || "IRyS Ch. hololive-EN",
+                        channel: collabs?.channel?.name || collabs?.channelName || "IRyS Ch. hololive-EN",
                         streamStartTime: collabStart
                     }
                     if (collabs.status === 'live') {
