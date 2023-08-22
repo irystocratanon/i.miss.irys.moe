@@ -38,15 +38,16 @@ export async function getServerSideProps({ query, res }) {
             channels[channelId] = channelName
         }
         if (query.channel) {
-            return query.channel.toLowerCase() === 'all' || e.channelId === query.channel
+            return query.channel.toLowerCase() === 'all' || e.channelId === query.channel ||  (query.channel.toLowerCase() !== 'all' && e?.mentions && e.mentions.findIndex(j => j === query.channel) > -1)
         } else {
-            return e.channelId === 'UC8rcEBzJSleTkf_-agPM20g'
+            return e.channelId === process.env.WATCH_CHANNEL_ID || (e?.mentions && e.mentions.findIndex(j => j === process.env.WATCH_CHANNEL_ID) > -1)
         }
     }).filter(e => {
         return !query.s || (queryIsRegex && r.test(query.s)) || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
     }).slice(0, 1024*4.5)
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     return {props: {
+        WATCH_CHANNEL_ID: process.env.WATCH_CHANNEL_ID,
         archives,
         channels,
         query: {
@@ -65,7 +66,7 @@ export default class ArchivesApp extends React.Component {
     this.archives = props.archives
     this.channels = props.channels
 
-    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', selectedChannel: props.query.channel || 'UC8rcEBzJSleTkf_-agPM20g', searchResults: [] };
+    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
     
     this.lastSearchText = 'andkjanskdjnaskjdnakjs'
     this.handleChange = this.handleChange.bind(this);
@@ -76,13 +77,13 @@ export default class ArchivesApp extends React.Component {
   }
 
   updateLocation(newState = {}, reload = true) {
-      let { searchText, selectedMonth, selectedChannel } = this.state
+      let { searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID } = this.state
       searchText = (newState.hasOwnProperty('searchText')) ? newState['searchText'] : searchText
       selectedMonth = (newState.hasOwnProperty('selectedMonth')) ? newState['selectedMonth'] : selectedMonth
       selectedChannel = (newState.hasOwnProperty('selectedChannel')) ? newState['selectedChannel'] : selectedChannel
       let search = ''
       let token = "?"
-      if (location.pathname === "/archives" && (window.location.search.indexOf("channel=") > -1 || selectedChannel != 'UC8rcEBzJSleTkf_-agPM20g')) {
+      if (location.pathname === "/archives" && (window.location.search.indexOf("channel=") > -1 || selectedChannel != WATCH_CHANNEL_ID)) {
           search += token + "channel=" + selectedChannel
       }
       if (selectedMonth) {
@@ -176,7 +177,7 @@ export default class ArchivesApp extends React.Component {
         return (currentDate < d) ? d.toLocaleString() : `${formatDuration(duration, formatDurationOpts)} ago`
       }
       let archivedList = archives.filter(k => {
-          return (selectedChannel != "all") ? k.channelId === selectedChannel : true
+          return (selectedChannel != "all") ? (k.channelId === selectedChannel || k?.mentions && k.mentions.findIndex(j => j === selectedChannel) > -1) : true
       }).filter(k => {
           return (isFutureMonth || isFutureYear) ? true : !k.hidden
       }).filter(k => {
