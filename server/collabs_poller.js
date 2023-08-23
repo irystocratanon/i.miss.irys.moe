@@ -48,7 +48,8 @@ export function extractCollabstreamInfo(fromPageContent) {
     })
     if (liveCollabs.length === 0) {
         let possible_collabs = []
-        const start = collabs.findIndex(e => e.status == 'upcoming')
+        let start = collabs.findIndex(e => e.status == 'upcoming')
+        start = (start < 0) ? 0 : start
         let end = collabs.findIndex(e => e.status != 'upcoming')
         end = (end < 0) ? collabs.length : end
         for (let i = start; i < end; i++) {
