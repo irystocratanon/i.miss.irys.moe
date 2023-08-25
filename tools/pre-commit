@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# git pre-commit hook
+
+set -eo pipefail
+
+cd "$(dirname ${BASH_SOURCE[0]})" || exit 1
+
+cd ../../tools || exit 1
+
+printf '{"type": "module"}\n' > ../server/package.json
+./verify-karaoke-data.mjs
+
+ret="$?"
+
+if [ -e ../server/package.json ]
+then
+	unlink ../server/package.json || :
+	exit "$ret"
+fi
