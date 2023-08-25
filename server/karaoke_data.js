@@ -2702,6 +2702,83 @@ let data = {
                   keywords: "one last kiss"
                 }
             ]
+        },
+        {
+            videoId: 'hDcFE3uoevE',
+            title: '【Guerrilla Karaoke】Midnight singing!! 突然の夜中歌枠！！',
+            date: new Date("24 Aug, 2023"),
+            songs: [
+                {
+                  timestamp: "08m45s",
+                  title: "Orion",
+                  keywords: "orion"
+                },
+                {
+                  timestamp: "16m30s",
+                  title: "First Love",
+                  keywords: "first love"
+                },
+                {
+                  timestamp: "25m25s",
+                  title: "Gira Gira",
+                  keywords: "gira gira"
+                },
+                {
+                  timestamp: "33m59s",
+                  title: "Memeshikute",
+                  keywords: "memeshikute"
+                },
+                {
+                  timestamp: "42m35s",
+                  title: "Seishun Complex",
+                  keywords: "seishun complex"
+                },
+                {
+                  timestamp: "48m20s",
+                  title: "Takarajima",
+                  keywords: "takarajima"
+                },
+                {
+                  timestamp: "54m55s",
+                  title: "Hitorino Yoru",
+                  keywords: "hitorino yoru"
+                },
+                {
+                  timestamp: "01h02m01s",
+                  title: "Yuki No Hana",
+                  keywords: "yuki no hana"
+                },
+                {
+                  timestamp: "01h13m01s",
+                  title: "Marygold",
+                  keywords: "marygold"
+                },
+                {
+                  timestamp: "01h20m23s",
+                  title: "La la la Love Song",
+                  keywords: "la la la love song"
+                },
+                {
+                  timestamp: "01h30m00s",
+                  title: "FIRE GROUND",
+                  keywords: "fire ground"
+                },
+                {
+                  timestamp: "01h36m28s",
+                  title: "Haiiro To ao",
+                  keywords: "haiiro to ao"
+                },
+                {
+                  timestamp: "01h43m20s",
+                  title: "Neoki Yashi no Ki",
+                  keywords: "neoki yashi no ki"
+                },
+                {
+                  timestamp: "01h51m06s",
+                  title: "Sincerely",
+                  keywords: "sincerely"
+                }
+            ]
         }
     ]
 }
