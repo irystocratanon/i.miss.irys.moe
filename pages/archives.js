@@ -2,7 +2,7 @@ import Head from "next/head"
 import Link from "next/link"
 import React from 'react'
 import styles from '../styles/Karaoke.module.css'
-import {intervalToDuration,formatDuration} from "date-fns"
+import {closestIndexTo,intervalToDuration,formatDuration} from "date-fns"
 
 function search(kws, s) {
     if (!s.indexOf("【") >= 0) {
@@ -17,6 +17,7 @@ function search(kws, s) {
 }
   
 export async function getServerSideProps({ query, res }) {
+    const now = Date.now()
     const lz4 = (await import('lz4'))
     //const req = await fetch("http://127.0.0.1:8000/archives.jsonl.lz4")
     const req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
@@ -27,7 +28,6 @@ export async function getServerSideProps({ query, res }) {
     const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
         return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
     }).map(e => {
-        const now = Date.now()
         const tDate = new Date(e.startTime)
         const hidden = Date.parse(tDate) > now+(((1000*3600)*24)*7);
         e.hidden = hidden
@@ -46,7 +46,9 @@ export async function getServerSideProps({ query, res }) {
         return !query.s || (queryIsRegex && r.test(query.s)) || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
     }).slice(0, 1024*4.5)
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
+    
     return {props: {
+        now,
         WATCH_CHANNEL_ID: process.env.WATCH_CHANNEL_ID,
         archives,
         channels,
@@ -66,7 +68,7 @@ export default class ArchivesApp extends React.Component {
     this.archives = props.archives
     this.channels = props.channels
 
-    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
+    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', now: props.now, selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
     
     this.lastSearchText = 'andkjanskdjnaskjdnakjs'
     this.handleChange = this.handleChange.bind(this);
@@ -77,7 +79,7 @@ export default class ArchivesApp extends React.Component {
   }
 
   updateLocation(newState = {}, reload = true) {
-      let { searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID } = this.state
+      let { now, searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID } = this.state
       searchText = (newState.hasOwnProperty('searchText')) ? newState['searchText'] : searchText
       selectedMonth = (newState.hasOwnProperty('selectedMonth')) ? newState['selectedMonth'] : selectedMonth
       selectedChannel = (newState.hasOwnProperty('selectedChannel')) ? newState['selectedChannel'] : selectedChannel
@@ -130,8 +132,26 @@ export default class ArchivesApp extends React.Component {
     event.preventDefault();
   }
 
+    componentDidMount() {
+        const node = document.querySelector("table[data-closest=true]");
+        if (!node) { return; }
+        function isElementInViewport (el) {
+            var rect = el.getBoundingClientRect();
+
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+            );
+        }
+        if (!isElementInViewport(node)) {
+            node.scrollIntoView();
+        }
+  }
+
   render() {
-    let { searchResults, selectedChannel, selectedMonth, searchText } = this.state;
+    let { now, searchResults, selectedChannel, selectedMonth, searchText } = this.state;
     let archives = this.archives
     const channels = this.channels
 
@@ -176,7 +196,7 @@ export default class ArchivesApp extends React.Component {
         if (duration.minutes === 0 || !duration.hasOwnProperty('minutes')) { formatDurationOpts['format'].push('seconds') }
         return (currentDate < d) ? d.toLocaleString() : `${formatDuration(duration, formatDurationOpts)} ago`
       }
-      let archivedList = archives.filter(k => {
+      const archivedList = archives.filter(k => {
           return (selectedChannel != "all") ? (k.channelId === selectedChannel || k?.mentions && k.mentions.findIndex(j => j === selectedChannel) > -1) : true
       }).filter(k => {
           return (isFutureMonth || isFutureYear) ? true : !k.hidden
@@ -184,17 +204,28 @@ export default class ArchivesApp extends React.Component {
           if (selectedMonth.length < 1) { return true; }
           const d = new Date(k.startTime)
           return selectedMonthMonth === d.getUTCMonth()+1 && selectedMonthYear === d.getFullYear()
-      }).map(k => {
+      });
+
+      let closestIndex = closestIndexTo(new Date(now), archivedList.map(e => new Date(e.startTime)))
+      closestIndex = (closestIndex > 0) ? closestIndex-1 : closestIndex
+
+      const archivedListNodes = archivedList.map((k, i) => {
           const duration = formatDurationText(k.startTime);
+          const closest = (i === closestIndex)
+          const img = {
+              src: `https://i3.ytimg.com/vi/${k.videoId}/hqdefault.jpg`,
+              loading: (closest || i === closestIndex+1) ? "eager" : "lazy",
+              decoding: (closest || i === closestIndex+1) ? "sync" : "async"
+          }
           return (
-        <table width="100%" key={k.videoId}>
+        <table width="100%" data-closest={closest} key={k.videoId}>
             <colgroup>
                 <col width="40px" />
                 <col/>
             </colgroup>
             <tbody>
                 <tr>
-                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2"><span title={(new Date(k.startTime)).toLocaleString()}>{duration}</span><br/><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={`https://i3.ytimg.com/vi/${k.videoId}/hqdefault.jpg`} loading="lazy" decoding="async" /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
+                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2"><span title={(new Date(k.startTime)).toLocaleString()}>{duration}</span><br/><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={img.src} loading={img.loading} decoding={img.decoding} /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
                 </tr>
             </tbody>
         </table>
@@ -266,9 +297,9 @@ export default class ArchivesApp extends React.Component {
 
             </section>
             <section className={styles.catalog}>
-                {archivedList.length > 0 && searchResults.length === 0 && <h3>Archived Streams</h3>}
+                {archivedListNodes.length > 0 && searchResults.length === 0 && <h3>Archived Streams</h3>}
                 
-                {searchResults.length === 0 && archivedList}
+                {searchResults.length === 0 && archivedListNodes}
             </section>
         
         
