@@ -53,6 +53,8 @@ export function extractCollabstreamInfo(fromPageContent) {
         let end = collabs.findIndex(e => e.status != 'upcoming')
         end = (end < 0) ? collabs.length : end
         end = (start == end) ? ((collabs.length > end + 1) ? end + 1 : end) : end
+        // I don't think this can happen but better to be safe
+        end = (end < start) ? ((collabs.length > start + 1) ? start + 1 : collabs.length) : end
         for (let i = start; i < end; i++) {
             possible_collabs.push(collabs[i])
         }
