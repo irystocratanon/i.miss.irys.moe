@@ -25,6 +25,7 @@ export async function getServerSideProps({ query, res }) {
     let channels = {}
     const queryIsRegex = query.s && query.s[0] === '/' && query.s.length > 1 && query.s[query.s.length-1] === '/'
     const r = (queryIsRegex) ? new RegExp(query.s.slice(1, query.s.length-1), "i") : null
+    let WATCH_CHANNEL_USERNAME = null
     const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
         return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
     }).map(e => {
@@ -38,9 +39,13 @@ export async function getServerSideProps({ query, res }) {
             channels[channelId] = channelName
         }
         if (query.channel) {
-            return query.channel.toLowerCase() === 'all' || e.channelId === query.channel ||  (query.channel.toLowerCase() !== 'all' && e?.mentions && e.mentions.findIndex(j => j === query.channel) > -1)
+            let holoMap = {}
+            holoMap[process.env.WATCH_CHANNEL_ID]='IRyS'
+            WATCH_CHANNEL_USERNAME = holoMap[query.channel]
+            return query.channel.toLowerCase() === 'all' || e.channelId === query.channel ||  (query.channel.toLowerCase() !== 'all' && e?.mentions && e.mentions.findIndex(j => j === query.channel || WATCH_CHANNEL_USERNAME && j.toLowerCase() === WATCH_CHANNEL_USERNAME.toLowerCase()) > -1)
         } else {
-            return e.channelId === process.env.WATCH_CHANNEL_ID || (e?.mentions && e.mentions.findIndex(j => j === process.env.WATCH_CHANNEL_ID) > -1)
+            WATCH_CHANNEL_USERNAME='IRyS'
+            return e.channelId === process.env.WATCH_CHANNEL_ID || (e?.mentions && e.mentions.findIndex(j => j === process.env.WATCH_CHANNEL_ID || j.toLowerCase() === WATCH_CHANNEL_USERNAME.toLowerCase()) > -1)
         }
     }).filter(e => {
         return !query.s || (queryIsRegex && r.test(query.s)) || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
@@ -50,6 +55,7 @@ export async function getServerSideProps({ query, res }) {
     return {props: {
         now,
         WATCH_CHANNEL_ID: process.env.WATCH_CHANNEL_ID,
+        WATCH_CHANNEL_USERNAME,
         archives,
         channels,
         query: {
@@ -68,7 +74,7 @@ export default class ArchivesApp extends React.Component {
     this.archives = props.archives
     this.channels = props.channels
 
-    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', now: props.now, selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
+    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', now: props.now, WATCH_CHANNEL_USERNAME: props.WATCH_CHANNEL_USERNAME, WATCH_CHANNEL_ID: props.WATCH_CHANNEL_ID, selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
     
     this.lastSearchText = 'andkjanskdjnaskjdnakjs'
     this.handleChange = this.handleChange.bind(this);
@@ -79,7 +85,7 @@ export default class ArchivesApp extends React.Component {
   }
 
   updateLocation(newState = {}, reload = true) {
-      let { now, searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID } = this.state
+      let { now, searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID, WATCH_CHANNEL_USERNAME } = this.state
       searchText = (newState.hasOwnProperty('searchText')) ? newState['searchText'] : searchText
       selectedMonth = (newState.hasOwnProperty('selectedMonth')) ? newState['selectedMonth'] : selectedMonth
       selectedChannel = (newState.hasOwnProperty('selectedChannel')) ? newState['selectedChannel'] : selectedChannel
@@ -151,7 +157,7 @@ export default class ArchivesApp extends React.Component {
   }
 
   render() {
-    let { now, searchResults, selectedChannel, selectedMonth, searchText } = this.state;
+    let { now, searchResults, selectedChannel, WATCH_CHANNEL_ID, WATCH_CHANNEL_USERNAME, selectedMonth, searchText } = this.state;
     let archives = this.archives
     const channels = this.channels
 
@@ -197,7 +203,7 @@ export default class ArchivesApp extends React.Component {
         return (currentDate < d) ? d.toLocaleString() : `${formatDuration(duration, formatDurationOpts)} ago`
       }
       const archivedList = archives.filter(k => {
-          return (selectedChannel != "all") ? (k.channelId === selectedChannel || k?.mentions && k.mentions.findIndex(j => j === selectedChannel) > -1) : true
+          return (selectedChannel != "all") ? (k.channelId === selectedChannel || k?.mentions && k.mentions.findIndex(j => j === selectedChannel || WATCH_CHANNEL_USERNAME && j.toLowerCase() === WATCH_CHANNEL_USERNAME.toLowerCase()) > -1) : true
       }).filter(k => {
           return (isFutureMonth || isFutureYear) ? true : !k.hidden
       }).filter(k => {
