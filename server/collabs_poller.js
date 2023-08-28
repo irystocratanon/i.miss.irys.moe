@@ -52,6 +52,7 @@ export function extractCollabstreamInfo(fromPageContent) {
         start = (start < 0) ? 0 : start
         let end = collabs.findIndex(e => e.status != 'upcoming')
         end = (end < 0) ? collabs.length : end
+        end = (start == end) ? ((collabs.length > end + 1) ? end + 1 : end) : end
         for (let i = start; i < end; i++) {
             possible_collabs.push(collabs[i])
         }
