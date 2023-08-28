@@ -111,7 +111,7 @@ export default async function getResult() {
 
             return {error, result, pastStream}
         }
-        if (pastStream?.status !== 'live' && pastStream?.status !== 'just-ended') {
+        if (pastStream?.status !== 'live' && pastStream?.status !== 'just-ended' && collabs?.status) {
             switch (collabs.status) {
                 case 'upcoming':
                 case 'live':
