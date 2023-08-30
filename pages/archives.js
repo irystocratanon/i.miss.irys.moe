@@ -3,6 +3,7 @@ import Link from "next/link"
 import React from 'react'
 import styles from '../styles/Karaoke.module.css'
 import {closestIndexTo,intervalToDuration,formatDuration} from "date-fns"
+import {CancelledStreams} from "../server/cancelled.js"
 
 function search(kws, s) {
     if (!s.indexOf("【") >= 0) {
@@ -114,6 +115,8 @@ export async function getServerSideProps({ query, res }) {
         }
     }).filter(e => {
         return !query.s || (queryIsRegex && r.test(query.s)) || e.title.toLowerCase().indexOf(query.s.toLowerCase()) > -1
+    }).filter(e => {
+        return (!query.channel || query.channel === process.env.WATCH_CHANNEL_ID) ? (CancelledStreams.indexOf(e.videoId) === -1) : e
     }).slice(0, 1024*4.5)
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     
