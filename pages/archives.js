@@ -23,6 +23,7 @@ export async function getServerSideProps({ query, res }) {
     const req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
     const buf = await req.arrayBuffer()
     let channels = {}
+    const sanitizeChannelUsername = (c => c.toLowerCase().replaceAll(' ', '').replaceAll("'", ''))
     const holoMap = {
         "UCL_qhgtOy0dy1Agp8vkySQg": "Mori Calliope",
         "UCHsx4Hqa-1ORjQTh9TYDhww": "Takanashi Kiara",
@@ -85,7 +86,7 @@ export async function getServerSideProps({ query, res }) {
     }
     if (typeof query.channel === 'string' && query.channel.startsWith('@')) {
         query.channel = query.channel.slice(1)
-        let key = Object.keys(holoMap).filter(k => holoMap[k].toLowerCase().replaceAll(' ', '').replaceAll("'", '') === query.channel.toLowerCase())
+        let key = Object.keys(holoMap).filter(k => sanitizeChannelUsername(holoMap[k]) === sanitizeChannelUsername(query.channel))
         query.channel = (key.length > 0) ? key.pop() : query.channel
     }
     const queryIsRegex = query.s && query.s[0] === '/' && query.s.length > 1 && query.s[query.s.length-1] === '/'
@@ -105,7 +106,7 @@ export async function getServerSideProps({ query, res }) {
         }
         if (query.channel) {
             WATCH_CHANNEL_USERNAME = holoMap[query.channel]
-            WATCH_CHANNEL_USERNAME = (WATCH_CHANNEL_USERNAME) ? WATCH_CHANNEL_USERNAME.replaceAll(' ', '').replaceAll("'", '') : WATCH_CHANNEL_USERNAME
+            WATCH_CHANNEL_USERNAME = (WATCH_CHANNEL_USERNAME) ? sanitizeChannelUsername(WATCH_CHANNEL_USERNAME) : WATCH_CHANNEL_USERNAME
             return query.channel.toLowerCase() === 'all' || e.channelId === query.channel ||  (query.channel.toLowerCase() !== 'all' && e?.mentions && e.mentions.findIndex(j => j === query.channel || WATCH_CHANNEL_USERNAME && j.toLowerCase() === WATCH_CHANNEL_USERNAME.toLowerCase()) > -1)
         } else {
             WATCH_CHANNEL_USERNAME='IRyS'
