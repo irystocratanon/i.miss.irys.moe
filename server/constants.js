@@ -74,5 +74,6 @@ module.exports = {
     PASTSTREAM_CACHE: "/tmp/past-streams.json",
     COLLABS_CACHE: "/tmp/collabs.json",
     LIVESTREAM_CACHE: "/tmp/livestream.json",
+    ARCHIVES_CACHE: "/tmp/archives.jsonl.lz4",
     holoMap
 }

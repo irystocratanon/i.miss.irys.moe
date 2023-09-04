@@ -5,7 +5,7 @@ import styles from '../styles/Karaoke.module.css'
 import {closestIndexTo,intervalToDuration,formatDuration} from "date-fns"
 import {CancelledStreams} from "../server/cancelled.js"
 import { performance } from "perf_hooks"
-import { holoMap } from "../server/constants.js"
+import { ARCHIVES_CACHE, holoMap } from "../server/constants.js"
 
 function search(kws, s) {
     if (!s.indexOf("【") >= 0) {
@@ -25,10 +25,31 @@ export async function getServerSideProps({ query, res }) {
 
     const now = Date.now()
     const lz4 = (await import('lz4'))
-    //const req = await fetch("http://127.0.0.1:8000/archives.jsonl.lz4")
+
+    let {exists, readFile, writeFile} = (await import('fs'))
+    const {promisify} = (await import('util'))
+
+    exists = promisify(exists)
+    readFile = promisify(readFile)
+    writeFile = promisify(writeFile)
+
     const t2 = performance.now()
-    const req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
-    const buf = await req.arrayBuffer()
+
+    const controller = new AbortController()
+    let abortTimeout
+
+    let req
+    let buf
+    try {
+        // Github goes brrrr
+        abortTimeout = setTimeout(() => { controller.abort(); }, 7_500)
+        req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4", {signal: controller.signal})
+        clearTimeout(abortTimeout)
+        buf = await req.arrayBuffer()
+    } catch (e) {
+        console.error(e);
+        req = null
+    }
     const t3 = performance.now()
 
     console.debug(`[archives fetch] ${t3-t2}`);
@@ -62,6 +83,17 @@ export async function getServerSideProps({ query, res }) {
     const queryIsRegex = query.s && query.s[0] === '/' && query.s.length > 1 && query.s[query.s.length-1] === '/'
     const r = (queryIsRegex) ? new RegExp(query.s.slice(1, query.s.length-1), "i") : null
     let WATCH_CHANNEL_USERNAME = null
+    let _io = null
+    if (req && req?.status < 400) {
+        _io = writeFile(ARCHIVES_CACHE, Buffer.from(buf))
+    } else {
+        if (await exists(ARCHIVES_CACHE)) {
+            buf = await readFile(ARCHIVES_CACHE)
+        } else {
+            req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
+            buf = await req.arrayBuffer()
+        }
+    }
     const archives = lz4.decode(Buffer.from(buf)).toString().split('\n').filter(e => e).map(e => JSON.parse(e)).sort((x, y) => {
         return new Date(x.startTime) < new Date(y.startTime) ? 1 : -1
     }).map(e => {
@@ -104,6 +136,9 @@ export async function getServerSideProps({ query, res }) {
     }}
     t1 = performance.now();
     console.debug(`[archives getServerSideProps] ${t1-t0}`);
+    if (_io) {
+        await _io
+    }
     return ret
 }
 
