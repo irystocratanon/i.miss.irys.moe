@@ -83,7 +83,13 @@ export async function getServerSideProps({ query, res }) {
         "UChgTyjG-pdNvxxhdsXfHQ5Q": "Pavolia Reine",
         "UCTvHWSfBZgtxE4sILOaurIQ": "Vestia Zeta",
         "UCZLZ8Jjx_RN2CXloOmgTHVg": "Kaela Kovalskia",
-        "UCjLEmnpCNeisMxy134KPwWw": "Kobo Kanaeru"
+        "UCjLEmnpCNeisMxy134KPwWw": "Kobo Kanaeru",
+        "UCMGfV7TVTmHhEErVJg1oHBQ": "Hiodoshi Ao",
+        "UCWQtYtq9EOB4-I5P-3fh8lA": "Otonose Kanade",
+        "UCtyWhCj3AqKh2dXctLkDtng": "Ichijou Ririka",
+        "UCdXAk5MpyLD8594lm_OvtGQ": "Juufuutei Raden",
+        "UC1iA6_NT4mtAcIII6ygrvCw": "Todoroki Hajime",
+        "UC10wVt6hoQiwySRhz7RdOUA": "hololive DEV_IS",
     }
     if (typeof query.channel === 'string' && query.channel.startsWith('@')) {
         query.channel = query.channel.slice(1)
