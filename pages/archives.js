@@ -5,6 +5,7 @@ import styles from '../styles/Karaoke.module.css'
 import {closestIndexTo,intervalToDuration,formatDuration} from "date-fns"
 import {CancelledStreams} from "../server/cancelled.js"
 import { performance } from "perf_hooks"
+import { holoMap } from "../server/constants.js"
 
 function search(kws, s) {
     if (!s.indexOf("【") >= 0) {
@@ -25,79 +26,37 @@ export async function getServerSideProps({ query, res }) {
     const now = Date.now()
     const lz4 = (await import('lz4'))
     //const req = await fetch("http://127.0.0.1:8000/archives.jsonl.lz4")
+    const t2 = performance.now()
     const req = await fetch("https://raw.githubusercontent.com/irystocratanon/i.miss.irys.moe-supadata/master/archives.jsonl.lz4")
     const buf = await req.arrayBuffer()
+    const t3 = performance.now()
+
+    console.debug(`[archives fetch] ${t3-t2}`);
+
     let channels = {}
+    const sanitizeChannelUsernameSameCase = (c => c.replaceAll(' ', '').replaceAll("'", ''))
     const sanitizeChannelUsername = (c => c.toLowerCase().replaceAll(' ', '').replaceAll("'", ''))
-    const holoMap = {
-        "UCL_qhgtOy0dy1Agp8vkySQg": "Mori Calliope",
-        "UCHsx4Hqa-1ORjQTh9TYDhww": "Takanashi Kiara",
-        "UCMwGHR0BTZuLsmjY_NT5Pwg": "Ninomae Ina'nis",
-        "UCoSrY_IQQVpmIRZ9Xf-y93g": "Gawr Gura",
-        "UCyl1z3jo3XHR1riLFKG5UAg": "Watson Amelia",
-        "UC8rcEBzJSleTkf_-agPM20g": "IRyS",
-        "UC9p_lqQ0FEDz327Vgf5JwqA": "Koseki Bijou",
-        "UCgnfPPb9JI3e9A4cXHnWbyg": "Shiori Novella",
-        "UCt9H_RpQzhxzlyBxFqrdHqA": "FUWAMOCO",
-        "UC_sFNM0z0MWm9A6WlKPuMMg": "Nerissa Ravencroft",
-        "UCO_aKKYxn4tvrqPjcTzZ6EQ": "Ceres Fauna",
-        "UCmbs8T6MWqUHP1tIQvSgKrg": "Ouro Kronii",
-        "UC3n5uGu18FoCy23ggWWp8tA": "Nanashi Mumei",
-        "UCgmPnx-EEeOrZSg5Tiw7ZRQ": "Hakos Baelz",
-        "UCp6993wxpyDPHUpavwDFqgg": "Tokino Sora",
-        "UC0TXe_LYZ4scaW2XMyi5_kw": "AZKi",
-        "UCDqI2jOz0weumE8s7paEk6g": "Roboco san",
-        "UC-hM6YJuNYVAmUWxeIr9FeA": "Sakura Miko",
-        "UC5CwaMl1eIgY8h02uZw7u8A": "Hoshimachi Suisei",
-        "UCdn5BQ06XqgXoAxIhbqw5Rg": "Shirakami Fubuki",
-        "UCQ0UDLQCjY0rmuxCDE38FGg": "Natsuiro Matsuri",
-        "UCD8HOxPs4Xvsm8H0ZxXGiBw": "Yozora Mel",
-        "UC1CfXB_kRs3C-zaeTG3oGyg": "Akai Haato",
-        "UCFTLzh12_nrtzqBPsTCqenA": "Aki Rosenthal",
-        "UC1opHUrw8rvnsadT-iGp7Cg": "Minato Aqua",
-        "UC1suqwovbL1kzsoaZgFZLKg": "Yuzuki Choco",
-        "UC7fk0CB07ly8oSl0aqKkqFg": "Nakiri Ayame",
-        "UCXTpFs_3PqI41qX2d9tL2Rw": "Murasaki Shion",
-        "UCvzGlP9oQwU--Y0r9id_jnA": "Oozora Subaru",
-        "UCp-5t9SrOQwXMU7iIjQfARg": "Ookami Mio",
-        "UCvaTdHTWBGv3MKj3KVqJVCw": "Nekomata Okayu",
-        "UChAnqc_AY5_I3Px5dig3X1Q": "Inugami Korone",
-        "UCvInZx9h3jC2JzsIzoOebWg": "Shiranui Flare",
-        "UCdyqAaZDKHXg4Ahi7VENThQ": "Shirogane Noel",
-        "UCCzUftO8KOVkV4wQG1vkUvg": "Houshou Marine",
-        "UC1DCedRgGHBdm81E1llLhOQ": "Usada Pekora",
-        "UCZlDXzGoo7d44bwdNObFacg": "Amane Kanata",
-        "UCqm3BQLlJfvkTsX_hvm0UmA": "Tsunomaki Watame",
-        "UC1uv2Oq6kNxgATlCiez59hw": "Tokoyami Towa",
-        "UCa9Y57gfeY0Zro_noHRVrnw": "Himemori Luna",
-        "UCFKOVgVbGmX65RxO3EtH3iw": "Yukihana Lamy",
-        "UCAWSyEs_Io8MtpY3m-zqILA": "Momosuzu Nene",
-        "UCUKD-uaobj9jiqB-VXt71mA": "Shishiro Botan",
-        "UCK9V2B22uJYu3N7eR_BT9QA": "Omaru Polka",
-        "UCENwRMx5Yh42zWpzURebzTw": "Laplus Darknesss",
-        "UCs9_O1tRPMQTHQ-N_L6FU2g": "Takane Lui",
-        "UC6eWCld0KwmyHFbAqK3V-Rw": "Hakui Koyori",
-        "UCIBY1ollUsauvVi4hW4cumw": "Sakamata Chloe",
-        "UC_vMYWcDjmfdpH6r4TTn1MQ": "Kazama Iroha",
-        "UCOyYb1c43VlX9rc_lT6NKQw": "Ayunda Risu",
-        "UCP0BspO_AMEe3aQqqpo89Dg": "Moona Hoshinova",
-        "UCAoy6rzhSf4ydcYjJw3WoVg": "Airani Iofifteen",
-        "UCYz_5n-uDuChHtLo7My1HnQ": "Kureiji Ollie",
-        "UC727SQYUvx5pDDGQpTICNWg": "Anya Melfissa",
-        "UChgTyjG-pdNvxxhdsXfHQ5Q": "Pavolia Reine",
-        "UCTvHWSfBZgtxE4sILOaurIQ": "Vestia Zeta",
-        "UCZLZ8Jjx_RN2CXloOmgTHVg": "Kaela Kovalskia",
-        "UCjLEmnpCNeisMxy134KPwWw": "Kobo Kanaeru",
-        "UCMGfV7TVTmHhEErVJg1oHBQ": "Hiodoshi Ao",
-        "UCWQtYtq9EOB4-I5P-3fh8lA": "Otonose Kanade",
-        "UCtyWhCj3AqKh2dXctLkDtng": "Ichijou Ririka",
-        "UCdXAk5MpyLD8594lm_OvtGQ": "Juufuutei Raden",
-        "UC1iA6_NT4mtAcIII6ygrvCw": "Todoroki Hajime",
-        "UC10wVt6hoQiwySRhz7RdOUA": "hololive DEV_IS",
-    }
     if (typeof query.channel === 'string' && query.channel.startsWith('@')) {
         query.channel = query.channel.slice(1)
         let key = Object.keys(holoMap).filter(k => sanitizeChannelUsername(holoMap[k]) === sanitizeChannelUsername(query.channel))
+        if (key.length > 0) {
+            const orig_channel = query.channel
+            const new_channel = sanitizeChannelUsernameSameCase(holoMap[key[key.length-1]])
+            if (orig_channel !== new_channel) {
+                let query_string = ''
+                if (query?.s) {
+                    query_string += `?s=${query.s}`
+                } else if (query?.month) {
+                    query_string += `?month=${query.month}`
+                }
+                return {
+                    redirect: {
+                        destination: `/archives/@${new_channel}${query_string}`,
+                        permanent: false
+                    }
+                }
+            }
+        }
         query.channel = (key.length > 0) ? key.pop() : query.channel
     }
     const queryIsRegex = query.s && query.s[0] === '/' && query.s.length > 1 && query.s[query.s.length-1] === '/'
