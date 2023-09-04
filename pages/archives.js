@@ -4,6 +4,7 @@ import React from 'react'
 import styles from '../styles/Karaoke.module.css'
 import {closestIndexTo,intervalToDuration,formatDuration} from "date-fns"
 import {CancelledStreams} from "../server/cancelled.js"
+import { performance } from "perf_hooks"
 
 function search(kws, s) {
     if (!s.indexOf("【") >= 0) {
@@ -18,6 +19,9 @@ function search(kws, s) {
 }
   
 export async function getServerSideProps({ query, res }) {
+    let t0 = performance.now()
+    let t1
+
     const now = Date.now()
     const lz4 = (await import('lz4'))
     //const req = await fetch("http://127.0.0.1:8000/archives.jsonl.lz4")
@@ -126,7 +130,7 @@ export async function getServerSideProps({ query, res }) {
     }).slice(0, 1024*4.5)
     channels = Object.keys(channels).sort((a,b) => channels[a].localeCompare(channels[b])).reduce((acc,key) => { acc[key] = channels[key]; return acc; }, {});
     
-    return {props: {
+    const ret = {props: {
         now,
         WATCH_CHANNEL_ID: process.env.WATCH_CHANNEL_ID,
         WATCH_CHANNEL_USERNAME: WATCH_CHANNEL_USERNAME || null,
@@ -139,6 +143,9 @@ export async function getServerSideProps({ query, res }) {
             month: query.month || null
         }
     }}
+    t1 = performance.now();
+    console.debug(`[archives getServerSideProps] ${t1-t0}`);
+    return ret
 }
 
 export default class ArchivesApp extends React.Component {
