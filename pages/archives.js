@@ -191,7 +191,7 @@ export default class ArchivesApp extends React.Component {
           window.location.search = search
           if (page) {
               page = (Object.hasOwn(holoMap, page)) ? holoMap[page].replaceAll("'", '').replaceAll(" ", '') : page
-              const suf = page.startsWith('UC') ? '' : '@'
+              const suf = (page.startsWith('UC') || page === 'all') ? '' : '@'
               window.location.pathname = `/archives/${suf}${page}`
           }
       } else {
