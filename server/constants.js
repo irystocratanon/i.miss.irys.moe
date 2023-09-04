@@ -63,6 +63,11 @@ const holoMap = {
     "UCdXAk5MpyLD8594lm_OvtGQ": "Juufuutei Raden",
     "UC1iA6_NT4mtAcIII6ygrvCw": "Todoroki Hajime",
     "UC10wVt6hoQiwySRhz7RdOUA": "hololive DEV_IS",
+    "UCJFZiqLMntJufDCHc6bQixg": "hololive",
+    "UCotXwY6s8pWmuWd_snKYjhg": "hololiveEnglish",
+    "UCfrWoRGlawPQDQxxeIDRP0Q": "hololiveIndonesia",
+    "UCWsfcksUUpoEvhia0_ut0bA": "HOLOSTARS",
+    "UCJxZpzx4wHzEYD-eCiZPikg": "HOLOSTARSenglish"
 }
 
 module.exports = {
