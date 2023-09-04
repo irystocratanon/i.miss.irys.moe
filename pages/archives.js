@@ -124,6 +124,7 @@ export async function getServerSideProps({ query, res }) {
         now,
         WATCH_CHANNEL_ID: process.env.WATCH_CHANNEL_ID,
         WATCH_CHANNEL_USERNAME: WATCH_CHANNEL_USERNAME || null,
+        holoMap,
         archives,
         channels,
         query: {
@@ -142,7 +143,7 @@ export default class ArchivesApp extends React.Component {
     this.archives = props.archives
     this.channels = props.channels
 
-    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', now: props.now, WATCH_CHANNEL_USERNAME: props.WATCH_CHANNEL_USERNAME, WATCH_CHANNEL_ID: props.WATCH_CHANNEL_ID, selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
+    this.state = {searchText: props.query.s || '', selectedMonth: props.query.month || '', now: props.now, WATCH_CHANNEL_USERNAME: props.WATCH_CHANNEL_USERNAME, holoMap: props.holoMap, WATCH_CHANNEL_ID: props.WATCH_CHANNEL_ID, selectedChannel: props.query.channel || props.WATCH_CHANNEL_ID, searchResults: [] };
     
     this.lastSearchText = 'andkjanskdjnaskjdnakjs'
     this.handleChange = this.handleChange.bind(this);
@@ -153,14 +154,17 @@ export default class ArchivesApp extends React.Component {
   }
 
   updateLocation(newState = {}, reload = true) {
-      let { now, searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID, WATCH_CHANNEL_USERNAME } = this.state
+      let { now, searchText, selectedMonth, selectedChannel, WATCH_CHANNEL_ID, holoMap, WATCH_CHANNEL_USERNAME } = this.state
       searchText = (newState.hasOwnProperty('searchText')) ? newState['searchText'] : searchText
       selectedMonth = (newState.hasOwnProperty('selectedMonth')) ? newState['selectedMonth'] : selectedMonth
       selectedChannel = (newState.hasOwnProperty('selectedChannel')) ? newState['selectedChannel'] : selectedChannel
       let search = ''
       let token = "?"
-      if (location.pathname === "/archives" && (window.location.search.indexOf("channel=") > -1 || selectedChannel != WATCH_CHANNEL_ID)) {
+      let page = null
+      if (location.pathname === "/archives" && (window.location.search.indexOf("channel=") > -1)) {
           search += token + "channel=" + selectedChannel
+      } else {
+          page = selectedChannel
       }
       if (selectedMonth) {
           token = (search.length > 0) ? '&' : '?'
@@ -172,6 +176,11 @@ export default class ArchivesApp extends React.Component {
       }
       if (reload) {
           window.location.search = search
+          if (page) {
+              page = (Object.hasOwn(holoMap, page)) ? holoMap[page].replaceAll("'", '').replaceAll(" ", '') : page
+              const suf = page.startsWith('UC') ? '' : '@'
+              window.location.pathname = `/archives/${suf}${page}`
+          }
       } else {
           let updateState = true
           if (newState.hasOwnProperty("selectedMonth")) {
