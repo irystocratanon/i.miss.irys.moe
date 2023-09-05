@@ -139,7 +139,9 @@ export async function getServerSideProps({ query, res }) {
     if (_io) {
         await _io
     }
-    res.setHeader("Vercel-CDN-Cache-Control", "s-maxage=10, stale-while-revalidate=59")
+    if (req && req?.status < 400) {
+        res.setHeader("Vercel-CDN-Cache-Control", "s-maxage=10, stale-while-revalidate=59")
+    }
     return ret
 }
 
