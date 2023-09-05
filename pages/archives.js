@@ -219,6 +219,12 @@ export default class ArchivesApp extends React.Component {
       this.updateLocation(newState, false)
   }
 
+  handleArchivesReload(e) {
+      e.preventDefault();
+      if(window.location.pathname !== "/archives")
+          window.location.pathname = "/archives";
+  }
+
   handleSubmit(event) {
     event.preventDefault();
   }
@@ -336,7 +342,7 @@ export default class ArchivesApp extends React.Component {
         <section style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Link href="/">I miss her&hellip;</Link>
             &nbsp;|&nbsp;
-            <Link className="font-bold no-underline" href="/archives">Archives</Link>
+            <Link className="font-bold no-underline" href="/archives" onClick={this.handleArchivesReload}>Archives</Link>
             &nbsp;|&nbsp;
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
