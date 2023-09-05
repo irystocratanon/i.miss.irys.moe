@@ -254,7 +254,11 @@ export default class ArchivesApp extends React.Component {
                 left: window.scrollX,
                 behavior: 'instant',
             });
-            node.scrollIntoViewIfNeeded();
+            if (node?.scrollIntoViewIfNeeded) {
+                node.scrollIntoViewIfNeeded();
+            } else {
+                node.scrollIntoView();
+            }
         }
   }
 
