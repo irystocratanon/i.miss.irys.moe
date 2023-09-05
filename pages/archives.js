@@ -232,7 +232,9 @@ export default class ArchivesApp extends React.Component {
   }
 
     componentDidMount() {
+        const firstNode = document.querySelector("table[data-closest]");
         const node = document.querySelector("table[data-closest=true]");
+        if (node === firstNode) { return }
         if (!node) { return; }
         function isElementInViewport (el) {
             var rect = el.getBoundingClientRect();
@@ -245,7 +247,12 @@ export default class ArchivesApp extends React.Component {
             );
         }
         if (!isElementInViewport(node)) {
-            node.scrollIntoView();
+            window.scrollTo({
+                top: node.getBoundingClientRect().y,
+                left: window.scrollX,
+                behavior: 'instant',
+            });
+            node.scrollIntoViewIfNeeded();
         }
   }
 
