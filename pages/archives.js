@@ -80,6 +80,18 @@ export async function getServerSideProps({ query, res }) {
             }
         }
         query.channel = (key.length > 0) ? key.pop() : query.channel
+    } else if (typeof query.channel === 'string' && query.channel.startsWith('UC')) {
+        const channel_keys = Object.keys(holoMap)
+        let found_channel = channel_keys.findIndex(e => e.toLowerCase() === query.channel.toLowerCase());
+        if (found_channel > -1) {
+            found_channel = holoMap[channel_keys[found_channel]]
+            return {
+                redirect: {
+                    destination: `/archives/@${sanitizeChannelUsernameSameCase(found_channel)}`,
+                    permanent: false
+                }
+            }
+        }
     }
     const queryIsRegex = query.s && query.s[0] === '/' && query.s.length > 1 && query.s[query.s.length-1] === '/'
     const r = (queryIsRegex) ? new RegExp(query.s.slice(1, query.s.length-1), "i") : null
