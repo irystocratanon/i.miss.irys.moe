@@ -349,7 +349,7 @@ export default class ArchivesApp extends React.Component {
               })
           }
           if (k?.channelId && mentions.indexOf(k.channelId) === -1) {
-              mentions.push(k.channelId)
+              mentions = [k.channelId, ...mentions]
           }
           mentions = (mentions.length === 1) ? [] : mentions
           return (
