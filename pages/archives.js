@@ -363,7 +363,7 @@ export default class ArchivesApp extends React.Component {
                     <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">
                         <span title={(new Date(k.startTime)).toLocaleString()}>{duration}</span>
                         <section>
-                            {mentions.map((img,i) => <a key={img} href={`/archives/${img}`}><picture><img style={{display: 'inline-flex', width: 40, height: 40, marginLeft: (i > 0) ? '0.125em' : 'initial'}} title={holoMap[img]} className="rounded-[50%]" src={`/api/ytimg/${img}`} /></picture></a>)}
+                            {mentions.map((img,i) => <a key={img} href={`/archives/${img}`}><picture><img style={{marginLeft: (i > 0) ? '0.125em' : 'initial'}} title={holoMap[img]} className={styles.channelIcon} src={`/api/ytimg/${img}`} /></picture></a>)}
                         </section><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={img.src} loading={img.loading} decoding={img.decoding} /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
                 </tr>
             </tbody>

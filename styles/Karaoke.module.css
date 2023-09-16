@@ -53,3 +53,7 @@
 .search input {
     @apply p-1 rounded
 }
+
+.channelIcon {
+    @apply inline-flex w-auto h-10 rounded-[50%];
+}
