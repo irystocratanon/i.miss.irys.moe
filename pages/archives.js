@@ -1,5 +1,6 @@
 import Head from "next/head"
 import Link from "next/link"
+import Image from 'next/image'
 import React from 'react'
 import styles from '../styles/Karaoke.module.css'
 import {closestIndexTo,intervalToDuration,formatDuration} from "date-fns"
@@ -329,6 +330,28 @@ export default class ArchivesApp extends React.Component {
               loading: (closest || i === closestIndex+1) ? "eager" : "lazy",
               decoding: (closest || i === closestIndex+1) ? "sync" : "async"
           }
+          let mentions = []
+          if (k.mentions) {
+              k.mentions.forEach(mention => {
+                  if (mention.startsWith('UC') && mentions.indexOf(mention) === -1) {
+                      mentions.push(mention)
+                      return
+                  } else {
+                      Object.keys(holoMap).filter(key => {
+                          const possible_mention = holoMap[key].toLowerCase();
+                          return mention.toLowerCase() === possible_mention || possible_mention.replaceAll(" ", '').replaceAll("'", '') === mention.toLowerCase()
+                      }).forEach(mention => {
+                          if (mentions.indexOf(mention) === -1) {
+                              mentions.push(mention)
+                          }
+                      })
+                  }
+              })
+          }
+          if (k?.channelId && mentions.indexOf(k.channelId) === -1) {
+              mentions.push(k.channelId)
+          }
+          mentions = (mentions.length === 1) ? [] : mentions
           return (
         <table width="100%" data-closest={closest} key={k.videoId}>
             <colgroup>
@@ -337,7 +360,11 @@ export default class ArchivesApp extends React.Component {
             </colgroup>
             <tbody>
                 <tr>
-                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2"><span title={(new Date(k.startTime)).toLocaleString()}>{duration}</span><br/><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={img.src} loading={img.loading} decoding={img.decoding} /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
+                    <td className={styles.titlerow} style={{borderRight: 'none'}} colSpan="2">
+                        <span title={(new Date(k.startTime)).toLocaleString()}>{duration}</span>
+                        <section>
+                            {mentions.map((img,i) => <a key={img} href={`/archives/${img}`}><picture><img style={{display: 'inline-flex', width: 40, height: 40, marginLeft: (i > 0) ? '0.125em' : 'initial'}} title={holoMap[img]} className="rounded-[50%]" src={`/api/ytimg/${img}`} /></picture></a>)}
+                        </section><a style={{display: 'inline-flex', flexDirection: 'column'}} href={`https://www.youtube.com/watch?v=${k.videoId}`}>{k.title}<img src={img.src} loading={img.loading} decoding={img.decoding} /></a><br/>{k.supas > 0 && <>[<a href={`/supas/${k.videoId}.html`}>Supas({k.supas})</a>]</>}{k.supana > 0 && <>&nbsp;[<a href={`/supas/supana_${k.videoId}.html`}>Supana({k.supana})</a>]</>}</td>
                 </tr>
             </tbody>
         </table>
