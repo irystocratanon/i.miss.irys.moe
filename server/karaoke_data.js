@@ -2779,6 +2779,19 @@ let data = {
                   keywords: "sincerely"
                 }
             ]
+        },
+        {
+            videoId: '7lJ5kdZGFgk',
+            title: '【#不知火フレア4周年記念LIVE】平成初期アニソン祭り【不知火フレア/ホロライブ】',
+            date: new Date("22 Sep, 2023"),
+            songs: [
+                {
+                  timestamp: "00h31m37s",
+                  title: "Dearest",
+                  artist: "Hitomi Mieno (w/ Flare)",
+                  keywords: "song flare irys dearest dearest hitomi mieno"
+                }
+            ]
         }
     ]
 }
