@@ -51,7 +51,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
         }
         try {
             let supaReqHeaders = {
-                "Accept-Encoding": "gzip, deflate, br"
+                "Accept-Encoding": "gzip, deflate"
             }
             const referer = req.headers['referer']
             // signal to the server to request pre-generated sorted HTML since doing this in a serverless function is expensive
