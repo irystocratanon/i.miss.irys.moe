@@ -67,7 +67,8 @@ const holoMap = {
     "UCotXwY6s8pWmuWd_snKYjhg": "hololiveEnglish",
     "UCfrWoRGlawPQDQxxeIDRP0Q": "hololiveIndonesia",
     "UCWsfcksUUpoEvhia0_ut0bA": "HOLOSTARS",
-    "UCJxZpzx4wHzEYD-eCiZPikg": "HOLOSTARSenglish"
+    "UCJxZpzx4wHzEYD-eCiZPikg": "HOLOSTARSenglish",
+    "UCP-rbNDntYkPy7xe6eUkC5A": "redjuicegraphics"
 }
 
 module.exports = {
