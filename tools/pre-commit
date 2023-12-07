@@ -4,9 +4,11 @@
 
 set -eo pipefail
 
-cd "$(dirname ${BASH_SOURCE[0]})" || exit 1
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
 
 cd ../../tools || exit 1
+
+shellcheck ./pre-commit || exit 1
 
 node -e 'require("../server/constants.js")' || exit 1
 
