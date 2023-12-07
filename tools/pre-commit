@@ -8,6 +8,8 @@ cd "$(dirname ${BASH_SOURCE[0]})" || exit 1
 
 cd ../../tools || exit 1
 
+node -e 'require("../server/constants.js")' || exit 1
+
 printf '{"type": "module"}\n' > ../server/package.json
 ./verify-karaoke-data.mjs
 
