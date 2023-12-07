@@ -13,9 +13,8 @@ shellcheck ./pre-commit || exit 1
 node -e 'require("../server/constants.js")' || exit 1
 
 printf '{"type": "module"}\n' > ../server/package.json
-./verify-karaoke-data.mjs
-
-ret="$?"
+ret=0
+./verify-karaoke-data.mjs || ret="$?"
 
 if [ -e ../server/package.json ]
 then
