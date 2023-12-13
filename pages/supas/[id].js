@@ -93,7 +93,7 @@ Home.getInitialProps = async function ({ req, res, query }) {
             let supaReq
             for (let i = 0; i < 3; i++) {
                 try {
-                    const endpoint = (Math.floor(Math.random()*10%2)) ? process.env.SUPAS_ENDPOINT_A : process.env.SUPAS_ENDPOINT_B
+                    const endpoint = process.env.SUPAS_ENDPOINT
                     supaReq = await fetch(`${endpoint}/${query.id}`, {method: req.method, headers: supaReqHeaders});
                     if (supaReq.status < 400) {
                         break;
