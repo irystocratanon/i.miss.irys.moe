@@ -319,7 +319,7 @@ export default class ArchivesApp extends React.Component {
         if (duration.days === 0 || !duration.hasOwnProperty('days')) { formatDurationOpts['format'].push('hours') }
         if (duration.hours === 0 || !duration.hasOwnProperty('hours')) { formatDurationOpts['format'].push('minutes') }
         if (duration.minutes === 0 || !duration.hasOwnProperty('minutes')) { formatDurationOpts['format'].push('seconds') }
-        return (currentDate < d) ? d.toLocaleString() : `${formatDuration(duration, formatDurationOpts)} ago`
+        return (currentDate < d) ? d.toLocaleString() : `${formatDuration(duration, formatDurationOpts).replaceAll('-','')} ago`
       }
       const archivedList = archives.filter(k => {
           return (selectedChannel != "all") ? (k.channelId === selectedChannel || k?.mentions && k.mentions.findIndex(j => j === selectedChannel || WATCH_CHANNEL_USERNAME && j.toLowerCase() === WATCH_CHANNEL_USERNAME.toLowerCase()) > -1) : true
