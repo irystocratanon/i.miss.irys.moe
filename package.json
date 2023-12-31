@@ -14,7 +14,7 @@
     "date-fns": "^3.0.6",
     "lz4": "^0.6.5",
     "next": "^14.0.4",
-    "node-html-parser": "^6.1.11",
+    "node-html-parser": "^6.1.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sharp": "^0.33.1",
