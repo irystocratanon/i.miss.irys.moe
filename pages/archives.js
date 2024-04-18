@@ -401,8 +401,6 @@ export default class ArchivesApp extends React.Component {
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link href="/karaoke">Karaoke</Link>
-            &nbsp;|&nbsp;
-            <Link href="/social">IRySocial</Link>
 
         </section>
         

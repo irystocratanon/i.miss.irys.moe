@@ -93,8 +93,6 @@ export default class KaraokeApp extends React.Component {
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link className="font-bold no-underline" href="/karaoke">Karaoke</Link>
-            &nbsp;|&nbsp;
-            <Link href="/social">IRySocial</Link>
 
         </section>
 

@@ -462,8 +462,6 @@ export default function Home(props) {
             <Link href="/milestones">Milestones</Link>
             &nbsp;|&nbsp;
             <Link href="/karaoke">Karaoke</Link>
-            &nbsp;|&nbsp;
-            <Link href="/social">IRySocial</Link>
         </section>
         <div style={{display: "block", position: "absolute", top: 10, right: 10}}>
             <span style={{display: "none"}}><input id="schedule" type="checkbox" checked={false} ref={scheduleRef} onChange={() => {}} onClick={() => scheduleHook(true)} /><label htmlFor="schedule">Schedule&nbsp;</label></span>

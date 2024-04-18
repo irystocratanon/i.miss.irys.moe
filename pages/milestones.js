@@ -184,8 +184,6 @@ export default function Milestones(props) {
                 <Link className="font-bold no-underline" href={'/milestones'+ (props.full) ? '?full' : ''}>Milestones</Link>
                 &nbsp;|&nbsp;
                 <Link href="/karaoke">Karaoke</Link>
-                &nbsp;|&nbsp;
-                <Link href="/social">IRySocial</Link>
         </section>
         <div>
             <section className={styles.top}>
