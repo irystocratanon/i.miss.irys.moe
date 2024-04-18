@@ -11,21 +11,21 @@
   },
   "dependencies": {
     "animate.css": "^4.1.1",
-    "date-fns": "^3.3.0",
+    "date-fns": "^3.6.0",
     "lz4": "^0.6.5",
-    "next": "^14.1.0",
-    "node-html-parser": "^6.1.12",
+    "next": "^14.2.2",
+    "node-html-parser": "^6.1.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sharp": "^0.33.2",
+    "sharp": "^0.33.3",
     "xml2js": "^0.6.2",
     "yt-scraping-utilities": "https://github.com/irystocratanon/yt-scraping-utilities.git"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.17",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^14.1.0",
-    "postcss": "^8.4.33",
-    "tailwindcss": "^3.4.1"
+    "autoprefixer": "^10.4.19",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^14.2.2",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3"
   }
 }
