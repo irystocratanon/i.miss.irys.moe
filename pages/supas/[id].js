@@ -213,7 +213,7 @@ ${(!isSupana) ? '<tr><th class="text-right">円建て</th></tr>' : ''}`
                     // use a lower max response time for the first request
                     // lighthouse gives a Green Speed Index score for request <=3400ms
                     // (https://developer.chrome.com/docs/lighthouse/performance/speed-index/)
-                    const max_response_time = (cursor < 1) ? 1700 : 9000;
+                    const max_response_time = (cursor < 1) ? 1700 : 14_000;
 
                     limit = (query?.cursor == 1 && sort == "desc") ? 1 : limit
                     cursor = (query?.cursor && sort == "desc" && content_type.indexOf('text/html') > -1) ? cursor + 2 : cursor
