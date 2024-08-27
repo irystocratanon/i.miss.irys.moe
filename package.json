@@ -13,19 +13,19 @@
     "animate.css": "^4.1.1",
     "date-fns": "^3.6.0",
     "lz4": "^0.6.5",
-    "next": "^14.2.4",
+    "next": "^14.2.7",
     "node-html-parser": "^6.1.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sharp": "^0.33.4",
+    "sharp": "^0.33.5",
     "xml2js": "^0.6.2",
     "yt-scraping-utilities": "https://github.com/irystocratanon/yt-scraping-utilities.git"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "eslint": "^9.6.0",
-    "eslint-config-next": "^14.2.4",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.4"
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.9.1",
+    "eslint-config-next": "^14.2.7",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10"
   }
 }
