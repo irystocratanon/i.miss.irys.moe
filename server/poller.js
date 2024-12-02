@@ -141,8 +141,8 @@ export default async function getResult() {
                     }
                     break;
                 case 'past':
-                    const collabEnd = parseISO(collabs.end_actual)
-                    const pastStreamEnd = parseISO(pastStream.end_actual)
+                    const collabEnd = parseISO(collabs?.end_actual || collabs?.available_at || collabs?.published_at || '1970-01-01T00:00:00.000Z')
+                    const pastStreamEnd = parseISO(pastStream?.end_actual || pastStream?.available_at || pastStream?.published_at || '1970-01-01T00:00:00.000Z')
                     if (collabEnd > pastStreamEnd) {
                         pastStream = collabs
                     }
